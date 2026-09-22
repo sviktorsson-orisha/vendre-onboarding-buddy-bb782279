@@ -31,6 +31,7 @@
   --color-background: var(--background);
   --color-brand-pink: var(--brand-pink);
   --color-brand-blue: var(--brand-blue);
+  --color-brand-red: var(--brand-red);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -69,6 +70,7 @@
   --radius: 0.75rem;
   --brand-pink: oklch(0.68 0.22 340);
   --brand-blue: oklch(0.66 0.16 250);
+  --brand-red: oklch(0.58 0.21 27);
   --background: oklch(0.972 0.016 291);
   --foreground: oklch(0.17 0.03 285);
   --card: oklch(1 0 0);
@@ -226,6 +228,12 @@
   transition: background-color 150ms ease;
   &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-primary) 10%, transparent); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
+}
+
+@utility brand-button-red {
+  background-color: var(--color-brand-red);
+  color: oklch(0.99 0.005 290);
+  &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-brand-red) 88%, black); }
 }
 
 @utility brand-card {
