@@ -21,6 +21,7 @@ import {
   useCountryOptions,
   useCountryList,
   matchCountryOption,
+  DEFAULT_COUNTRY_ID,
   DEFAULT_REGISTER_CONSTRAINTS,
   isBusinessAccount,
   useAccount,
@@ -366,7 +367,9 @@ function ProfileView() {
     );
   };
 
-  const countryValue = matchCountryOption(form.country, countryOptions, countryList);
+  const countryValue =
+    matchCountryOption(form.country, countryOptions, countryList) ||
+    String(countryOptions[0]?.id ?? DEFAULT_COUNTRY_ID);
 
   return (
     <Section title={t("account.profile")}>
@@ -427,7 +430,6 @@ function ProfileView() {
                 );
               }}
             >
-              <option value="" />
               {countryOptions.map((option) => (
                 <option key={option.id} value={String(option.id)}>
                   {option.label}
