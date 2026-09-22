@@ -19,6 +19,8 @@ import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import {
   useCountryOptions,
+  useCountryList,
+  matchCountryOption,
   DEFAULT_REGISTER_CONSTRAINTS,
   isBusinessAccount,
   useAccount,
@@ -318,6 +320,7 @@ function ProfileView() {
 
   // Countries come from the store session; the fixed list is only a fallback.
   const countryOptions = useCountryOptions();
+  const countryList = useCountryList();
 
   // The store decides which fields the account form shows and requires.
   const { data: constraints = DEFAULT_REGISTER_CONSTRAINTS } = useRegisterConstraints();
