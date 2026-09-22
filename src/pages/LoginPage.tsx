@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import {
-  COUNTRY_OPTIONS,
+  DEFAULT_COUNTRY_ID,
+  useCountryOptions,
   DEFAULT_REGISTER_CONSTRAINTS,
   useAccountMutations,
   useAuth,
@@ -51,7 +52,7 @@ export default function LoginPage() {
     street_address2: "",
     postcode: "",
     city: "",
-    country_id: 203,
+    country_id: DEFAULT_COUNTRY_ID,
     customer_type: 0,
     personnummer: "",
     company: "",
@@ -377,7 +378,7 @@ export default function LoginPage() {
                   value={form.country_id}
                   onChange={(event) => set("country_id", Number(event.target.value))}
                 >
-                  {COUNTRY_OPTIONS.map((option) => (
+                  {countryOptions.map((option) => (
                     <option key={option.id} value={option.id}>
                       {option.label}
                     </option>
