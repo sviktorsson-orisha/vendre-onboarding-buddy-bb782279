@@ -316,6 +316,9 @@ function ProfileView() {
     });
   }, [account, main]);
 
+  // Countries come from the store session; the fixed list is only a fallback.
+  const countryOptions = useCountryOptions();
+
   // The store decides which fields the account form shows and requires.
   const { data: constraints = DEFAULT_REGISTER_CONSTRAINTS } = useRegisterConstraints();
   const shown = (field: string) => constraints.visible.includes(field);
@@ -360,7 +363,6 @@ function ProfileView() {
     );
   };
 
-  const countryOptions = useCountryOptions();
   const countryValue = countryOptions.some((option) => String(option.id) === String(form.country))
     ? String(form.country)
     : "";
