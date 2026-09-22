@@ -363,9 +363,7 @@ function ProfileView() {
     );
   };
 
-  const countryValue = countryOptions.some((option) => String(option.id) === String(form.country))
-    ? String(form.country)
-    : "";
+  const countryValue = matchCountryOption(form.country, countryOptions, countryList);
 
   return (
     <Section title={t("account.profile")}>
