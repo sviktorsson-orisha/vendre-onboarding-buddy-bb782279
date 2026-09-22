@@ -445,6 +445,35 @@ export function useCountryOptions(): { id: number; label: string }[] {
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
+/**
+ * The store returns the account's country as an id, an ISO code or a plain
+ * name, so match on all three before the select can preselect it.
+ */
+export function matchCountryOption(
+  value: string | number | null | undefined,
+  options: { id: number; label: string }[],
+  countries?: { id: number; code: string; name: string }[],
+): string {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  const byId = options.find((option) => String(option.id) === raw);
+  if (byId) return String(byId.id);
+  const lower = raw.toLowerCase();
+  const byName = options.find((option) => option.label.toLowerCase() === lower);
+  if (byName) return String(byName.id);
+  const byCode = countries?.find((country) => country.code.toLowerCase() === lower);
+  if (byCode) return String(byCode.id);
+  const fallback = COUNTRY_IDS[raw.toUpperCase()];
+  return fallback && options.some((option) => option.id === fallback) ? String(fallback) : "";
+}
+
+/** The raw country list from the session, for code-based matching. */
+export function useCountryList(): { id: number; code: string; name: string }[] {
+  return useSessionContext().data?.countries ?? [];
+}
+
+
+
 
 function countryId(value: string | number | null | undefined): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
