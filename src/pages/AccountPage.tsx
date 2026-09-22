@@ -18,7 +18,7 @@ import {
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import {
-  COUNTRY_OPTIONS,
+  useCountryOptions,
   DEFAULT_REGISTER_CONSTRAINTS,
   isBusinessAccount,
   useAccount,
@@ -360,7 +360,8 @@ function ProfileView() {
     );
   };
 
-  const countryValue = COUNTRY_OPTIONS.some((option) => String(option.id) === String(form.country))
+  const countryOptions = useCountryOptions();
+  const countryValue = countryOptions.some((option) => String(option.id) === String(form.country))
     ? String(form.country)
     : "";
 
@@ -424,7 +425,7 @@ function ProfileView() {
               }}
             >
               <option value="" />
-              {COUNTRY_OPTIONS.map((option) => (
+              {countryOptions.map((option) => (
                 <option key={option.id} value={String(option.id)}>
                   {option.label}
                 </option>

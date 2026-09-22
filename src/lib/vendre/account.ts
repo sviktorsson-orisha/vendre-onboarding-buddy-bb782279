@@ -407,23 +407,44 @@ async function withLineImages(lines: OrderDetail["lines"]): Promise<OrderDetail[
 
 /* ------------------------------------------------------- register body --- */
 
-/** Numeric country ids used by the store (ISO 3166-1 numeric). */
+/**
+ * Fallback country ids (ISO 3166-1 numeric), used only when the store session
+ * does not carry a `countries` list. The live list comes from
+ * GET session/context and is read through useCountryOptions().
+ */
 export const COUNTRY_IDS: Record<string, number> = {
-  SE: 203,
-  NO: 161,
-  DK: 59,
-  FI: 73,
-  DE: 81,
+  SE: 752,
+  NO: 578,
+  DK: 208,
+  FI: 246,
+  DE: 276,
 };
 
-/** Country choices shared by the register and the edit-account forms. */
+/** Fallback country choices, replaced by the store's own list when present. */
 export const COUNTRY_OPTIONS: { id: number; label: string }[] = [
-  { id: 203, label: "Sverige" },
-  { id: 161, label: "Norge" },
-  { id: 59, label: "Danmark" },
-  { id: 73, label: "Finland" },
-  { id: 81, label: "Tyskland" },
+  { id: 752, label: "Sweden" },
+  { id: 578, label: "Norway" },
+  { id: 208, label: "Denmark" },
+  { id: 246, label: "Finland" },
+  { id: 276, label: "Germany" },
 ];
+
+/** Default country id used before the customer picks one. */
+export const DEFAULT_COUNTRY_ID = COUNTRY_IDS["SE"]!;
+
+/**
+ * Country options for the register and edit-account forms. The store ships the
+ * full list in session/context; the fixed list above is only a fallback.
+ */
+export function useCountryOptions(): { id: number; label: string }[] {
+  const session = useSessionContext();
+  const countries = session.data?.countries;
+  if (!countries || countries.length === 0) return COUNTRY_OPTIONS;
+  return countries
+    .map((country) => ({ id: country.id, label: country.name || country.code }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
 
 function countryId(value: string | number | null | undefined): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
