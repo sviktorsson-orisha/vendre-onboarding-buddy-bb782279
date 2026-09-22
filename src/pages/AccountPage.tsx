@@ -366,7 +366,9 @@ function ProfileView() {
     );
   };
 
-  const countryValue = matchCountryOption(form.country, countryOptions, countryList);
+  const countryValue =
+    matchCountryOption(form.country, countryOptions, countryList) ||
+    String(countryOptions[0]?.id ?? DEFAULT_COUNTRY_ID);
 
   return (
     <Section title={t("account.profile")}>
