@@ -104,6 +104,24 @@ function pick(bag: Bag, keys: string[]): string {
   return "";
 }
 
+/**
+ * The country can arrive as an id, an ISO code, a name, or an object
+ * ({ id, code, name }) depending on the endpoint.
+ */
+function pickCountry(bag: Bag): string {
+  const keys = ["country_id", "countries_id", "country", "country_code", "country_name"];
+  for (const key of keys) {
+    const value = bag[key];
+    if (typeof value === "string" && value.trim()) return value;
+    if (typeof value === "number") return String(value);
+    if (isBag(value)) {
+      const inner = pick(value as Bag, ["id", "code", "name"]);
+      if (inner) return inner;
+    }
+  }
+  return "";
+}
+
 export function normalizeAccount(payload: unknown): Account {
   const bag = flatten(payload);
   return {
@@ -117,7 +135,7 @@ export function normalizeAccount(payload: unknown): Account {
     street_address2: pick(bag, ["street_address2", "address_2", "street2"]),
     postcode: pick(bag, ["postcode", "zip", "postal_code", "zipcode"]),
     city: pick(bag, ["city", "town"]),
-    country: pick(bag, ["country", "country_code"]),
+    country: pickCountry(bag),
     personnummer: pick(bag, ["personnummer", "social_security_number"]),
     type: pick(bag, ["type", "customer_type"]) || "private",
     newsletter: Boolean(bag["newsletter"]),
