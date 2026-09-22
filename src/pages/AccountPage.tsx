@@ -360,7 +360,6 @@ function ProfileView() {
     );
   };
 
-  const countryOptions = useCountryOptions();
   const countryValue = countryOptions.some((option) => String(option.id) === String(form.country))
     ? String(form.country)
     : "";
