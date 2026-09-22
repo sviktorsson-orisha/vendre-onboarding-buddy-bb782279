@@ -427,7 +427,6 @@ function ProfileView() {
                 );
               }}
             >
-              <option value="" />
               {countryOptions.map((option) => (
                 <option key={option.id} value={String(option.id)}>
                   {option.label}
