@@ -30,6 +30,8 @@
   --radius-4xl: calc(var(--radius) + 16px);
   --color-background: var(--background);
   --color-brand-pink: var(--brand-pink);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-foreground: var(--brand-green-foreground);
   --color-brand-blue: var(--brand-blue);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -68,6 +70,8 @@
 :root {
   --radius: 0.75rem;
   --brand-pink: oklch(0.68 0.22 340);
+  --brand-green: oklch(0.58 0.15 152);
+  --brand-green-foreground: oklch(0.99 0.01 152);
   --brand-blue: oklch(0.66 0.16 250);
   --background: oklch(0.972 0.016 291);
   --foreground: oklch(0.17 0.03 285);
