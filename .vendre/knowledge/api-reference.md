@@ -1,6 +1,6 @@
 # Surface API Technical Reference
 
-Complete technical reference for all Surface API endpoints (`/surface/1/*` and `/surface/2/*`).
+Complete technical reference for the Surface v2 API endpoints (`/surface/2/*`) this template uses.
 
 _Source: the machine-generated OpenAPI 3.2 document (51 v2 paths), available live at `GET /surface/1/openapi` (use query `?v=1` or `?v=2` to filter by version), plus static code analysis of `cadre/application/Routes/Http/SurfaceApi/**` and `cadre/application/Http/Controllers/SurfaceApi/**` (branch `2026_project_phoenix`)._
 
@@ -21,8 +21,7 @@ _(Applies to all endpoints unless specified otherwise)_
 - **v2:** Base path `/surface/2/`
 
 Both versions exist in the platform. Storefronts built from this template call
-**v2 only** — every path below is `/surface/2/<endpoint>`. Logged prices, once
-a v1-only call, now live on v2 as well; see §1.10.
+**v2 only** — every path below is `/surface/2/<endpoint>`.
 
 **How this app reaches those paths:** the browser never calls the store. It
 calls the same-origin proxy `/api/vendre/surface/<endpoint>`, which maps 1:1 to
@@ -183,9 +182,8 @@ there is no helper or UI. The details below exist so it can be built on request.
   or recalculate it in the frontend.
 - **If implemented:** it goes through the existing v2 proxy
   `/api/vendre/surface/products/price-log-prices` like all other store traffic.
-- **Legacy:** `GET /surface/1/products/price_log_prices` returns the same body
-  and stays available for stores that have not yet received the v2 release
-  (they answer 404 on the v2 path). No other v1 endpoint may be used.
+- **Only on v2.** Logged prices exist solely on this v2 path; there is no
+  alternative version of the call to fall back to.
 
 Details live in `.vendre/skills/price-log.md`.
 
