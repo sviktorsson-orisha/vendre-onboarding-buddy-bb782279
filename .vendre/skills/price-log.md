@@ -9,11 +9,9 @@ description: Reference for logged prices (price history) via GET /surface/2/prod
 helper, no hook and no UI for logged prices. This file documents how to call the
 endpoint so it can be built when a customer asks for it.
 
-The call now lives on Surface v2 and is documented in the OpenAPI document.
-There is no longer any reason to touch Surface v1: the old
-`GET /surface/1/products/price_log_prices` is legacy and only relevant for
-stores that have not yet received the v2 release (they answer 404 on the v2
-path — verified on `sara-phoenix.testavendre.se`, 2026-09-22).
+The call lives on Surface v2 and is documented in the OpenAPI document.
+Verified live against the store on 2026-09-23: the v2 path answers 200.
+There is no older version of this call to fall back to.
 
 ## Endpoint
 
@@ -26,7 +24,7 @@ path — verified on `sara-phoenix.testavendre.se`, 2026-09-22).
 - **No mutation protection token** (it is a GET).
 - **Parameters:** repeated `id[]=<products_id>`, one per product, several per
   call. Other parameter names return an empty result instead of an error.
-- **Response:** an object keyed by product id, same format as the old v1 call:
+- **Response:** an object keyed by product id:
 
   ```json
   {
