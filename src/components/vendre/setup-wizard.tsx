@@ -554,6 +554,16 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           )}
         </GuideStep>
       </ol>
+
+      <div className="mt-6 space-y-3 rounded-lg border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+        <p className="font-medium text-foreground">{t("remove.title")}</p>
+        <p>{t("remove.body")}</p>
+        <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3">
+          <code className="break-all font-mono text-xs text-foreground">{t("remove.prompt")}</code>
+          <CopyButton value={t("remove.prompt")} />
+        </div>
+        <p className="text-xs">{t("remove.hint")}</p>
+      </div>
     </div>
   );
 }

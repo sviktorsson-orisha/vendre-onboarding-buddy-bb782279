@@ -93,6 +93,11 @@ const dictionary = {
     "step6.verdict": "Låst tills anslutningen är grön",
     "step6.done": "Setupen är klar. Projektet är redo för storefront-arbete.",
     "step6.pending": "Slutför föregående steg och kör anslutningstestet.",
+    "remove.title": "Klar med butiken?",
+    "remove.body":
+      "När butiken känns helt färdig kan hela uppstartsguiden och den översta informationsraden tas bort. Formuläret för butiks-URL, client id och client secret finns kvar och går fortfarande att öppna.",
+    "remove.prompt": "Ta bort setup-guiden enligt .vendre/skills/remove-setup-guide.md",
+    "remove.hint": "Kopiera texten och skicka den i chatten. Ändringen går att ångra via projektets historik.",
 
     "complete.title": "Allt är klart!",
     "complete.body":
@@ -319,6 +324,11 @@ const dictionary = {
     "step6.verdict": "Locked until the connection is green",
     "step6.done": "Setup is complete. The project is ready for storefront work.",
     "step6.pending": "Complete the previous steps and run the connection test.",
+    "remove.title": "Finished with the store?",
+    "remove.body":
+      "Once the store feels complete, the whole setup guide and the top notice bar can be removed. The form for store URL, client id and client secret stays and can still be opened.",
+    "remove.prompt": "Remove the setup guide following .vendre/skills/remove-setup-guide.md",
+    "remove.hint": "Copy the text and send it in the chat. The change can be undone from the project history.",
 
     "complete.title": "Everything is ready!",
     "complete.body":

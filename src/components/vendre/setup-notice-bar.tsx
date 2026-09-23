@@ -11,17 +11,11 @@ export function SetupNoticeBar() {
   const { verified, guideDismissed } = useOnboarding();
   const [open, setOpen] = useState(false);
 
-  // The guide is the first thing to do in a fresh project: keep it open while
-  // the setup is unfinished, unless the developer closed it themselves.
+  // The guide is the first thing to do in a fresh project: open it automatically
+  // while the setup is unfinished, unless the developer dismissed it themselves.
   useEffect(() => {
-    if (verified) return;
-    setOpen(true);
-  }, [verified]);
-
-  // "Start building the store" only removes the banner once every step of the
-  // guide is green. If the setup breaks (or was never finished on this domain)
-  // the banner and guide come back.
-  if (verified && guideDismissed) return null;
+    if (!verified && !guideDismissed) setOpen(true);
+  }, [verified, guideDismissed]);
 
   return (
 
