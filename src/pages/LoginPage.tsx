@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import {
-  COUNTRY_OPTIONS,
+  DEFAULT_COUNTRY_ID,
+  useCountryOptions,
   DEFAULT_REGISTER_CONSTRAINTS,
   useAccountMutations,
   useAuth,
@@ -51,7 +52,7 @@ export default function LoginPage() {
     street_address2: "",
     postcode: "",
     city: "",
-    country_id: 203,
+    country_id: DEFAULT_COUNTRY_ID,
     customer_type: 0,
     personnummer: "",
     company: "",
@@ -63,6 +64,9 @@ export default function LoginPage() {
   const [registerError, setRegisterError] = useState("");
   const [registerFields, setRegisterFields] = useState<FieldErrors>({});
   const [pending, setPending] = useState(false);
+
+  // Countries come from the store session; the fixed list is only a fallback.
+  const countryOptions = useCountryOptions();
 
   // The store decides which fields the create-account form shows and requires.
   const { data: constraints = DEFAULT_REGISTER_CONSTRAINTS } = useRegisterConstraints();
@@ -169,7 +173,7 @@ export default function LoginPage() {
           <TabsContent value="login">
             <form
               onSubmit={handleLogin}
-              className="space-y-4 rounded-xl border border-border bg-card p-6"
+              className="space-y-2.5 rounded-xl border border-border bg-card p-6"
             >
               <p className="text-sm text-muted-foreground">{t("account.loginIntro")}</p>
               <div className="space-y-1.5">
@@ -225,7 +229,7 @@ export default function LoginPage() {
             ) : (
             <form
               onSubmit={handleRegister}
-              className="space-y-4 rounded-xl border border-border bg-card p-6"
+              className="space-y-2.5 rounded-xl border border-border bg-card p-6"
             >
               <p className="text-sm text-muted-foreground">{t("account.registerIntro")}</p>
 
@@ -247,7 +251,7 @@ export default function LoginPage() {
 
 
               {(shown("firstname") || shown("lastname")) && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="firstname">{t("account.firstname")}</Label>
                   <Input
@@ -284,7 +288,7 @@ export default function LoginPage() {
               </div>
 
               {shown("password") && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="register-password">{t("account.password")}</Label>
                   <Input
@@ -319,7 +323,7 @@ export default function LoginPage() {
               {optionalField("company", "account.company", { hide: !isBusiness })}
 
               {(shown("telephone") || shown("mobile")) && (
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {optionalField("telephone", "account.phone")}
                   {optionalField("mobile", "account.mobile")}
                 </div>
@@ -343,7 +347,7 @@ export default function LoginPage() {
 
 
               {(shown("postcode") || shown("city")) && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="postcode">{t("account.postcode")}</Label>
                   <Input
@@ -377,7 +381,7 @@ export default function LoginPage() {
                   value={form.country_id}
                   onChange={(event) => set("country_id", Number(event.target.value))}
                 >
-                  {COUNTRY_OPTIONS.map((option) => (
+                  {countryOptions.map((option) => (
                     <option key={option.id} value={option.id}>
                       {option.label}
                     </option>

@@ -258,6 +258,8 @@ export type SessionContext = {
   SHOP_LOGO?: string;
   /** Store settings live here in Surface v2: { SHOP_LOGO, STORE_NAME }. */
   configuration?: { SHOP_LOGO?: string | null; STORE_NAME?: string | null } | null;
+  /** Countries the store accepts, used for the country_id field in account forms. */
+  countries?: { id: number; code: string; name: string }[];
 };
 
 export type CategoryQuery = {

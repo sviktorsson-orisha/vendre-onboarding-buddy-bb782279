@@ -334,10 +334,12 @@ name is also written onto the new main address with
 `consent_personal_data_policy`. `POST customers` additionally accepts
 `email_addresses`.
 
-`country_id` is the numeric country id (e.g. Sweden = `203`); sending `country`
-instead fails with `missing required property "country_id"`. `country_id` is the
-only country key used anywhere in the frontend; the store has no endpoint yet
-that lists available countries, so the form uses a fixed list until one exists. Omit optional keys
+`country_id` is the numeric country id (ISO 3166-1 numeric, Sweden = `752`);
+sending `country` instead fails with `missing required property "country_id"`.
+`country_id` is the only country key used anywhere in the frontend. The list of
+selectable countries comes from `GET session/context` → `countries`
+(`[{ id, code, name }]`, verified live: 247 entries); a small fixed list is kept
+only as a fallback when the session carries none. Omit optional keys
 that are empty — blank strings are rejected. A partial field set returns
 `SURFACE_ACCOUNT_MALFORMED_BODY` (400/422).
 

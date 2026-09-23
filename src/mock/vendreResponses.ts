@@ -30,6 +30,13 @@ export const mockSessionContext: SessionContext = {
   market: { id: 0 },
   prices_include_vat: true,
   STORE_NAME: "Demo Store",
+  countries: [
+    { id: 208, code: "DK", name: "Denmark" },
+    { id: 246, code: "FI", name: "Finland" },
+    { id: 276, code: "DE", name: "Germany" },
+    { id: 578, code: "NO", name: "Norway" },
+    { id: 752, code: "SE", name: "Sweden" },
+  ],
 };
 
 export const mockMenus: MenuItem[] = [
