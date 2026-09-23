@@ -11,14 +11,11 @@ export function SetupNoticeBar() {
   const { verified, guideDismissed } = useOnboarding();
   const [open, setOpen] = useState(false);
 
-  // The guide is the first thing to do in a fresh project: keep it open while
-  // the setup is unfinished, unless the developer closed it themselves.
+  // The guide is the first thing to do in a fresh project: open it automatically
+  // while the setup is unfinished, unless the developer dismissed it themselves.
   useEffect(() => {
-    setOpen(true);
-  }, [verified]);
-
-  // The banner stays available so the guide can always be reopened.
-  void guideDismissed;
+    if (!verified && !guideDismissed) setOpen(true);
+  }, [verified, guideDismissed]);
 
   return (
 
