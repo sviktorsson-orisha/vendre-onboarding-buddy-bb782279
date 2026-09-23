@@ -173,7 +173,7 @@ export default function LoginPage() {
           <TabsContent value="login">
             <form
               onSubmit={handleLogin}
-              className="space-y-4 rounded-xl border border-border bg-card p-6"
+              className="space-y-2.5 rounded-xl border border-border bg-card p-6"
             >
               <p className="text-sm text-muted-foreground">{t("account.loginIntro")}</p>
               <div className="space-y-1.5">
@@ -229,7 +229,7 @@ export default function LoginPage() {
             ) : (
             <form
               onSubmit={handleRegister}
-              className="space-y-4 rounded-xl border border-border bg-card p-6"
+              className="space-y-2.5 rounded-xl border border-border bg-card p-6"
             >
               <p className="text-sm text-muted-foreground">{t("account.registerIntro")}</p>
 
@@ -251,7 +251,7 @@ export default function LoginPage() {
 
 
               {(shown("firstname") || shown("lastname")) && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="firstname">{t("account.firstname")}</Label>
                   <Input
@@ -288,7 +288,7 @@ export default function LoginPage() {
               </div>
 
               {shown("password") && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="register-password">{t("account.password")}</Label>
                   <Input
@@ -323,7 +323,7 @@ export default function LoginPage() {
               {optionalField("company", "account.company", { hide: !isBusiness })}
 
               {(shown("telephone") || shown("mobile")) && (
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {optionalField("telephone", "account.phone")}
                   {optionalField("mobile", "account.mobile")}
                 </div>
@@ -347,7 +347,7 @@ export default function LoginPage() {
 
 
               {(shown("postcode") || shown("city")) && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="postcode">{t("account.postcode")}</Label>
                   <Input
