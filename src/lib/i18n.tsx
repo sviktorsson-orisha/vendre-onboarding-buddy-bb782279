@@ -324,6 +324,11 @@ const dictionary = {
     "step6.verdict": "Locked until the connection is green",
     "step6.done": "Setup is complete. The project is ready for storefront work.",
     "step6.pending": "Complete the previous steps and run the connection test.",
+    "remove.title": "Finished with the store?",
+    "remove.body":
+      "Once the store feels complete, the whole setup guide and the top notice bar can be removed. The form for store URL, client id and client secret stays and can still be opened.",
+    "remove.prompt": "Remove the setup guide following .vendre/skills/remove-setup-guide.md",
+    "remove.hint": "Copy the text and send it in the chat. The change can be undone from the project history.",
 
     "complete.title": "Everything is ready!",
     "complete.body":
