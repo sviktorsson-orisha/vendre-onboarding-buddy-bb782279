@@ -93,6 +93,11 @@ const dictionary = {
     "step6.verdict": "Låst tills anslutningen är grön",
     "step6.done": "Setupen är klar. Projektet är redo för storefront-arbete.",
     "step6.pending": "Slutför föregående steg och kör anslutningstestet.",
+    "remove.title": "Klar med butiken?",
+    "remove.body":
+      "När butiken känns helt färdig kan hela uppstartsguiden och den översta informationsraden tas bort. Formuläret för butiks-URL, client id och client secret finns kvar och går fortfarande att öppna.",
+    "remove.prompt": "Ta bort setup-guiden enligt .vendre/skills/remove-setup-guide.md",
+    "remove.hint": "Kopiera texten och skicka den i chatten. Ändringen går att ångra via projektets historik.",
 
     "complete.title": "Allt är klart!",
     "complete.body":
