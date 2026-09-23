@@ -18,7 +18,10 @@ import {
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import {
-  COUNTRY_OPTIONS,
+  useCountryOptions,
+  useCountryList,
+  matchCountryOption,
+  DEFAULT_COUNTRY_ID,
   DEFAULT_REGISTER_CONSTRAINTS,
   isBusinessAccount,
   useAccount,
@@ -316,6 +319,10 @@ function ProfileView() {
     });
   }, [account, main]);
 
+  // Countries come from the store session; the fixed list is only a fallback.
+  const countryOptions = useCountryOptions();
+  const countryList = useCountryList();
+
   // The store decides which fields the account form shows and requires.
   const { data: constraints = DEFAULT_REGISTER_CONSTRAINTS } = useRegisterConstraints();
   const shown = (field: string) => constraints.visible.includes(field);
@@ -360,9 +367,9 @@ function ProfileView() {
     );
   };
 
-  const countryValue = COUNTRY_OPTIONS.some((option) => String(option.id) === String(form.country))
-    ? String(form.country)
-    : "";
+  const countryValue =
+    matchCountryOption(form.country, countryOptions, countryList) ||
+    String(countryOptions[0]?.id ?? DEFAULT_COUNTRY_ID);
 
   return (
     <Section title={t("account.profile")}>
@@ -423,8 +430,7 @@ function ProfileView() {
                 );
               }}
             >
-              <option value="" />
-              {COUNTRY_OPTIONS.map((option) => (
+              {countryOptions.map((option) => (
                 <option key={option.id} value={String(option.id)}>
                   {option.label}
                 </option>

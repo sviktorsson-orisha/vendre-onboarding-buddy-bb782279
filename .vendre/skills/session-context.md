@@ -61,6 +61,10 @@ Bootstrap response (200):
 - `currency.code`, `language.code`, `market.id` → formatting and switchers
 - `prices_include_vat` → whether displayed prices include VAT
 - `customer` (`first_name`, `last_name`, …) when authenticated
+- `countries` (`[{ id, code, name }]`) → the `country_id` select in the
+  register and edit-account forms. Never hardcode country ids; Sweden is `752`
+  (ISO 3166-1 numeric) in this store.
+
 
 Never hardcode a brand name, logo asset, currency or VAT assumption. If the
 storefront shows it, it should come from session context.

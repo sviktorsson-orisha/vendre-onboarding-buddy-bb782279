@@ -104,6 +104,24 @@ function pick(bag: Bag, keys: string[]): string {
   return "";
 }
 
+/**
+ * The country can arrive as an id, an ISO code, a name, or an object
+ * ({ id, code, name }) depending on the endpoint.
+ */
+function pickCountry(bag: Bag): string {
+  const keys = ["country_id", "countries_id", "country", "country_code", "country_name"];
+  for (const key of keys) {
+    const value = bag[key];
+    if (typeof value === "string" && value.trim()) return value;
+    if (typeof value === "number") return String(value);
+    if (isBag(value)) {
+      const inner = pick(value as Bag, ["id", "code", "name"]);
+      if (inner) return inner;
+    }
+  }
+  return "";
+}
+
 export function normalizeAccount(payload: unknown): Account {
   const bag = flatten(payload);
   return {
@@ -117,7 +135,7 @@ export function normalizeAccount(payload: unknown): Account {
     street_address2: pick(bag, ["street_address2", "address_2", "street2"]),
     postcode: pick(bag, ["postcode", "zip", "postal_code", "zipcode"]),
     city: pick(bag, ["city", "town"]),
-    country: pick(bag, ["country", "country_code"]),
+    country: pickCountry(bag),
     personnummer: pick(bag, ["personnummer", "social_security_number"]),
     type: pick(bag, ["type", "customer_type"]) || "private",
     newsletter: Boolean(bag["newsletter"]),
@@ -407,23 +425,73 @@ async function withLineImages(lines: OrderDetail["lines"]): Promise<OrderDetail[
 
 /* ------------------------------------------------------- register body --- */
 
-/** Numeric country ids used by the store (ISO 3166-1 numeric). */
+/**
+ * Fallback country ids (ISO 3166-1 numeric), used only when the store session
+ * does not carry a `countries` list. The live list comes from
+ * GET session/context and is read through useCountryOptions().
+ */
 export const COUNTRY_IDS: Record<string, number> = {
-  SE: 203,
-  NO: 161,
-  DK: 59,
-  FI: 73,
-  DE: 81,
+  SE: 752,
+  NO: 578,
+  DK: 208,
+  FI: 246,
+  DE: 276,
 };
 
-/** Country choices shared by the register and the edit-account forms. */
+/** Fallback country choices, replaced by the store's own list when present. */
 export const COUNTRY_OPTIONS: { id: number; label: string }[] = [
-  { id: 203, label: "Sverige" },
-  { id: 161, label: "Norge" },
-  { id: 59, label: "Danmark" },
-  { id: 73, label: "Finland" },
-  { id: 81, label: "Tyskland" },
+  { id: 752, label: "Sweden" },
+  { id: 578, label: "Norway" },
+  { id: 208, label: "Denmark" },
+  { id: 246, label: "Finland" },
+  { id: 276, label: "Germany" },
 ];
+
+/** Default country id used before the customer picks one. */
+export const DEFAULT_COUNTRY_ID = COUNTRY_IDS["SE"]!;
+
+/**
+ * Country options for the register and edit-account forms. The store ships the
+ * full list in session/context; the fixed list above is only a fallback.
+ */
+export function useCountryOptions(): { id: number; label: string }[] {
+  const session = useSessionContext();
+  const countries = session.data?.countries;
+  if (!countries || countries.length === 0) return COUNTRY_OPTIONS;
+  return countries
+    .map((country) => ({ id: country.id, label: country.name || country.code }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+/**
+ * The store returns the account's country as an id, an ISO code or a plain
+ * name, so match on all three before the select can preselect it.
+ */
+export function matchCountryOption(
+  value: string | number | null | undefined,
+  options: { id: number; label: string }[],
+  countries?: { id: number; code: string; name: string }[],
+): string {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  const byId = options.find((option) => String(option.id) === raw);
+  if (byId) return String(byId.id);
+  const lower = raw.toLowerCase();
+  const byName = options.find((option) => option.label.toLowerCase() === lower);
+  if (byName) return String(byName.id);
+  const byCode = countries?.find((country) => country.code.toLowerCase() === lower);
+  if (byCode) return String(byCode.id);
+  const fallback = COUNTRY_IDS[raw.toUpperCase()];
+  return fallback && options.some((option) => option.id === fallback) ? String(fallback) : "";
+}
+
+/** The raw country list from the session, for code-based matching. */
+export function useCountryList(): { id: number; code: string; name: string }[] {
+  return useSessionContext().data?.countries ?? [];
+}
+
+
+
 
 function countryId(value: string | number | null | undefined): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
