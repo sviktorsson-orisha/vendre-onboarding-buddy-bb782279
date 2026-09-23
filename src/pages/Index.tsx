@@ -20,7 +20,7 @@ export default function Index() {
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">{t("store.heroBody")}</p>
         {tree[0] && (
-          <Link to="/kategori/$id" params={{ id: String(tree[0].id) }} className="brand-button mt-6">
+          <Link to="/kategori/$id" params={{ id: String(tree[0].id) }} className="brand-button brand-button-red mt-6">
             {t("store.heroCta")}
           </Link>
         )}
