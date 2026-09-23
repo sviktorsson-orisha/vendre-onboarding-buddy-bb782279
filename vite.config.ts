@@ -18,6 +18,12 @@ export default defineConfig({
     // leaves a tab blank when the reload lands during hydration.
     optimizeDeps: {
       include: [
+        "react",
+        "react/jsx-runtime",
+        "react-dom",
+        "react-dom/client",
+        "@tanstack/react-router",
+        "@tanstack/react-query",
         "@tanstack/router-core",
         "@tanstack/router-core/isServer",
         "@tanstack/router-core/ssr/client",
