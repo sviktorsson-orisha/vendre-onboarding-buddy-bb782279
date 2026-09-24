@@ -40,7 +40,12 @@ const dictionary = {
 
     "step2.title": "Lägg in credentials",
     "step2.verdictDone": "Alla credentials är tillgängliga",
-    "step2.verdict": "Lägg in tre värden under Secrets",
+    "step2.verdict": "Lägg in tre värden i formuläret i chatten",
+    "step2.where": "Värdena fylls i formuläret som visas här i chatten – inte i koden och inte som ett vanligt chattmeddelande.",
+    "step2.reopen": "Syns inte formuläret? Skriv till exempel \"lägg in credentials\" i chatten så öppnas det igen.",
+    "step2.reopenPrompt": "lägg in credentials",
+    "step2.baseUrl": "Adressen till din Vendre-butik – samma som du använder för att logga in i Vendre Admin, men utan /Admin på slutet. Exempel: https://minbutik.vendre.io (börjar med https:// och utan snedstreck sist).",
+    "step2.clientKeys": "Nyckeln från OAuth-klienten du skapade i steg 1.",
     "step2.body":
       "Credentials används endast på serversidan och ska aldrig skrivas i kod eller chatten.",
     "step2.check": "Kontrollera credentials",
@@ -273,7 +278,12 @@ const dictionary = {
 
     "step2.title": "Add credentials",
     "step2.verdictDone": "All credentials are available",
-    "step2.verdict": "Add three values under Secrets",
+    "step2.verdict": "Add three values in the form in the chat",
+    "step2.where": "Enter the values in the form shown here in the chat – not in the code and not as a regular chat message.",
+    "step2.reopen": "Don't see the form? Type something like \"add credentials\" in the chat and it opens again.",
+    "step2.reopenPrompt": "add credentials",
+    "step2.baseUrl": "The address of your Vendre store – the one you use to log in to Vendre Admin, without /Admin at the end. Example: https://mystore.vendre.io (starts with https:// and no trailing slash).",
+    "step2.clientKeys": "The key from the OAuth client you created in step 1.",
     "step2.body": "Credentials are used server-side only and must never appear in code or chat.",
     "step2.check": "Check credentials",
     "step2.checking": "Checking",
