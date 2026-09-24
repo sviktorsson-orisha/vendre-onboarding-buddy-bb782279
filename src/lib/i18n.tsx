@@ -112,8 +112,10 @@ const dictionary = {
     "complete.cta": "Börja bygga butiken",
 
     "notice.title": "Demoläge",
-    "notice.body": "Butiken visar dummy-data tills Vendre-kontot är kopplat.",
+    "notice.body": "Butiken visar just nu exempeldata. Gör klart uppstartsguiden för att koppla din Vendre-butik och visa riktiga produkter.",
+    "notice.headline": "Steg kvar: koppla din butik",
     "notice.cta": "Öppna uppstartsguiden",
+    "notice.ctaPending": "Gör klart guiden",
 
     "store.search": "Sök produkter",
     "store.cart": "Kundvagn",
@@ -350,8 +352,10 @@ const dictionary = {
     "complete.cta": "Start building the store",
 
     "notice.title": "Demo mode",
-    "notice.body": "The storefront shows dummy data until the Vendre account is connected.",
+    "notice.body": "The storefront is showing sample data. Finish the setup guide to connect your Vendre store and show real products.",
+    "notice.headline": "Action needed: connect your store",
     "notice.cta": "Open the setup guide",
+    "notice.ctaPending": "Finish the guide",
 
     "store.search": "Search products",
     "store.cart": "Cart",
