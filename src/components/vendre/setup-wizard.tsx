@@ -12,6 +12,12 @@ import { cn } from "@/lib/utils";
 
 const PROJECT_ID = "b680686f-4945-4ee5-a18e-4b6fffe4e625";
 const SECRET_NAMES = ["VENDRE_BASE_URL", "VENDRE_CLIENT_ID", "VENDRE_CLIENT_SECRET"];
+/** Labels shown in the guide; the real secret names stay unchanged. */
+const SECRET_LABELS: Record<string, string> = {
+  VENDRE_CLIENT_ID: "CLIENT_ID",
+  VENDRE_CLIENT_SECRET: "CLIENT_SECRET",
+};
+const secretLabel = (name: string) => SECRET_LABELS[name] ?? name;
 const POLICIES = [
   "oauth",
   "bootstrap",
@@ -413,7 +419,7 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
                       !secretStatus ? "bg-muted-foreground/40" : missing ? "bg-destructive" : "bg-emerald-500",
                     )}
                   />
-                  <code className="font-mono text-xs text-foreground">{name}</code>
+                  <code className="font-mono text-xs text-foreground">{secretLabel(name)}</code>
                 </li>
               );
             })}
@@ -424,7 +430,7 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           </button>
           {secretStatus && !secretStatus.ok && (
             <p className="rounded-md bg-destructive/10 p-3 text-destructive">
-              {t("step2.missing")} {secretStatus.missing.join(", ")}
+              {t("step2.missing")} {secretStatus.missing.map(secretLabel).join(", ")}
             </p>
           )}
         </GuideStep>
