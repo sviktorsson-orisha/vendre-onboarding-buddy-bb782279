@@ -241,7 +241,7 @@ export function StoreHeader() {
                   {hasChildren && (
                     <ChevronDown
                       className={cn(
-                        "size-3.5 text-muted-foreground transition-transform",
+                        "size-3.5 shrink-0 text-muted-foreground transition-transform",
                         isOpen && "rotate-180",
                       )}
                       aria-hidden
