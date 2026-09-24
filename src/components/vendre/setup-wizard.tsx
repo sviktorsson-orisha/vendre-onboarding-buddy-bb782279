@@ -12,6 +12,12 @@ import { cn } from "@/lib/utils";
 
 const PROJECT_ID = "b680686f-4945-4ee5-a18e-4b6fffe4e625";
 const SECRET_NAMES = ["VENDRE_BASE_URL", "VENDRE_CLIENT_ID", "VENDRE_CLIENT_SECRET"];
+/** Labels shown in the guide; the real secret names stay unchanged. */
+const SECRET_LABELS: Record<string, string> = {
+  VENDRE_CLIENT_ID: "CLIENT_ID",
+  VENDRE_CLIENT_SECRET: "CLIENT_SECRET",
+};
+const secretLabel = (name: string) => SECRET_LABELS[name] ?? name;
 const POLICIES = [
   "oauth",
   "bootstrap",
@@ -401,19 +407,30 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           onToggle={() => setOpen(open === 1 ? -1 : 1)}
           verdict={secretStatus?.ok ? t("step2.verdictDone") : t("step2.verdict")}
         >
+          <p className="font-medium text-foreground">{t("step2.where")}</p>
+          <p>{t("step2.reopen")}</p>
+          <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3">
+            <code className="break-all font-mono text-xs text-foreground">{t("step2.reopenPrompt")}</code>
+            <CopyButton value={t("step2.reopenPrompt")} />
+          </div>
           <p>{t("step2.body")}</p>
-          <ul className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
+          <ul className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
             {SECRET_NAMES.map((name) => {
               const missing = secretStatus?.missing.includes(name);
               return (
-                <li key={name} className="flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "size-2 rounded-full",
-                      !secretStatus ? "bg-muted-foreground/40" : missing ? "bg-destructive" : "bg-emerald-500",
-                    )}
-                  />
-                  <code className="font-mono text-xs text-foreground">{name}</code>
+                <li key={name}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "size-2 rounded-full",
+                        !secretStatus ? "bg-muted-foreground/40" : missing ? "bg-destructive" : "bg-emerald-500",
+                      )}
+                    />
+                    <code className="font-mono text-xs text-foreground">{secretLabel(name)}</code>
+                  </div>
+                  <p className="mt-1 pl-4 text-xs">
+                    {t(name === "VENDRE_BASE_URL" ? "step2.baseUrl" : "step2.clientKeys")}
+                  </p>
                 </li>
               );
             })}
@@ -424,7 +441,7 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           </button>
           {secretStatus && !secretStatus.ok && (
             <p className="rounded-md bg-destructive/10 p-3 text-destructive">
-              {t("step2.missing")} {secretStatus.missing.join(", ")}
+              {t("step2.missing")} {secretStatus.missing.map(secretLabel).join(", ")}
             </p>
           )}
         </GuideStep>
@@ -437,12 +454,13 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           onToggle={() => setOpen(open === 2 ? -1 : 2)}
           verdict={publishedOrigin ? t("step3.verdictDone", { origin: publishedOrigin }) : t("step3.verdict")}
         >
-          <p>
-            {t("step3.body1a")} <code className="font-mono text-xs text-foreground">spring-board.lovable.app</code>,{" "}
-            {t("step3.body1b")} <code className="font-mono text-xs">project--&lt;uuid&gt;</code>
-            {t("step3.body1c")}
-          </p>
-          <p>{t("step3.body2")}</p>
+          <ol className="list-decimal space-y-1 pl-5">
+            <li>{t("step3.how1")}</li>
+            <li>{t("step3.how2")}</li>
+            <li className="font-medium text-foreground">{t("step3.how3")}</li>
+            <li>{t("step3.how4")}</li>
+          </ol>
+          <p>{t("step3.note")}</p>
           <PublishOriginField
             origin={publishedOrigin}
             onSave={(value) => {
@@ -464,7 +482,23 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           <p>{t("step4.intro")}</p>
           <div className="rounded-lg border border-border bg-muted/40 p-4">
             <p className="font-medium text-foreground">{t("step4.settings")}</p>
-            <AdminLink path="/Admin/headless/cors" baseUrl={adminBaseUrl}>/Admin/headless/cors</AdminLink>
+            {adminBaseUrl ? (
+              <a
+                href={`${adminBaseUrl.replace(/\/+$/, "")}/Admin/headless/cors`}
+                target="_blank"
+                rel="noreferrer"
+                className="brand-button mt-3"
+              >
+                {t("step4.openCors")} <ExternalLink className="size-4" aria-hidden />
+              </a>
+            ) : (
+              <>
+                <button type="button" className="brand-button mt-3" disabled>
+                  {t("step4.openCors")} <ExternalLink className="size-4" aria-hidden />
+                </button>
+                <p className="mt-2 text-xs">{t("step4.openCorsDisabled")}</p>
+              </>
+            )}
           </div>
           <ol className="list-decimal space-y-1 pl-5">
             <li>{t("step4.how1")}</li>

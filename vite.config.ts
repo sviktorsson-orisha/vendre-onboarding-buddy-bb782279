@@ -12,4 +12,23 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    // Pre-bundle the deps Vite would otherwise discover mid-page-load. Without this the
+    // optimizer re-bundles a few seconds after startup and force-reloads open tabs, which
+    // leaves a tab blank when the reload lands during hydration.
+    optimizeDeps: {
+      include: [
+        "react",
+        "react/jsx-runtime",
+        "react-dom",
+        "react-dom/client",
+        "@tanstack/react-router",
+        "@tanstack/react-query",
+        "@tanstack/router-core",
+        "@tanstack/router-core/isServer",
+        "@tanstack/router-core/ssr/client",
+        "seroval",
+      ],
+    },
+  },
 });
