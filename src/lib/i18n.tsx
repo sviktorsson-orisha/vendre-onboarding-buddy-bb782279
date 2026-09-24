@@ -1,5 +1,5 @@
 /** Minimal language layer for the setup guide (Swedish default, English option). */
-import { useEffect, useMemo, useSyncExternalStore } from "react";
+import { createContext, createElement, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
 
 export type Language = "sv" | "en";
 
@@ -498,7 +498,9 @@ type I18nValue = {
   t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
 };
 
-let currentLanguage: Language = "sv";
+let storeLanguage: Language = "sv";
+let guideLanguage: Language = "sv";
+let guideHydrated = false;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -512,12 +514,25 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Guide language: chosen with the picker, remembered in localStorage. */
 export function setLanguage(next: Language) {
-  currentLanguage = next;
+  guideLanguage = next;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.lang = next;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* ignore */
+    }
   }
+  emit();
+}
+
+/** Store language: follows the store session's language code (sv/en, else sv). */
+export function setStoreLanguage(code: string | null | undefined) {
+  const next: Language = code === "en" ? "en" : "sv";
+  if (typeof document !== "undefined") document.documentElement.lang = next;
+  if (next === storeLanguage) return;
+  storeLanguage = next;
   emit();
 }
 
@@ -534,20 +549,31 @@ function translate(
   );
 }
 
-/** Reads the current language without React context (SSR-safe, always "sv" on the server). */
+const GuideScope = createContext(false);
+
+/** Everything inside uses the guide language instead of the store language. */
+export function GuideLanguageScope({ children }: { children: ReactNode }) {
+  return createElement(GuideScope.Provider, { value: true }, children);
+}
+
 export function useI18n(): I18nValue {
+  const inGuide = useContext(GuideScope);
   const language = useSyncExternalStore(
     subscribe,
-    () => currentLanguage,
+    () => (inGuide ? guideLanguage : storeLanguage),
     () => "sv" as Language,
   );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if ((stored === "sv" || stored === "en") && stored !== currentLanguage) {
-      setLanguage(stored);
+    if (!inGuide || guideHydrated) return;
+    guideHydrated = true;
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if ((stored === "sv" || stored === "en") && stored !== guideLanguage) setLanguage(stored);
+    } catch {
+      /* ignore */
     }
-  }, []);
+  }, [inGuide]);
 
   return useMemo(
     () => ({
