@@ -79,7 +79,7 @@ load and fall back to the documented required set if the call fails.
 ## Orders and password reset
 
 - `GET /surface/2/accounts/me/order-history` and `/order-history/{id}`.
-- `GET /surface/2/accounts/me/forgot-password` — requires the mutation token
+- `GET /surface/2/accounts/me/forgot-password` — requires the mutation token. Currently returns 401 `SURFACE_SESSION_UNAUTHORIZED` for guests; show an error, never re-bootstrap on it.
   even though it is a GET.
 - `GET /surface/2/accounts/me` is the logged-in check (`customers/current` was removed).
 

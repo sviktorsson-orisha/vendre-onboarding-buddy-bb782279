@@ -40,7 +40,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [resetSent, setResetSent] = useState(false);
+  const [resetState, setResetState] = useState<"idle" | "sending" | "sent" | "error" | "needEmail">("idle");
 
   const [form, setForm] = useState<RegisterInput>({
     email_address: "",
@@ -204,17 +204,30 @@ export default function LoginPage() {
               </Button>
               <button
                 type="button"
-                className="text-xs text-muted-foreground underline"
-                onClick={() => {
-                  setResetSent(true);
-                  void forgotPassword.mutateAsync(email).catch(() => undefined);
+                className="text-xs text-muted-foreground underline disabled:opacity-50"
+                disabled={resetState === "sending"}
+                onClick={async () => {
+                  const value = email.trim();
+                  if (!value || !value.includes("@")) {
+                    setResetState("needEmail");
+                    return;
+                  }
+                  setResetState("sending");
+                  try {
+                    await forgotPassword.mutateAsync(value);
+                    setResetState("sent");
+                  } catch {
+                    setResetState("error");
+                  }
                 }}
               >
                 {t("account.forgot")}
               </button>
-              {resetSent && (
+              {resetState === "sent" && (
                 <p className="text-xs text-muted-foreground">{t("account.forgotSent")}</p>
               )}
+              {resetState === "needEmail" && <FieldError message={t("account.forgotNeedEmail")} />}
+              {resetState === "error" && <FieldError message={t("account.forgotFailed")} />}
             </form>
           </TabsContent>
 

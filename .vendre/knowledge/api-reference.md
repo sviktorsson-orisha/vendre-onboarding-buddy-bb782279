@@ -365,7 +365,7 @@ shows whole-unit line prices. Never recompute the totals themselves.
 
 | Method | Path | CORS policy | Token | Purpose |
 | --- | --- | --- | --- | --- |
-| GET | `accounts/me/forgot-password` | `default` | yes | password reset mail (token required despite being a GET) |
+| GET | `accounts/me/forgot-password` | `default` | yes | password reset mail (token required despite being a GET). **Currently answers 401 `SURFACE_SESSION_UNAUTHORIZED` for logged-out customers** (verified 2026-09-24), so it cannot be used from the login page until Vendre opens it to guests. Do not re-bootstrap on this 401; show an error instead. |
 | GET | `accounts/me/users` | `default` | – | sub-users (B2B) — _unverified_ |
 | POST | `login/email` | `login` | yes | login with `{ email, password }` |
 | GET | `login/google-sso` | `login` | – | Google SSO redirect — _unverified_ |
