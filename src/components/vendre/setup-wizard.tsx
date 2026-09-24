@@ -482,7 +482,23 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           <p>{t("step4.intro")}</p>
           <div className="rounded-lg border border-border bg-muted/40 p-4">
             <p className="font-medium text-foreground">{t("step4.settings")}</p>
-            <AdminLink path="/Admin/headless/cors" baseUrl={adminBaseUrl}>/Admin/headless/cors</AdminLink>
+            {adminBaseUrl ? (
+              <a
+                href={`${adminBaseUrl.replace(/\/+$/, "")}/Admin/headless/cors`}
+                target="_blank"
+                rel="noreferrer"
+                className="brand-button mt-3"
+              >
+                {t("step4.openCors")} <ExternalLink className="size-4" aria-hidden />
+              </a>
+            ) : (
+              <>
+                <button type="button" className="brand-button mt-3" disabled>
+                  {t("step4.openCors")} <ExternalLink className="size-4" aria-hidden />
+                </button>
+                <p className="mt-2 text-xs">{t("step4.openCorsDisabled")}</p>
+              </>
+            )}
           </div>
           <ol className="list-decimal space-y-1 pl-5">
             <li>{t("step4.how1")}</li>
