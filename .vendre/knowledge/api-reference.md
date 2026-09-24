@@ -259,6 +259,16 @@ sign in to. Read `status` from the response and tell the customer instead of
 redirecting to the account area. `password` may be optional; the store then
 sets it later.
 
+**reCAPTCHA on registration (verified 2026-09-24).** When reCAPTCHA is enabled
+for forms in admin, `accounts/form` returns
+`"g-recaptcha-response": { "display": false, "required": true }` and
+`POST accounts` answers a generic `422 SURFACE_ACCOUNT_MALFORMED_BODY` without
+a valid token. Surface v2 exposes **no reCAPTCHA site key** (neither in
+`session/context` nor `accounts/form`), so a headless storefront cannot produce
+a token. The storefront detects the flag and shows a clear message instead of
+submitting. Vendre needs to expose the site key before registration can work
+with reCAPTCHA on.
+
 **`GET accounts/form` (verified 2026-09-21).** Returns an object map of the
 fields the store's admin settings enable:
 

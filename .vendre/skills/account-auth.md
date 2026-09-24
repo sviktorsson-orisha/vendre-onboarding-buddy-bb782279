@@ -98,3 +98,5 @@ every variant — `type: 0`, `type: "private"`, `customer_type`,
 `customers_group_id`, or any combination — and keeps answering `200` with the
 original type (verified live). Show the customer type read-only in edit-account
 forms; only the store admin can change it.
+
+- reCAPTCHA: when `accounts/form` marks `g-recaptcha-response` required, Surface v2 gives no site key; show a clear message instead of submitting. See api-reference.md.
