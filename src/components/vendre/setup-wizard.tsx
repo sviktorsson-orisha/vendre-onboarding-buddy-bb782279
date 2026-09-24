@@ -443,12 +443,13 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           onToggle={() => setOpen(open === 2 ? -1 : 2)}
           verdict={publishedOrigin ? t("step3.verdictDone", { origin: publishedOrigin }) : t("step3.verdict")}
         >
-          <p>
-            {t("step3.body1a")} <code className="font-mono text-xs text-foreground">spring-board.lovable.app</code>,{" "}
-            {t("step3.body1b")} <code className="font-mono text-xs">project--&lt;uuid&gt;</code>
-            {t("step3.body1c")}
-          </p>
-          <p>{t("step3.body2")}</p>
+          <ol className="list-decimal space-y-1 pl-5">
+            <li>{t("step3.how1")}</li>
+            <li>{t("step3.how2")}</li>
+            <li className="font-medium text-foreground">{t("step3.how3")}</li>
+            <li>{t("step3.how4")}</li>
+          </ol>
+          <p>{t("step3.note")}</p>
           <PublishOriginField
             origin={publishedOrigin}
             onSave={(value) => {
