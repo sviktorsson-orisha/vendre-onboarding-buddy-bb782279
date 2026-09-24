@@ -145,7 +145,7 @@ async function bootstrapSession() {
 
 
 
-function ensureSession() {
+export function ensureSession() {
   sessionReady ??= bootstrapSession().catch((error) => {
     sessionReady = null;
     throw error;

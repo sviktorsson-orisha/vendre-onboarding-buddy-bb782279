@@ -35,7 +35,7 @@ import type {
 } from "@/types/vendre-account";
 import type { SessionContext } from "@/types/vendre";
 
-import { guarded, resetSessionGate, useSessionContext } from "./api";
+import { ensureSession, guarded, resetSessionGate, useSessionContext } from "./api";
 import { setMutationProtectionToken, surfaceFetch } from "./client";
 
 /* ------------------------------------------------------------- errors ---- */
@@ -883,9 +883,11 @@ const liveAccountApi: AccountApi = {
   },
 
   forgotPassword: async (email) => {
-    await guarded(() =>
-      call(`accounts/me/forgot-password?email=${encodeURIComponent(email)}`),
-    );
+    // Not wrapped in guarded(): Vendre currently answers 401
+    // SURFACE_SESSION_UNAUTHORIZED for guests, which must not trigger a
+    // session re-bootstrap. The error is surfaced to the UI instead.
+    await ensureSession();
+    await call(`accounts/me/forgot-password?email=${encodeURIComponent(email)}`);
   },
   getAccount: () => guarded(() => call<unknown>("accounts/me")).then(normalizeAccount),
   updateAccount: async (account) => {
