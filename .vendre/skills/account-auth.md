@@ -79,7 +79,7 @@ load and fall back to the documented required set if the call fails.
 ## Orders and password reset
 
 - `GET /surface/2/accounts/me/order-history` and `/order-history/{id}`.
-- `GET /surface/2/accounts/me/forgot-password` — requires the mutation token
+- `GET /surface/2/accounts/me/forgot-password` — requires the mutation token. Currently returns 401 `SURFACE_SESSION_UNAUTHORIZED` for guests; show an error, never re-bootstrap on it.
   even though it is a GET.
 - `GET /surface/2/accounts/me` is the logged-in check (`customers/current` was removed).
 
@@ -98,3 +98,5 @@ every variant — `type: 0`, `type: "private"`, `customer_type`,
 `customers_group_id`, or any combination — and keeps answering `200` with the
 original type (verified live). Show the customer type read-only in edit-account
 forms; only the store admin can change it.
+
+- reCAPTCHA: when `accounts/form` marks `g-recaptcha-response` required, Surface v2 gives no site key; show a clear message instead of submitting. See api-reference.md.

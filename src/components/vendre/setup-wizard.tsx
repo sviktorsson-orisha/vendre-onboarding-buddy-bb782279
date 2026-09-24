@@ -3,6 +3,7 @@ import { Check, ChevronDown, Copy, ExternalLink, Loader2, Lock, PartyPopper } fr
 import { useRouter } from "@tanstack/react-router";
 
 import { PublishOriginField } from "@/components/vendre/publish-origin-field";
+import { LanguagePicker } from "@/components/vendre/language-picker";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useOnboarding } from "@/context/onboarding-context";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
@@ -609,6 +610,9 @@ export function SetupWizardDialog({ open, onOpenChange }: { open: boolean; onOpe
         <DialogHeader className="sr-only">
           <DialogTitle>Vendre setup</DialogTitle>
         </DialogHeader>
+        <div className="-mb-2 flex justify-end pr-8">
+          <LanguagePicker />
+        </div>
         <SetupWizard onFinish={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>

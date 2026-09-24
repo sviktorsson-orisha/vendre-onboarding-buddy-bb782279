@@ -12,7 +12,6 @@ import { AccountMenu } from "@/components/store/account-menu";
 import { CartSheet } from "@/components/store/cart-sheet";
 import { SearchBox } from "@/components/store/search-box";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { LanguagePicker } from "@/components/vendre/language-picker";
 import { useI18n } from "@/lib/i18n";
 import { resolveImageUrl, useCart, useCategoryMenu, useSessionContext } from "@/lib/vendre/api";
 import { cn } from "@/lib/utils";
@@ -187,9 +186,6 @@ export function StoreHeader() {
           >
             <Search className="size-4" />
           </button>
-          <div className="hidden lg:block">
-            <LanguagePicker />
-          </div>
           <AccountMenu />
           <button
             type="button"
@@ -226,16 +222,16 @@ export function StoreHeader() {
         className="relative hidden border-t border-border lg:block"
         onMouseLeave={() => setOpenId(null)}
       >
-        <ul className="mx-auto flex w-full max-w-6xl items-center gap-1 px-2 sm:px-3">
+        <ul className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-1 px-2 sm:px-3">
           {tree.map((node) => {
             const hasChildren = node.children.length > 0;
             const isOpen = openId === node.id;
             return (
-              <li key={node.id} onMouseEnter={() => setOpenId(hasChildren ? node.id : null)}>
+              <li key={node.id} className="min-w-0 max-w-full" onMouseEnter={() => setOpenId(hasChildren ? node.id : null)}>
                 <Link
                   to="/kategori/$id"
                   params={{ id: String(node.id) }}
-                  className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                  className="flex min-w-0 items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors [overflow-wrap:anywhere] hover:text-primary"
                   aria-haspopup={hasChildren ? "true" : undefined}
                   aria-expanded={hasChildren ? isOpen : undefined}
                   onFocus={() => setOpenId(hasChildren ? node.id : null)}
@@ -245,7 +241,7 @@ export function StoreHeader() {
                   {hasChildren && (
                     <ChevronDown
                       className={cn(
-                        "size-3.5 text-muted-foreground transition-transform",
+                        "size-3.5 shrink-0 text-muted-foreground transition-transform",
                         isOpen && "rotate-180",
                       )}
                       aria-hidden
@@ -268,12 +264,6 @@ export function StoreHeader() {
           <nav className="mt-4 flex-1 overflow-y-auto pb-6">
             <MobileNavList nodes={tree} onNavigate={() => setMobileOpen(false)} />
           </nav>
-          <div className="mt-auto border-t border-border pt-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("lang.label")}
-            </p>
-            <LanguagePicker />
-          </div>
 
         </SheetContent>
       </Sheet>

@@ -1,5 +1,5 @@
 /** Minimal language layer for the setup guide (Swedish default, English option). */
-import { useEffect, useMemo, useSyncExternalStore } from "react";
+import { createContext, createElement, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
 
 export type Language = "sv" | "en";
 
@@ -112,8 +112,10 @@ const dictionary = {
     "complete.cta": "Börja bygga butiken",
 
     "notice.title": "Demoläge",
-    "notice.body": "Butiken visar dummy-data tills Vendre-kontot är kopplat.",
+    "notice.body": "Butiken visar just nu exempeldata. Gör klart uppstartsguiden för att koppla din Vendre-butik och visa riktiga produkter.",
+    "notice.headline": "Steg kvar: koppla din butik",
     "notice.cta": "Öppna uppstartsguiden",
+    "notice.ctaPending": "Gör klart guiden",
 
     "store.search": "Sök produkter",
     "store.cart": "Kundvagn",
@@ -180,7 +182,10 @@ const dictionary = {
     "account.confirm": "Bekräfta lösenord",
     "account.forgot": "Glömt lösenord?",
     "account.forgotSent": "Om e-postadressen finns har ett återställningsmail skickats.",
+    "account.forgotNeedEmail": "Fyll i din e-postadress ovan först.",
+    "account.forgotFailed": "Lösenordsåterställning är inte tillgänglig just nu. Kontakta butiken.",
     "account.loginIntro": "Logga in för att se dina ordrar, adresser och uppgifter.",
+    "account.captchaFailed": "Butiken kräver en säkerhetskontroll (reCAPTCHA) som inte kan genomföras här. Försök igen senare eller kontakta butiken.",
     "account.registerIntro": "Skapa ett konto för snabbare kassa och koll på dina ordrar.",
     "account.overview": "Översikt",
     "account.orders": "Ordrar",
@@ -350,8 +355,10 @@ const dictionary = {
     "complete.cta": "Start building the store",
 
     "notice.title": "Demo mode",
-    "notice.body": "The storefront shows dummy data until the Vendre account is connected.",
+    "notice.body": "The storefront is showing sample data. Finish the setup guide to connect your Vendre store and show real products.",
+    "notice.headline": "Action needed: connect your store",
     "notice.cta": "Open the setup guide",
+    "notice.ctaPending": "Finish the guide",
 
     "store.search": "Search products",
     "store.cart": "Cart",
@@ -418,7 +425,10 @@ const dictionary = {
     "account.confirm": "Confirm password",
     "account.forgot": "Forgot password?",
     "account.forgotSent": "If the email exists, a reset link has been sent.",
+    "account.forgotNeedEmail": "Enter your email address above first.",
+    "account.forgotFailed": "Password reset isn't available right now. Please contact the store.",
     "account.loginIntro": "Sign in to see your orders, addresses and details.",
+    "account.captchaFailed": "The store requires a security check (reCAPTCHA) that can't be completed here. Please try again later or contact the store.",
     "account.registerIntro": "Create an account to check out faster and follow your orders.",
     "account.overview": "Overview",
     "account.orders": "Orders",
@@ -494,7 +504,9 @@ type I18nValue = {
   t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
 };
 
-let currentLanguage: Language = "sv";
+let storeLanguage: Language = "sv";
+let guideLanguage: Language = "sv";
+let guideHydrated = false;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -508,12 +520,25 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Guide language: chosen with the picker, remembered in localStorage. */
 export function setLanguage(next: Language) {
-  currentLanguage = next;
+  guideLanguage = next;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.lang = next;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* ignore */
+    }
   }
+  emit();
+}
+
+/** Store language: follows the store session's language code (sv/en, else sv). */
+export function setStoreLanguage(code: string | null | undefined) {
+  const next: Language = code === "en" ? "en" : "sv";
+  if (typeof document !== "undefined") document.documentElement.lang = next;
+  if (next === storeLanguage) return;
+  storeLanguage = next;
   emit();
 }
 
@@ -530,20 +555,31 @@ function translate(
   );
 }
 
-/** Reads the current language without React context (SSR-safe, always "sv" on the server). */
+const GuideScope = createContext(false);
+
+/** Everything inside uses the guide language instead of the store language. */
+export function GuideLanguageScope({ children }: { children: ReactNode }) {
+  return createElement(GuideScope.Provider, { value: true }, children);
+}
+
 export function useI18n(): I18nValue {
+  const inGuide = useContext(GuideScope);
   const language = useSyncExternalStore(
     subscribe,
-    () => currentLanguage,
+    () => (inGuide ? guideLanguage : storeLanguage),
     () => "sv" as Language,
   );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if ((stored === "sv" || stored === "en") && stored !== currentLanguage) {
-      setLanguage(stored);
+    if (!inGuide || guideHydrated) return;
+    guideHydrated = true;
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if ((stored === "sv" || stored === "en") && stored !== guideLanguage) setLanguage(stored);
+    } catch {
+      /* ignore */
     }
-  }, []);
+  }, [inGuide]);
 
   return useMemo(
     () => ({

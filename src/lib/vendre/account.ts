@@ -35,7 +35,7 @@ import type {
 } from "@/types/vendre-account";
 import type { SessionContext } from "@/types/vendre";
 
-import { guarded, resetSessionGate, useSessionContext } from "./api";
+import { ensureSession, guarded, resetSessionGate, useSessionContext } from "./api";
 import { setMutationProtectionToken, surfaceFetch } from "./client";
 
 /* ------------------------------------------------------------- errors ---- */
@@ -511,6 +511,12 @@ export type RegisterConstraints = {
   visible: string[];
   required: string[];
   limits: Record<string, { min?: number; max?: number }>;
+  /**
+   * True when the store requires `g-recaptcha-response` (reCAPTCHA enabled for
+   * forms in admin). Surface v2 exposes no site key, so the storefront cannot
+   * produce a token and every sign-up is rejected with a generic 422.
+   */
+  captchaRequired?: boolean;
 };
 
 /** Fields the register form knows how to render, keyed by our own field name. */
@@ -589,6 +595,8 @@ export function normalizeRegisterConstraints(payload: unknown): RegisterConstrai
   const visible: string[] = [];
   const required: string[] = [];
   const limits: RegisterConstraints["limits"] = {};
+  const captchaRule = payload["g-recaptcha-response"];
+  const captchaRequired = isBag(captchaRule) && (captchaRule as FormFieldRule).required === true;
 
   for (const [rawKey, rawRule] of Object.entries(payload)) {
     const key = rawKey;
@@ -604,13 +612,13 @@ export function normalizeRegisterConstraints(payload: unknown): RegisterConstrai
     if (min !== undefined || max !== undefined) limits[key] = { ...(min !== undefined && { min }), ...(max !== undefined && { max }) };
   }
 
-  if (visible.length === 0) return DEFAULT_REGISTER_CONSTRAINTS;
+  if (visible.length === 0) return { ...DEFAULT_REGISTER_CONSTRAINTS, captchaRequired };
 
   // Not a store field: the policy consent is always shown and always required.
   visible.push("consent_personal_data_policy");
   required.push("consent_personal_data_policy");
 
-  return { visible, required, limits };
+  return { visible, required, limits, captchaRequired };
 }
 
 /**
@@ -883,9 +891,11 @@ const liveAccountApi: AccountApi = {
   },
 
   forgotPassword: async (email) => {
-    await guarded(() =>
-      call(`accounts/me/forgot-password?email=${encodeURIComponent(email)}`),
-    );
+    // Not wrapped in guarded(): Vendre currently answers 401
+    // SURFACE_SESSION_UNAUTHORIZED for guests, which must not trigger a
+    // session re-bootstrap. The error is surfaced to the UI instead.
+    await ensureSession();
+    await call(`accounts/me/forgot-password?email=${encodeURIComponent(email)}`);
   },
   getAccount: () => guarded(() => call<unknown>("accounts/me")).then(normalizeAccount),
   updateAccount: async (account) => {

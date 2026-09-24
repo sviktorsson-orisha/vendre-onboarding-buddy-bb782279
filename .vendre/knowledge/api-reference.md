@@ -259,6 +259,16 @@ sign in to. Read `status` from the response and tell the customer instead of
 redirecting to the account area. `password` may be optional; the store then
 sets it later.
 
+**reCAPTCHA on registration (verified 2026-09-24).** When reCAPTCHA is enabled
+for forms in admin, `accounts/form` returns
+`"g-recaptcha-response": { "display": false, "required": true }` and
+`POST accounts` answers a generic `422 SURFACE_ACCOUNT_MALFORMED_BODY` without
+a valid token. Surface v2 exposes **no reCAPTCHA site key** (neither in
+`session/context` nor `accounts/form`), so a headless storefront cannot produce
+a token. The storefront detects the flag and shows a clear message instead of
+submitting. Vendre needs to expose the site key before registration can work
+with reCAPTCHA on.
+
 **`GET accounts/form` (verified 2026-09-21).** Returns an object map of the
 fields the store's admin settings enable:
 
@@ -365,7 +375,7 @@ shows whole-unit line prices. Never recompute the totals themselves.
 
 | Method | Path | CORS policy | Token | Purpose |
 | --- | --- | --- | --- | --- |
-| GET | `accounts/me/forgot-password` | `default` | yes | password reset mail (token required despite being a GET) |
+| GET | `accounts/me/forgot-password` | `default` | yes | password reset mail (token required despite being a GET). **Currently answers 401 `SURFACE_SESSION_UNAUTHORIZED` for logged-out customers** (verified 2026-09-24), so it cannot be used from the login page until Vendre opens it to guests. Do not re-bootstrap on this 401; show an error instead. |
 | GET | `accounts/me/users` | `default` | – | sub-users (B2B) — _unverified_ |
 | POST | `login/email` | `login` | yes | login with `{ email, password }` |
 | GET | `login/google-sso` | `login` | – | Google SSO redirect — _unverified_ |
