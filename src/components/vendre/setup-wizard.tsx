@@ -407,19 +407,30 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
           onToggle={() => setOpen(open === 1 ? -1 : 1)}
           verdict={secretStatus?.ok ? t("step2.verdictDone") : t("step2.verdict")}
         >
+          <p className="font-medium text-foreground">{t("step2.where")}</p>
+          <p>{t("step2.reopen")}</p>
+          <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3">
+            <code className="break-all font-mono text-xs text-foreground">{t("step2.reopenPrompt")}</code>
+            <CopyButton value={t("step2.reopenPrompt")} />
+          </div>
           <p>{t("step2.body")}</p>
-          <ul className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
+          <ul className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
             {SECRET_NAMES.map((name) => {
               const missing = secretStatus?.missing.includes(name);
               return (
-                <li key={name} className="flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "size-2 rounded-full",
-                      !secretStatus ? "bg-muted-foreground/40" : missing ? "bg-destructive" : "bg-emerald-500",
-                    )}
-                  />
-                  <code className="font-mono text-xs text-foreground">{secretLabel(name)}</code>
+                <li key={name}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "size-2 rounded-full",
+                        !secretStatus ? "bg-muted-foreground/40" : missing ? "bg-destructive" : "bg-emerald-500",
+                      )}
+                    />
+                    <code className="font-mono text-xs text-foreground">{secretLabel(name)}</code>
+                  </div>
+                  <p className="mt-1 pl-4 text-xs">
+                    {t(name === "VENDRE_BASE_URL" ? "step2.baseUrl" : "step2.clientKeys")}
+                  </p>
                 </li>
               );
             })}
