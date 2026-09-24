@@ -12,7 +12,6 @@ import { AccountMenu } from "@/components/store/account-menu";
 import { CartSheet } from "@/components/store/cart-sheet";
 import { SearchBox } from "@/components/store/search-box";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { LanguagePicker } from "@/components/vendre/language-picker";
 import { useI18n } from "@/lib/i18n";
 import { resolveImageUrl, useCart, useCategoryMenu, useSessionContext } from "@/lib/vendre/api";
 import { cn } from "@/lib/utils";
@@ -187,9 +186,6 @@ export function StoreHeader() {
           >
             <Search className="size-4" />
           </button>
-          <div className="hidden lg:block">
-            <LanguagePicker />
-          </div>
           <AccountMenu />
           <button
             type="button"
@@ -268,12 +264,6 @@ export function StoreHeader() {
           <nav className="mt-4 flex-1 overflow-y-auto pb-6">
             <MobileNavList nodes={tree} onNavigate={() => setMobileOpen(false)} />
           </nav>
-          <div className="mt-auto border-t border-border pt-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("lang.label")}
-            </p>
-            <LanguagePicker />
-          </div>
 
         </SheetContent>
       </Sheet>
