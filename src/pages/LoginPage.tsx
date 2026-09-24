@@ -137,6 +137,11 @@ export default function LoginPage() {
       return;
     }
 
+    if (constraints.captchaRequired) {
+      setRegisterError(t("account.captchaFailed"));
+      return;
+    }
+
     try {
       const result = await register.mutateAsync(form);
       // A pending account has no session yet — the store activates it manually.

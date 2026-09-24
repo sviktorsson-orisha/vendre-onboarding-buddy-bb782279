@@ -511,6 +511,12 @@ export type RegisterConstraints = {
   visible: string[];
   required: string[];
   limits: Record<string, { min?: number; max?: number }>;
+  /**
+   * True when the store requires `g-recaptcha-response` (reCAPTCHA enabled for
+   * forms in admin). Surface v2 exposes no site key, so the storefront cannot
+   * produce a token and every sign-up is rejected with a generic 422.
+   */
+  captchaRequired?: boolean;
 };
 
 /** Fields the register form knows how to render, keyed by our own field name. */
@@ -589,6 +595,8 @@ export function normalizeRegisterConstraints(payload: unknown): RegisterConstrai
   const visible: string[] = [];
   const required: string[] = [];
   const limits: RegisterConstraints["limits"] = {};
+  const captchaRule = payload["g-recaptcha-response"];
+  const captchaRequired = isBag(captchaRule) && (captchaRule as FormFieldRule).required === true;
 
   for (const [rawKey, rawRule] of Object.entries(payload)) {
     const key = rawKey;
@@ -604,13 +612,13 @@ export function normalizeRegisterConstraints(payload: unknown): RegisterConstrai
     if (min !== undefined || max !== undefined) limits[key] = { ...(min !== undefined && { min }), ...(max !== undefined && { max }) };
   }
 
-  if (visible.length === 0) return DEFAULT_REGISTER_CONSTRAINTS;
+  if (visible.length === 0) return { ...DEFAULT_REGISTER_CONSTRAINTS, captchaRequired };
 
   // Not a store field: the policy consent is always shown and always required.
   visible.push("consent_personal_data_policy");
   required.push("consent_personal_data_policy");
 
-  return { visible, required, limits };
+  return { visible, required, limits, captchaRequired };
 }
 
 /**
