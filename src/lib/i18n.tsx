@@ -73,6 +73,8 @@ const dictionary = {
     "step4.intro":
       "CORS ställs in under Appar & Integrationer → Headless → CORS, i rutan \"Tillåtna domäner\". Varje domän läggs till som en egen rad med kryssrutor för vilka funktioner den får använda.",
     "step4.settings": "CORS-inställningar",
+    "step4.openCors": "Öppna CORS-inställningarna",
+    "step4.openCorsDisabled": "Knappen blir klickbar när credentials är sparade.",
     "step4.how1": "Klicka på \"Lägg till domän\" och klistra in en adress nedan (scheme + host, utan avslutande snedstreck).",
     "step4.how2": "Kryssa i samtliga funktioner på raden – Bootstrap, Session, Oauth, Customer, Shopping cart, Checkout, Default med flera.",
     "step4.how3": "Upprepa för varje adress i listan nedan. Preview, published och lovableproject-adresserna är olika origins och måste alla läggas in.",
@@ -310,6 +312,8 @@ const dictionary = {
     "step4.intro":
       "CORS is configured under Apps & Integrations → Headless → CORS, in the \"Allowed domains\" section. Each domain is added as its own row with checkboxes for the features it may use.",
     "step4.settings": "CORS settings",
+    "step4.openCors": "Open CORS settings",
+    "step4.openCorsDisabled": "The button becomes clickable once credentials are saved.",
     "step4.how1": "Click \"Add domain\" and paste one of the addresses below (scheme + host, no trailing slash).",
     "step4.how2": "Tick every feature on that row – Bootstrap, Session, Oauth, Customer, Shopping cart, Checkout, Default and the rest.",
     "step4.how3": "Repeat for every address in the list below. Preview, published and lovableproject addresses are separate origins and all need a row.",
