@@ -322,11 +322,6 @@ export function SetupWizard({ onFinish }: { onFinish?: () => void }) {
             <p className="mt-1 text-sm text-muted-foreground">
               {verified ? t("panel.verified") : t("panel.progress", { done: completedCount, total })}
             </p>
-            {progress.storageOk === false && (
-              <p className="mt-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {t("panel.storageWarning")}
-              </p>
-            )}
             {!verified && (
               <p className="mt-3 inline-flex rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-foreground">
                 {t("panel.next")} {active + 1}. {activeTitle}
