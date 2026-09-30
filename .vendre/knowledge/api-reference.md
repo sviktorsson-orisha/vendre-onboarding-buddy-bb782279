@@ -461,6 +461,9 @@ Skills: `category-plp.md`, `pdp-products.md`, `vql-queries.md`.
 | GET | `sitemap` | `sitemap` | – | sitemap data, query `type`, `language`, `page` |
 
 Menu items of type `information_page` point to galleries, not products.
+`navigation/menus` always returns each item's `attributes` as an object (`{}`
+when empty), never an array (Vendre fix 2026-09-30). Older installs may still
+send `[]` — treat both as empty.
 Content-block image paths are relative and must be resolved against the store
 base URL. Skills: `navigation-menus.md`, `cms-pages.md`, `cms-galleries.md`,
 `ecommerce-seo.md`.

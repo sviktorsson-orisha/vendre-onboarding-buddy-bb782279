@@ -29,6 +29,8 @@ export type MenuItem = {
   target: string | null;
   route: string | null;
   has_children: boolean;
+  /** Always an object since 2026-09-30; older installs may send `[]` when empty. */
+  attributes?: Record<string, unknown> | unknown[];
 };
 
 export type MenusResponse = { menus: MenuItem[] };
