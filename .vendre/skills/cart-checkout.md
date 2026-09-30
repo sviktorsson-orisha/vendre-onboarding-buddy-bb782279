@@ -82,3 +82,7 @@ where waiting is correct. The proxy must forward the browser's `Origin` and
 ## Line field name
 
 Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.
+
+## Cart total format
+
+Since 2026-09-30 `cart_total` is a formatted string (e.g. `"187,50 kr"`) and `cart_total_raw` is the number. Display the string; calculate with the raw value. Older installs send a number only.

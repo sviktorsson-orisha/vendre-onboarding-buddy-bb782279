@@ -597,3 +597,15 @@ the original file on the product page (`StoreImage` `size` prop).
   are more reliable behind proxies.
 - Storefront impact: none. The browser only calls same-origin `/api/vendre/*`,
   and the server proxy calls v2 only.
+
+### Cart total is a formatted string (Vendre change 2026-09-30)
+
+- `GET /surface/2/shopping-cart`: `cart_total` is now a **formatted string** in
+  the session's currency/locale (e.g. `"187,50 kr"`), and the new
+  `cart_total_raw` holds the numeric value. Breaking for clients that expected a
+  number.
+- Show `cart_total` as-is; use `cart_total_raw` for any arithmetic. Formatting
+  depends on the session market/language, so separators and symbols vary.
+- The storefront normalizes this in `getCart`: the string goes to
+  `cart_total_formatted`, the number to `cart_total`. Older installs that still
+  send a number keep working.

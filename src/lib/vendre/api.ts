@@ -368,8 +368,23 @@ const liveApi: VendreApi = {
         const { setMutationProtectionToken } = await import("@/lib/vendre/client");
         setMutationProtectionToken(token);
       }
+      // Vendre now sends cart_total as a formatted string ("187,50 kr") plus
+      // cart_total_raw; older installs send a plain number. Normalize both.
+      const rawTotal = (cart as any)?.cart_total as unknown;
+      let total: number = Number(rawTotal ?? 0);
+      let formatted = cart?.cart_total_formatted ?? null;
+      if (typeof rawTotal === "string") {
+        formatted = rawTotal;
+        const rawNum = (cart as any)?.cart_total_raw;
+        total =
+          rawNum != null && rawNum !== ""
+            ? Number(rawNum)
+            : Number(rawTotal.replace(/[^\d,.-]/g, "").replace(/\s/g, "").replace(",", "."));
+      }
       return {
         ...cart,
+        cart_total: Number.isFinite(total) ? total : 0,
+        cart_total_formatted: formatted,
         products: (cart?.products ?? []).map((line) => {
           const l = line as CartLine & { productId?: number };
           return { ...l, product_id: Number(l.product_id ?? l.productId) };
