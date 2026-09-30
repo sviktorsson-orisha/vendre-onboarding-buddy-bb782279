@@ -9,7 +9,7 @@
  * Caching follows .vendre/skills/caching.md: menus/categories are cached, cart and
  * session are never cached.
  */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useOnboarding } from "@/context/onboarding-context";
