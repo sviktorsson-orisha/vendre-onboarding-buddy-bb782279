@@ -441,6 +441,9 @@ never `fetch`. Skills: `cart-checkout.md`, `cart-sync.md`.
   `filter`, `f`, `pfrom`, `pto`, `tags` (array, bracket syntax).
 - `POST vql` returns `500` for every body shape on installs where it is not
   enabled — fall back to `products` / `categories/{id}`.
+- `purchase_price` is **not** in the default VQL field whitelist (Vendre change
+  2026-09-30). It is omitted unless the store adds it to its own whitelist.
+  The storefront must never request or show it publicly.
 
 Skills: `category-plp.md`, `pdp-products.md`, `vql-queries.md`.
 

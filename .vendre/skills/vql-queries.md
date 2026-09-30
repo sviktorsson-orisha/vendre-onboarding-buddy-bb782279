@@ -20,6 +20,9 @@ call per widget.
 
 ## Field selection
 
+`purchase_price` is not whitelisted by default (since 2026-09-30) and must never
+be requested by the storefront — it is internal cost data.
+
 Request only the fields the view renders. Over-fetching product payloads is the
 main cause of slow PLP and search pages.
 
