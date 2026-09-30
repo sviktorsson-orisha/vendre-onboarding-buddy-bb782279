@@ -402,7 +402,7 @@ alone. Skills: `account-auth.md`, `customer-account/SKILL.md`,
 | GET | `shopping-cart` | `shopping_cart` | – | lines, totals, coupons (never cache) |
 | DELETE | `shopping-cart` | `shopping_cart` | yes | **clears the whole cart** — remove a single line with a products mutation and `quantity: 0` |
 | GET | `shopping-cart/products` | `shopping_cart` | – | cart lines only |
-| PUT | `shopping-cart/products` | `shopping_cart` | yes | add / set quantity, body `{ products: [...], empty }` |
+| POST | `shopping-cart/products` | `shopping_cart` | yes | add / set / remove (quantity 0), body `{ products: [...], clear }` — PUT removed |
 | GET | `shopping-cart/coupons` | `shopping_cart` | – | active coupons |
 | POST | `shopping-cart/coupons/activate` | `shopping_cart` | yes | apply coupon |
 | POST | `shopping-cart/coupons/deactivate` | `shopping_cart` | yes | remove coupon |
@@ -412,7 +412,7 @@ alone. Skills: `account-auth.md`, `customer-account/SKILL.md`,
 | POST | `checkout/upsell/add-products` | `checkout` | yes | add upsell products |
 | POST | `checkout/upsell/finalize` | `checkout` | yes | finalise the upsell, body `{ order_id }` |
 
-`empty: true` in a products mutation clears the cart before applying the new
+`clear: true` (formerly `empty`) in a products mutation clears the cart before applying the new
 lines. Checkout itself is a **browser navigation** to the store's checkout page,
 never `fetch`. Skills: `cart-checkout.md`, `cart-sync.md`.
 
@@ -522,4 +522,12 @@ may fall back to the old ones for older installs. `visitorid` was **not** change
 | OpenAPI securitySchemes | `bearerAuth` / `mutationProtectionToken` | `bearer_auth` / `mutation_protection_token` |
 
 Cart line shape: `{ "id": "…", "product_id": 123, "quantity": 2, "attributes": [], "data": null, "product_data": { … } }`.
-Request body for `PUT shopping-cart/products` is unchanged: `{ "products": [{ "id": 123, "quantity": 2, "attributes": [] }] }`.
+Request body for `POST shopping-cart/products` (PUT removed; bare top-level arrays rejected): `{ "products": [{ "id": 123, "quantity": 2, "attributes": [] }] }`.
+
+## Cart product mutations are POST-only (Phoenix)
+
+`POST /surface/2/shopping-cart/products` is the only route for adding, updating
+and removing cart lines. `PUT` is removed, the bare top-level array body is no
+longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
+`clear` (not `empty`), and malformed bodies return the standard
+`{ "errors": [...] }` format.
