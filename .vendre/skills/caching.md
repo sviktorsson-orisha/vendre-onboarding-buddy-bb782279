@@ -18,7 +18,7 @@ sort, filters, **and** market/currency/language/VAT from session context.
 
 ## Never cache (live per visitor)
 
-- `GET shopping-cart*` — cart, totals, coupons
+- `GET shopping-cart*` — cart, totals, coupons: not "never cache" but fresh on panel open, window focus, every own mutation and before checkout; `staleTime` 30 s so page changes reuse it
 - `GET session` (compact status)
 - `GET session/context` is the exception: one shared response, refetched only after login/logout/register, a 401 re-bootstrap, or a future `POST session`
 - `GET accounts/me*`, order history

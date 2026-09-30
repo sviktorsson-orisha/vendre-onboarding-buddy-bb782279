@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Loader2, Minus, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 import { ProductPrice } from "@/components/store/product-price";
