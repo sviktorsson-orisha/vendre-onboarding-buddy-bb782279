@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
 
 import { StoreShell } from "@/components/store/store-shell";
 import { useI18n } from "@/lib/i18n";
@@ -18,9 +17,14 @@ export default function ContentPage({ id }: { id: number }) {
   if (isLoading) {
     return (
       <StoreShell>
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> {t("store.loading")}
-        </p>
+        <div className="w-full max-w-3xl space-y-4" aria-busy="true">
+          <div className="h-9 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="aspect-[16/7] w-full animate-pulse rounded-xl bg-muted" />
+          {[100, 95, 90, 70].map((w) => (
+            <div key={w} className="h-4 animate-pulse rounded bg-muted" style={{ width: `${w}%` }} />
+          ))}
+          <p className="sr-only">{t("store.loading")}</p>
+        </div>
       </StoreShell>
     );
   }

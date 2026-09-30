@@ -47,6 +47,7 @@ export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
               <Link
                 to="/kategori/$id"
                 params={{ id: String(crumb.id) }}
+                {...intent(crumb.id)}
                 className="hover:text-primary"
               >
                 {crumb.name}

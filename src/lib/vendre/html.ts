@@ -31,10 +31,26 @@ export function resolveHtmlAssets(html: string): string {
   });
 }
 
+/**
+ * Lazy-loads every image in store HTML except the first, which loads first
+ * (it is usually the campaign banner at the top).
+ */
+export function lazyHtmlImages(html: string): string {
+  let index = 0;
+  return html.replace(/<img\b([^>]*)>/gi, (match, attrs: string) => {
+    const first = index++ === 0;
+    if (/\sloading\s*=/i.test(attrs)) return match;
+    const extra = first
+      ? ' loading="eager" fetchpriority="high" decoding="async"'
+      : ' loading="lazy" decoding="async"';
+    return `<img${attrs.replace(/\s*\/$/, "")}${extra}>`;
+  });
+}
+
 /** Sanitised, asset-resolved HTML ready for dangerouslySetInnerHTML. */
 export function prepareCmsHtml(html: string | null | undefined): string {
   if (!html) return "";
-  return resolveHtmlAssets(sanitizeHtml(html));
+  return lazyHtmlImages(resolveHtmlAssets(sanitizeHtml(html)));
 }
 
 /** Plain-text excerpt used for meta descriptions. */

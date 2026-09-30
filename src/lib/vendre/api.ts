@@ -987,6 +987,34 @@ export function usePrefetchProduct() {
   };
 }
 
+/** Background-fetches a category's first page under the `useCategory(id, { page: 1 })` key. */
+export function usePrefetchCategory() {
+  const api = useVendreApi();
+  const scope = useCacheScope();
+  const queryClient = useQueryClient();
+  return (id: string | number) => {
+    if (scope == null) return;
+    const query = { page: 1 };
+    void queryClient.prefetchQuery({
+      queryKey: ["vendre", api.mode, "category", Number(id), query, scope],
+      queryFn: () => api.getCategory(Number(id), query),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
+}
+
+/** Background-fetches a CMS page under the `usePageContent(id)` key. */
+export function usePrefetchPage() {
+  const api = useVendreApi();
+  const queryClient = useQueryClient();
+  return (id: string | number) => {
+    void queryClient.prefetchQuery({
+      queryKey: ["vendre", api.mode, "page-content", Number(id)],
+      queryFn: () => api.getPageContent(Number(id)),
+      staleTime: 10 * 60 * 1000,
+    });
+  };
+}
 
 /** Variant children are separate products, cached under the same product key. */
 export function useVariantProduct(productId: number | null) {
