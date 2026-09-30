@@ -1,9 +1,27 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Rocket, Settings2 } from "lucide-react";
 
-import { SetupWizardDialog } from "@/components/vendre/setup-wizard";
 import { useOnboarding } from "@/context/onboarding-context";
 import { useI18n } from "@/lib/i18n";
+
+// The guide is heavy and rarely used once the store is live: load its code only
+// the first time it opens, then keep it mounted so closing animates normally.
+const SetupWizardDialog = lazy(() =>
+  import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog })),
+);
+
+function LazySetupWizard({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const [loaded, setLoaded] = useState(open);
+  useEffect(() => {
+    if (open) setLoaded(true);
+  }, [open]);
+  if (!loaded) return null;
+  return (
+    <Suspense fallback={null}>
+      <SetupWizardDialog open={open} onOpenChange={onOpenChange} />
+    </Suspense>
+  );
+}
 
 /** Top banner: demo-mode warning + entry point to the setup guide modal. */
 export function SetupNoticeBar() {
@@ -30,7 +48,7 @@ export function SetupNoticeBar() {
             </button>
           </div>
         </div>
-        <SetupWizardDialog open={open} onOpenChange={setOpen} />
+        <LazySetupWizard open={open} onOpenChange={setOpen} />
       </>
     );
   }
@@ -62,7 +80,7 @@ export function SetupNoticeBar() {
           </button>
         </div>
       </div>
-      <SetupWizardDialog open={open} onOpenChange={setOpen} />
+      <LazySetupWizard open={open} onOpenChange={setOpen} />
     </>
   );
 }
