@@ -544,3 +544,14 @@ and removing cart lines. `PUT` is removed, the bare top-level array body is no
 longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
 `clear` (not `empty`), and malformed bodies return the standard
 `{ "errors": [...] }` format.
+
+### Surface audit log and session CORS headers (Vendre change 2026-09-30)
+
+- Session-related Surface responses, including session-gate 401s, now carry
+  CORS headers. Invalid-bearer 401s may still lack them. The storefront is
+  unaffected: all traffic goes through the same-origin proxy.
+- Surface API activity and selected headless admin changes are recorded in an
+  audit log. Browse it in Admin at `/Admin/headless/audit/logs/browse`
+  (exact-match filters, date range, sorting, `per_page` max 200, live table
+  only — archived rows are not shown). Archiving is off by default
+  (`SURFACE_AUDIT_ARCHIVE_ENABLED`). Use it to trace failed storefront requests.

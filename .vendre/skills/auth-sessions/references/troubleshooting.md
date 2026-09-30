@@ -8,7 +8,7 @@
 | `401 SURFACE_SESSION_UNAUTHORIZED` | No session cookie sent, or session expired | Return 401 softly, throttled re-bootstrap, retry once |
 | `422 SURFACE_ACCOUNT_MALFORMED_BODY` | Missing required registration fields | Send the full field set incl. `gender`, `telephone`, `personnummer`, `state`, numeric `country` |
 | Generic browser CORS error on `/surface/2/accounts*` | Origin not allowlisted; those endpoints use the `default` policy (not `customer`) | Add the exact origin (scheme + host, no trailing slash) under Admin → Headless → CORS (`/Admin/configuration?gID=232`), or rely on the server-proxy fallback |
-| Gateway 401 shows as a CORS error | Gateway-level 401s carry no CORS headers | Check the bearer token / session gate, not CORS config |
+| Gateway 401 shows as a CORS error | Invalid-bearer 401s may carry no CORS headers (session-gate 401s include them since 2026-09-30) | Check the bearer token / session gate, not CORS config |
 | `useAccount must be used inside <AccountProvider>` | The provider module was imported both relatively and via `@/lib/...`, creating two module instances | Use the `@/lib/...` alias everywhere |
 | `429` | Rate limited | Read `RateLimit-Reset` / `Retry-After`, exponential backoff |
 | `client_secret` visible in a network tab | OAuth called from the browser | Move to the server proxy; secret only in server env |
