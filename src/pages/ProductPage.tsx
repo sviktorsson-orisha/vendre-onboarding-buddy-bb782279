@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Breadcrumbs, type Crumb } from "@/components/store/breadcrumbs";
@@ -101,9 +100,21 @@ export default function ProductPage({ id }: { id: string }) {
   if (isLoading) {
     return (
       <StoreShell>
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> {t("store.loading")}
-        </p>
+        <div aria-busy="true">
+          <div className="h-3 w-48 animate-pulse rounded bg-muted" />
+          <div className="mt-6 grid gap-8 lg:grid-cols-2">
+            <div className="aspect-square w-full animate-pulse rounded-xl bg-muted" />
+            <div className="space-y-4">
+              <div className="h-9 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="h-7 w-32 animate-pulse rounded bg-muted" />
+              {[100, 92, 80].map((w) => (
+                <div key={w} className="h-4 animate-pulse rounded bg-muted" style={{ width: `${w}%` }} />
+              ))}
+              <div className="h-11 w-full animate-pulse rounded-md bg-muted" />
+            </div>
+          </div>
+          <p className="sr-only">{t("store.loading")}</p>
+        </div>
       </StoreShell>
     );
   }
