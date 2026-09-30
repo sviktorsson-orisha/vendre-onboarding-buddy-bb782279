@@ -57,3 +57,9 @@ response. Keep filter state in the URL so the cache key and a shared link agree.
 - Wrap every section below the first screen in `LazySection` and pass its `visible` flag as the query's `enabled` argument (e.g. `useFeaturedProducts(8, visible)`), so data and images load only when the visitor scrolls near it.
 - Reuse cached reads (menus, categories) via `queryClient.ensureQueryData` with the same query key instead of fetching again.
 - Storefront data is not fetched during server rendering: the store session lives in the visitor's browser, so reads start after hydration.
+
+## Hover prefetch for content-heavy pages
+
+- Links to categories and CMS pages spread `useIntent(usePrefetchCategory())(id)` / `useIntent(usePrefetchPage())(id)` (from `src/lib/vendre/use-intent.ts`) so the page is fetched after a 120 ms hover/focus or on touch, under the exact query key the page uses. New menus/links should do the same.
+- `prepareCmsHtml` lazy-loads every CMS image except the first (eager, high priority), so long campaign pages only load pictures near the screen.
+- Pages show skeleton shapes, not spinners, while loading.

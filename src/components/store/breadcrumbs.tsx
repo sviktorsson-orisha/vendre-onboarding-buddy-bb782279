@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
 import { useI18n } from "@/lib/i18n";
+import { usePrefetchCategory } from "@/lib/vendre/api";
+import { useIntent } from "@/lib/vendre/use-intent";
 
 export type Crumb = {
   id: number;
@@ -13,6 +15,7 @@ export type Crumb = {
 /** Category breadcrumbs + BreadcrumbList JSON-LD (see .vendre/skills/ecommerce-seo.md). */
 export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
   const { t } = useI18n();
+  const intent = useIntent(usePrefetchCategory());
 
   const jsonLd = {
     "@context": "https://schema.org",
