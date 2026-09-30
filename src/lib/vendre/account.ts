@@ -865,10 +865,28 @@ const liveAccountApi: AccountApi = {
       }),
     );
 
+    // Since Vendre's 2026-09-30 fix an inactive (manual approval) account is
+    // never signed in. Resolve the status first: session-bound writes only
+    // work for accounts that are active straight away.
+    let status = registrationStatus(data);
+    if (!status) {
+      resetSessionGate();
+      try {
+        const context = await guarded(() => call<SessionContext>("session/context"));
+        status = context.authenticated ? "active" : "pending";
+      } catch {
+        status = "pending";
+      }
+    }
+
+    if (status === "pending") {
+      resetSessionGate();
+      return { status };
+    }
+
     const company = String(input.company ?? "").trim();
     if (Number(input.customer_type ?? 0) === 1 && company) {
-      // Registration is signed in straight away, so the address write works
-      // here; a failure must never break an otherwise successful sign-up.
+      // A failure must never break an otherwise successful sign-up.
       try {
         await saveCompanyOnAddress(company);
       } catch {
@@ -876,18 +894,7 @@ const liveAccountApi: AccountApi = {
       }
     }
 
-    const explicit = registrationStatus(data);
-    if (explicit) return { status: explicit };
-
-    // The answer did not say either way: an approved account is signed in
-    // straight away, a pending one is not. Ask the store which it is.
-    resetSessionGate();
-    try {
-      const context = await guarded(() => call<SessionContext>("session/context"));
-      return { status: context.authenticated ? "active" : "pending" };
-    } catch {
-      return { status: "pending" };
-    }
+    return { status };
   },
 
   forgotPassword: async (email) => {

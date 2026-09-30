@@ -66,7 +66,9 @@ the new account is signed in right after `POST accounts`, so write it onto
 the main address with `PUT /surface/2/accounts/me/addresses` (body
 `{ addresses: [ { …address, company } ] }`, `country_id` not `country`; a flat
 body answers 422) and let that write fail silently — the account itself is
-already created.
+already created. Skip this write for accounts created inactive (manual
+approval): they are not signed in, so the company name is added from My
+account after approval.
 
 
 Which fields the form shows comes from `GET /surface/2/accounts/form`: an

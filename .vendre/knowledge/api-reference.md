@@ -259,6 +259,13 @@ sign in to. Read `status` from the response and tell the customer instead of
 redirecting to the account area. `password` may be optional; the store then
 sets it later.
 
+**Inactive accounts are not signed in (Vendre fix, 2026-09-30).** Previously an
+account created inactive (manual approval) was briefly authenticated and then
+signed out on the next page load. Now it is never authenticated after
+`POST accounts`: `session/context.authenticated` is `false`. Session-bound
+writes right after registration (e.g. saving `company` on the main address)
+are therefore only possible for accounts that are active straight away.
+
 **reCAPTCHA on registration (verified 2026-09-24).** When reCAPTCHA is enabled
 for forms in admin, `accounts/form` returns
 `"g-recaptcha-response": { "display": false, "required": true }` and
