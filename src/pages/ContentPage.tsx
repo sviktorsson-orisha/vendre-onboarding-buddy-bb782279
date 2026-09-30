@@ -41,7 +41,7 @@ export default function ContentPage({ id }: { id: number }) {
 
   return (
     <StoreShell>
-      <article className="mx-auto w-full max-w-3xl">
+      <article className="w-full max-w-3xl">
         {title && <h1 className="text-3xl font-extrabold text-foreground">{title}</h1>}
         <div className="mt-6 space-y-6 text-sm leading-relaxed text-muted-foreground [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:font-semibold [&_h3]:text-foreground [&_a]:text-primary [&_a]:underline [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5">
           {description ? (
