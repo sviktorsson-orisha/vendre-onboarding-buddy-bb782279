@@ -82,13 +82,13 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                 <li key={line.id} className="flex gap-3">
                   <Link
                     to="/produkt/$id"
-                    params={{ id: String(line.productId) }}
+                    params={{ id: String(line.product_id) }}
                     onClick={() => onOpenChange(false)}
                     className="shrink-0"
                   >
                     <StoreImage
                       image={line.product_data?.image ?? null}
-                      alt={line.product_data?.name ?? `#${line.productId}`}
+                      alt={line.product_data?.name ?? `#${line.product_id}`}
                       label={line.product_data?.name ?? "P"}
                       className="size-16 shrink-0 rounded-md"
                     />
@@ -96,11 +96,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                   <div className="grow">
                     <Link
                       to="/produkt/$id"
-                      params={{ id: String(line.productId) }}
+                      params={{ id: String(line.product_id) }}
                       onClick={() => onOpenChange(false)}
                       className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
                     >
-                      {line.product_data?.name ?? `#${line.productId}`}
+                      {line.product_data?.name ?? `#${line.product_id}`}
                     </Link>
                     {line.product_data && (
                       <ProductPrice
