@@ -81,12 +81,10 @@ the account has orders.
 **no image**, and the amounts are **excluding VAT** while `totals[].text` is
 already formatted and includes VAT.
 
-- Since 2026-09-30 each price field is a formatted string plus `*_raw` number,
-  in the order's own currency/VAT. Show the store's formatted text; compute
-  from `price_total_raw` (or `price_each_raw * quantity`, falling back to the
-  bare numeric fields on older installs) only when no text is given. Show
-  incl. VAT (`raw * (1 + tax / 100)`) as the main price and excl. VAT as
-  smaller text under it. Total rows stay untouched, straight from the API.
+- Since 2026-09-30 `price_total` is formatted text INCL. VAT (order currency)
+  with `price_total_raw` as its number: show the text as the main price and
+  `raw / (1 + tax / 100)` as excl. VAT under it. Older installs send only raw
+  numbers excl. VAT: then show `raw * (1 + tax / 100)` as main price. Total rows stay untouched, straight from the API.
 - Reuse the formatting of the last total row (prefix/suffix, e.g. `kr`) **and its
   decimal precision** so line prices match the rest of the order instead of
   hardcoding a currency. The store sends raw line amounts (`399.2`) but

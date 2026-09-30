@@ -369,13 +369,14 @@ the payload is wrapped in `order` and contains `id`, `status`, `date`,
   "quantity": 1, "price_each": 399.2, "price_total": 399.2, "tax": 21 }
 ```
 
-**Price pairs (Vendre change 2026-09-30):** order-history and quotation
-responses now send every price field as a formatted string plus a matching raw
-number (`price_each` / `price_each_raw`, `price_total` / `price_total_raw`, …,
-same pattern as products). Line prices use the **order's stored currency and
-VAT**, not the session currency. Show the formatted text as-is; read numbers
-from `*_raw`, falling back to the bare field on older installs. The exact live
-shape has not been verified yet (no test order available).
+**Price pairs (Vendre change 2026-09-30, verified live on order 30):** lines
+now send `price_each` / `price_total` as formatted strings (`"699 kr"`) plus
+`price_each_raw` / `price_total_raw` numbers. In this new shape line prices are
+**including VAT** (they sum to the `ot_total` row) and use the order's stored
+currency/VAT, not the session currency. The order also carries `currency` and
+`currency_value`. Show the formatted text as-is; derive excl. VAT as
+`raw / (1 + tax / 100)`. Quotations follow the same pattern. The notes below
+describe the **old** shape (raw numbers, excl. VAT) still handled as fallback.
 
 Order lines carry **no image** and their prices are **excluding VAT** while the
 order totals are including VAT. Fetch line images separately with one VQL call

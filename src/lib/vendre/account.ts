@@ -361,23 +361,24 @@ function normalizeOrderDetail(payload: unknown, id: string): OrderDetail {
   ).map((line, index) => {
     const lineBag = flatten(line);
     const quantity = Number(lineBag["quantity"] ?? lineBag["qty"] ?? 1);
-    // Prices are in the order's own currency/VAT (not the session's): prefer
-    // the store's formatted text, and only format raw numbers as a fallback.
-    const storeIncl = pickFormattedPrice(lineBag, [
-      "price_total_incl",
-      "price_total_incl_vat",
-      "total_final_price",
-      "final_price",
-      "row_total",
-    ]);
-    const storeExcl = formattedPrice(lineBag, "price_total");
-    const each = rawPrice(lineBag, "price_each");
-    const rowExcl = rawPrice(lineBag, "price_total") ?? (each != null ? each * quantity : null);
     const tax = toNumber(lineBag["tax"]) ?? 0;
-    const rowIncl = rowExcl != null ? rowExcl * (1 + tax / 100) : null;
-    const incl =
-      (storeIncl && toNumber(storeIncl) == null ? storeIncl : "") ||
-      (rowIncl != null ? format(rowIncl) : storeIncl || pick(lineBag, ["total", "price"]));
+    const each = rawPrice(lineBag, "price_each");
+    const newShape = "price_total_raw" in lineBag || "price_each_raw" in lineBag;
+    let incl: string;
+    let excl: string;
+    if (newShape) {
+      // Since 2026-09-30 (verified live): `price_total` is formatted INCL. VAT
+      // in the order's own currency, `price_total_raw` its number.
+      const rowRaw = rawPrice(lineBag, "price_total") ?? (each != null ? each * quantity : null);
+      incl = formattedPrice(lineBag, "price_total") || (rowRaw != null ? format(rowRaw) : "");
+      excl = rowRaw != null ? format(rowRaw / (1 + tax / 100)) : "";
+    } else {
+      // Older installs: raw numbers excl. VAT only.
+      const rowExcl = rawPrice(lineBag, "price_total") ?? (each != null ? each * quantity : null);
+      const fallback = pick(lineBag, ["total_final_price", "final_price", "row_total", "total", "price"]);
+      incl = rowExcl != null ? format(rowExcl * (1 + tax / 100)) : fallback;
+      excl = rowExcl != null ? format(rowExcl) : "";
+    }
     return {
       id: (lineBag["id"] as string | number) ?? index,
       product_id: toNumber(lineBag["product_id"]),
@@ -385,7 +386,7 @@ function normalizeOrderDetail(payload: unknown, id: string): OrderDetail {
       quantity,
       price: incl,
       price_incl: incl,
-      price_excl: storeExcl || (rowExcl != null ? format(rowExcl) : ""),
+      price_excl: excl,
       image: pickLineImage(lineBag),
     };
   });
