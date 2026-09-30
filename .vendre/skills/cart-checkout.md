@@ -78,3 +78,7 @@ where waiting is correct. The proxy must forward the browser's `Origin` and
 `Referer` headers, otherwise the store answers
 `400 SURFACE_SESSION_HANDOVER_UNKNOWN_ORIGIN`.
 
+
+## Line field name
+
+Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.

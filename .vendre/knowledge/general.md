@@ -28,7 +28,7 @@
 - App Startup: Always initiate session via `POST /surface/2/session/bootstrap` via the backend proxy.
 - State Management: Store `surface_mutation_protection_token` in app state (avoid `localStorage`).
 - Mutating Calls (POST, PUT, DELETE): MUST include header `Surface-Mutation-Protection-Token: <token>`.
-- Token Refresh on Login/Logout: Always update the stored mutation token with `mutationProtectionToken` returned after login or logout.
+- Token Refresh on Login/Logout: Always update the stored mutation token with `mutation_protection_token` returned after login, logout or `GET shopping-cart` (legacy: `mutationProtectionToken`).
 
 ### Caching & Dynamic State Strategy
 
