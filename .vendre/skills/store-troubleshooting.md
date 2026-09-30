@@ -13,7 +13,8 @@ description: Symptom-to-cause table for Vendre Surface v2 storefronts - 401 loop
 | Cart "jumps back" after a change | Optimistic state never reconciled, or an intermediate sync overwrote a later one | Debounce and coalesce, one inflight sync, last write wins, then replace local state with the server response (`vendre-cart-checkout`). |
 | Wrong quantity ends up in the order | Checkout navigated before pending syncs flushed | Flush + `GET shopping-cart` verify before navigating. |
 | Everything returns 429/502 at once | `oauth/token` quota burned by minting a token per request | Global token cache, 60s cooldown, min renew interval (`vendre-surface-v2`). |
-| Generic browser CORS error with no detail | Gateway-level 401 from a bad bearer — may carry no CORS headers (session responses, incl. session-gate 401s, include them since 2026-09-30) | Check bearer and session first; usually not a real CORS misconfiguration. |
+| Generic browser CORS error with no detail | Origin not allowlisted in Surface CORS settings — gateway 401s carry CORS headers for configured origins since 2026-09-30 | Add the exact origin to `SURFACE_CORS_ORIGINS` / `SURFACE_CORS_POLICIES`. |
+| 403 `cors_not_supported` | Calling `/surface/1/*` cross-origin (v1 is same-origin only since 2026-09-30) | Use `/surface/2/*` via the server proxy. |
 | Need to trace what the store received | Surface audit log (since 2026-09-30) | Admin → `/Admin/headless/audit/logs/browse` — exact-match filters, date range, max 200 per page, live rows only. |
 | `/accounts/*` blocked while other calls work | `accounts*` resolves to the **`default`** CORS policy, not `customer` | Allowlist the origin under `default`. |
 | `POST /contact` blocked | Contact uses the `email/contact` policy | Allowlist the origin under `email/contact`. |

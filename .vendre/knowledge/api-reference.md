@@ -2,7 +2,7 @@
 
 Complete technical reference for the Surface v2 API endpoints (`/surface/2/*`) this template uses.
 
-_Source: the machine-generated OpenAPI 3.2 document (51 v2 paths), available live at `GET /surface/1/openapi` (use query `?v=1` or `?v=2` to filter by version), plus static code analysis of `cadre/application/Routes/Http/SurfaceApi/**` and `cadre/application/Http/Controllers/SurfaceApi/**` (branch `2026_project_phoenix`)._
+_Source: the machine-generated OpenAPI 3.2 document (51 v2 paths), available live at `GET /surface/1/openapi` (use query `?v=1` or `?v=2` to filter by version; readable same-origin or server-side only, since v1 rejects cross-origin requests), plus static code analysis of `cadre/application/Routes/Http/SurfaceApi/**` and `cadre/application/Http/Controllers/SurfaceApi/**` (branch `2026_project_phoenix`)._
 
 > **Source of truth.** This document is authoritative for endpoints, HTTP methods,
 > CORS policies, required headers, and the error format. The skill files under
@@ -17,7 +17,7 @@ _(Applies to all endpoints unless specified otherwise)_
 
 ### 1.1 Base URL and Versioning
 
-- **v1:** Base path `/surface/1/`
+- **v1:** Base path `/surface/1/` — same-origin only since 2026-09-30: cross-origin OPTIONS/GET/POST are rejected with `403 cors_not_supported` and no CORS headers. Browser clients must use v2.
 - **v2:** Base path `/surface/2/`
 
 Both versions exist in the platform. Storefronts built from this template call
@@ -510,9 +510,11 @@ Known traps:
 - `accounts*` → **`default`** (not `customer`).
 - `contact` → **`email/contact`**.
 - `login-link` has **no CORS support** and must go through the server proxy.
-- A gateway-level `401` (bad bearer or failed session gate) carries **no CORS
-  headers** and shows up in the browser as a generic CORS error — check bearer
-  and session before touching the allowlist.
+- Gateway-level `401`s (bad bearer or failed session gate) carry CORS headers
+  when the origin is configured **anywhere** in `SURFACE_CORS_ORIGINS` /
+  `SURFACE_CORS_POLICIES` (not resolved per endpoint policy at that stage), so
+  the structured error body is readable. A bare browser CORS error now means the
+  origin is not allowlisted at all.
 
 ---
 
@@ -557,8 +559,8 @@ longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
 ### Surface audit log and session CORS headers (Vendre change 2026-09-30)
 
 - Session-related Surface responses, including session-gate 401s, now carry
-  CORS headers. Invalid-bearer 401s may still lack them. The storefront is
-  unaffected: all traffic goes through the same-origin proxy.
+  CORS headers (see the CORS enforcement change below for early OAuth 401s).
+  The storefront is unaffected: all traffic goes through the same-origin proxy.
 - Surface API activity and selected headless admin changes are recorded in an
   audit log. Browse it in Admin at `/Admin/headless/audit/logs/browse`
   (exact-match filters, date range, sorting, `per_page` max 200, live table
@@ -581,3 +583,17 @@ server-side. There is no WebP/AVIF conversion: a `.webp` filename or an
 `Accept: image/webp` header still returns JPEG bytes. The storefront requests
 `w=160` for thumbnails (cart, search, orders), `w=480` for product cards and
 the original file on the product page (`StoreImage` `size` prop).
+
+### CORS enforcement for Surface v1 and v2 (Vendre change 2026-09-30)
+
+- `/surface/1/*` is same-origin only: cross-origin OPTIONS, GET and POST are
+  rejected at bootstrap with `403` / `cors_not_supported`, and no CORS allow
+  headers are sent. Cross-origin integrations must use `/surface/2/*`.
+- `/surface/2/*` keeps policy-based CORS. Early OAuth and session gate failures
+  (401) now include CORS headers for configured origins, so browsers can read
+  the structured `{ "errors": [...] }` body. At that stage the origin only needs
+  to be configured somewhere in `SURFACE_CORS_ORIGINS` / `SURFACE_CORS_POLICIES`.
+- Origin comparison uses the effective host and scheme, so same-origin checks
+  are more reliable behind proxies.
+- Storefront impact: none. The browser only calls same-origin `/api/vendre/*`,
+  and the server proxy calls v2 only.
