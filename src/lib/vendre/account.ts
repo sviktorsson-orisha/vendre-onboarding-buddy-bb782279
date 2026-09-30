@@ -253,7 +253,7 @@ function normalizeOrder(payload: unknown, index: number): OrderSummary {
     order_number: pick(bag, ["order_number", "orders_id", "number", "id"]),
     date: pick(bag, ["date", "date_purchased", "created_at", "order_date"]),
     status: pick(bag, ["status", "order_status", "state"]),
-    total: pick(bag, ["total", "order_total", "grand_total", "sum"]),
+    total: pickFormattedPrice(bag, ["total", "order_total", "grand_total", "sum"]),
   };
 }
 
@@ -294,9 +294,9 @@ function normalizeTotals(bag: Bag): { title: string; value: string }[] {
 }
 
 /**
- * Order lines only carry raw numbers (`price_each` / `price_total`, excl. VAT)
- * while the totals rows are pre-formatted by the store. Reuse a total row as the
- * formatting sample so line prices look like the rest of the order.
+ * Formatting fallback for stores that only send raw line numbers
+ * (`price_each` / `price_total`, excl. VAT): reuse a totals row as the sample
+ * so line prices look like the rest of the order.
  */
 function moneyFormatter(sample: string) {
   const trimmed = (sample ?? "").trim();
@@ -316,13 +316,39 @@ function moneyFormatter(sample: string) {
   };
 }
 
+/** Only plain numbers or purely numeric strings — never formatted text like "399 kr". */
 function toNumber(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (typeof value === "string") {
+  if (typeof value === "string" && /^\s*-?[\d\s\u00a0]*[.,]?\d+\s*$/.test(value)) {
     const parsed = Number(value.replace(/\s|\u00a0/g, "").replace(",", "."));
     if (Number.isFinite(parsed)) return parsed;
   }
   return null;
+}
+
+/**
+ * Surface v2 price pair (Vendre change 2026-09-30): `key` is the store-formatted
+ * text and `key_raw` the matching number. Older stores send only the number in `key`.
+ */
+function rawPrice(bag: Bag, key: string): number | null {
+  return toNumber(bag[`${key}_raw`]) ?? toNumber(bag[key]);
+}
+
+/** Store-formatted price text for `key`, or "" when the store only sent a number. */
+function formattedPrice(bag: Bag, key: string): string {
+  for (const candidate of [key, `${key}_formatted`]) {
+    const value = bag[candidate];
+    if (typeof value === "string" && value.trim() && toNumber(value) == null) return value;
+  }
+  return "";
+}
+
+function pickFormattedPrice(bag: Bag, keys: string[]): string {
+  for (const key of keys) {
+    const formatted = formattedPrice(bag, key);
+    if (formatted) return formatted;
+  }
+  return pick(bag, keys);
 }
 
 function normalizeOrderDetail(payload: unknown, id: string): OrderDetail {
@@ -335,25 +361,31 @@ function normalizeOrderDetail(payload: unknown, id: string): OrderDetail {
   ).map((line, index) => {
     const lineBag = flatten(line);
     const quantity = Number(lineBag["quantity"] ?? lineBag["qty"] ?? 1);
-    const formatted = pick(lineBag, [
+    // Prices are in the order's own currency/VAT (not the session's): prefer
+    // the store's formatted text, and only format raw numbers as a fallback.
+    const storeIncl = pickFormattedPrice(lineBag, [
+      "price_total_incl",
+      "price_total_incl_vat",
       "total_final_price",
       "final_price",
       "row_total",
-      "total",
-      "price",
     ]);
-    const each = toNumber(lineBag["price_each"]);
-    const rowExcl = toNumber(lineBag["price_total"]) ?? (each != null ? each * quantity : null);
+    const storeExcl = formattedPrice(lineBag, "price_total");
+    const each = rawPrice(lineBag, "price_each");
+    const rowExcl = rawPrice(lineBag, "price_total") ?? (each != null ? each * quantity : null);
     const tax = toNumber(lineBag["tax"]) ?? 0;
     const rowIncl = rowExcl != null ? rowExcl * (1 + tax / 100) : null;
+    const incl =
+      (storeIncl && toNumber(storeIncl) == null ? storeIncl : "") ||
+      (rowIncl != null ? format(rowIncl) : storeIncl || pick(lineBag, ["total", "price"]));
     return {
       id: (lineBag["id"] as string | number) ?? index,
       product_id: toNumber(lineBag["product_id"]),
       name: pick(lineBag, ["name", "product_name", "title", "model"]),
       quantity,
-      price: rowIncl != null ? format(rowIncl) : formatted,
-      price_incl: rowIncl != null ? format(rowIncl) : formatted,
-      price_excl: rowExcl != null ? format(rowExcl) : "",
+      price: incl,
+      price_incl: incl,
+      price_excl: storeExcl || (rowExcl != null ? format(rowExcl) : ""),
       image: pickLineImage(lineBag),
     };
   });
