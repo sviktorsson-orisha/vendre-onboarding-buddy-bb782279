@@ -82,3 +82,4 @@ On the user's first chat interaction or initial workspace prompt:
 
 1. Ensure the Top Setup Notice Bar is visible in the application UI.
 2. Prompt the user to start the onboarding wizard via the top banner button or assist them directly using `/.vendre/skills/setup.md`.
+- Front-page sections below the fold use LazySection + query `enabled`; store data is fetched client-side only because the Vendre session lives in the browser.

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { ProductCard } from "@/components/store/product-card";
+import { ProductGridSkeleton } from "@/components/store/lazy-section";
 
 import { StoreShell } from "@/components/store/store-shell";
 import { useI18n } from "@/lib/i18n";
@@ -9,7 +10,7 @@ import { useFeaturedProducts, useMenuTree } from "@/lib/vendre/api";
 export default function Index() {
   const { t } = useI18n();
   const tree = useMenuTree();
-  const { data: featured = [] } = useFeaturedProducts(4);
+  const { data: featured, isPending } = useFeaturedProducts(4);
 
   return (
     <StoreShell>
@@ -29,9 +30,14 @@ export default function Index() {
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-foreground">{t("store.featured")}</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {isPending ? (
+            <ProductGridSkeleton count={4} />
+          ) : (
+            (featured ?? []).map((product) => (
+              // Featured row is above the fold: load its pictures first.
+              <ProductCard key={product.id} product={product} priority />
+            ))
+          )}
         </div>
       </section>
     </StoreShell>

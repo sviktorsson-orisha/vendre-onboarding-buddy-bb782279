@@ -49,3 +49,11 @@ per visitor.
 Send `sort_by`, `sort_order`, `page`, `limit`, `tags[]`, `filter`/`f`, `pfrom`,
 `pto` to the API and render the list, `product_count` and page count from the
 response. Keep filter state in the URL so the cache key and a shared link agree.
+
+## Front-page performance (adding new sections)
+
+- Above-the-fold product rows pass `priority` to `ProductCard` (eager, high-priority images); everything else stays lazy.
+- Show `ProductGridSkeleton` while a row loads so the page doesn't jump.
+- Wrap every section below the first screen in `LazySection` and pass its `visible` flag as the query's `enabled` argument (e.g. `useFeaturedProducts(8, visible)`), so data and images load only when the visitor scrolls near it.
+- Reuse cached reads (menus, categories) via `queryClient.ensureQueryData` with the same query key instead of fetching again.
+- Storefront data is not fetched during server rendering: the store session lives in the visitor's browser, so reads start after hydration.

@@ -26,7 +26,9 @@ export function StoreImage({
   className,
   label,
   size = "full",
+  priority = false,
 }: {
+  priority?: boolean;
   image?: VendreImage | null;
   alt: string;
   className?: string;
@@ -58,7 +60,8 @@ export function StoreImage({
     <img
       src={src}
       alt={alt}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       onError={() => setFailed(true)}
       className={cn("object-cover", className)}

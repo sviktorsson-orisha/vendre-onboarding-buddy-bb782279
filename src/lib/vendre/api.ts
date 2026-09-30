@@ -1137,13 +1137,20 @@ export function useCartMutations() {
 }
 
 
-export function useFeaturedProducts(count = 4) {
+export function useFeaturedProducts(count = 4, enabled = true) {
   const api = useVendreApi();
+  const queryClient = useQueryClient();
   return useQuery({
+    enabled,
     queryKey: ["vendre", api.mode, "featured", count],
     queryFn: async () => {
       if (api.mode === "demo") return mockFeaturedProducts(count);
-      const menus = await api.getMenus();
+      // Reuse the header's cached menu instead of fetching it a second time.
+      const menus = await queryClient.ensureQueryData({
+        queryKey: ["vendre", api.mode, "menus"],
+        queryFn: () => api.getMenus(),
+        staleTime: 5 * 60 * 1000,
+      });
       const first = menus.find((item) => item.menu_type === "category" && !item.has_children);
       if (!first) return [];
       // The request is rounded up to a page size the store accepts; the view
