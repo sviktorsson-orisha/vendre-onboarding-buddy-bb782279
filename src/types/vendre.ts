@@ -238,9 +238,11 @@ export type CartLine = {
 export type Cart = {
   products: CartLine[];
   cart_count: number;
-  /** Store-calculated cart total (raw). The frontend never computes totals. */
+  /** Store-calculated cart total (raw, normalized in getCart). The frontend never computes totals. */
   cart_total: number;
-  /** Some installs return the total already formatted in the session currency. */
+  /** Raw numeric total; Vendre sends it since cart_total became a formatted string. */
+  cart_total_raw?: number | null;
+  /** Total already formatted by the store (from Vendre's string cart_total). */
   cart_total_formatted?: string | null;
   /** Refreshed mutation protection token, when the store returns one. */
   mutation_protection_token?: string;
