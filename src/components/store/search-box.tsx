@@ -5,11 +5,7 @@ import { Search } from "lucide-react";
 import { ProductPrice } from "@/components/store/product-price";
 import { StoreImage } from "@/components/store/store-image";
 import { useI18n } from "@/lib/i18n";
-import {
-  SEARCH_MIN_CHARS,
-  SEARCH_SUGGESTION_LIMIT,
-  useProductSearch,
-} from "@/lib/vendre/api";
+import { SEARCH_MIN_CHARS, SEARCH_SUGGESTION_LIMIT, useProductSearch } from "@/lib/vendre/api";
 import { cn } from "@/lib/utils";
 
 /** Header search with autocomplete: 5 suggestions from 3 characters + "show all". */
@@ -120,7 +116,9 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
                     )}
                   >
                     <span className="size-10 shrink-0 overflow-hidden rounded-md">
-                      <StoreImage                        size="thumb"                        image={product.image ?? product.images[0] ?? null}
+                      <StoreImage
+                        size="thumb"
+                        image={product.image ?? product.images[0] ?? null}
                         alt={product.name}
                         label={product.name}
                         className="size-full"
@@ -129,11 +127,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
                     <span className="min-w-0 grow truncate text-sm text-foreground">
                       {product.name}
                     </span>
-                    <ProductPrice
-                      product={product}
-                      size="sm"
-                      className="shrink-0"
-                    />
+                    <ProductPrice product={product} size="sm" className="shrink-0" />
                   </Link>
                 </li>
               ))}

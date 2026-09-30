@@ -2,15 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { Loader2, Minus, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-
 import { ProductPrice } from "@/components/store/product-price";
 import { StoreImage } from "@/components/store/store-image";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useOnboarding } from "@/context/onboarding-context";
 import { useI18n } from "@/lib/i18n";
 import {
@@ -21,8 +15,13 @@ import {
   useVendreApi,
 } from "@/lib/vendre/api";
 
-
-export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function CartSheet({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { t } = useI18n();
   const api = useVendreApi();
   const { isConfigured } = useOnboarding();
@@ -51,7 +50,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       ? formatAmount(cart.cart_total, session?.currency?.code, lineDecimals)
       : "—");
 
-
   const goToCheckout = async () => {
     setCheckoutPending(true);
     try {
@@ -65,7 +63,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
       setCheckoutPending(false);
     }
   };
-
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -91,7 +88,9 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                     onClick={() => onOpenChange(false)}
                     className="shrink-0"
                   >
-                    <StoreImage                      size="thumb"                      image={line.product_data?.image ?? null}
+                    <StoreImage
+                      size="thumb"
+                      image={line.product_data?.image ?? null}
                       alt={line.product_data?.name ?? `#${line.product_id}`}
                       label={line.product_data?.name ?? "P"}
                       className="size-16 shrink-0 rounded-md"
@@ -107,11 +106,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                       {line.product_data?.name ?? `#${line.product_id}`}
                     </Link>
                     {line.product_data && (
-                      <ProductPrice
-                        product={line.product_data}
-                        size="sm"
-                        className="mt-1 flex"
-                      />
+                      <ProductPrice product={line.product_data} size="sm" className="mt-1 flex" />
                     )}
 
                     <div className="mt-2 flex items-center gap-2">
@@ -123,7 +118,9 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                       >
                         <Minus className="size-3.5" />
                       </button>
-                      <span className="w-6 text-center text-sm font-medium text-foreground">{line.quantity}</span>
+                      <span className="w-6 text-center text-sm font-medium text-foreground">
+                        {line.quantity}
+                      </span>
                       <button
                         type="button"
                         aria-label="+"
@@ -163,7 +160,9 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
             {t("store.checkout")}
           </button>
 
-          {!isConfigured && <p className="mt-2 text-xs text-muted-foreground">{t("store.checkoutDemo")}</p>}
+          {!isConfigured && (
+            <p className="mt-2 text-xs text-muted-foreground">{t("store.checkoutDemo")}</p>
+          )}
         </div>
       </SheetContent>
     </Sheet>
