@@ -15,12 +15,19 @@ Sessionsinfo (butiksnamn, logga, språk, valuta, landslista) läses från ungef�
 
 Påverkar inte affärslogik: samma data, färre anrop.
 
-## 2. Varukorgen hämtas om vid varje sidbyte och flikbyte
-Varukorgen är inställd på "aldrig cacha", så ikonen i headern gör ett nytt anrop vid varje navigering och varje gång fönstret får fokus – även om inget ändrats. Efter varje ändring (lägg till, ändra antal, ta bort) läses varukorgen redan in på nytt från butiken, så appen vet alltid när något har ändrats.
+## 2. Varukorgen hämtas om vid varje sidbyte
+Varukorgen är inställd på "aldrig cacha", så ikonen i headern gör ett nytt anrop vid varje navigering inom butiken – även om inget ändrats.
 
-Åtgärd: behåll varukorgen i minnet mellan sidbyten, hämta om den när varukorgspanelen öppnas, efter varje ändring (som idag) och före kassan (som idag). Kassaflödet och "läs butikens sanning innan kassan" lämnas orört.
+Risk med annan enhet: om kunden ändrar varukorgen på mobilen och sedan går tillbaka till datorn kan den sparade varukorgen vara inaktuell. Därför behålls de tillfällen då en ändring utifrån faktiskt kan ha skett:
+- **När kunden kommer tillbaka till fliken/fönstret** – hämtas om (ändringar från annan enhet syns direkt).
+- **När varukorgspanelen öppnas** – hämtas alltid om.
+- **Efter varje egen ändring** – som idag.
+- **Före kassan** – som idag; butikens aktuella varukorg läses alltid innan kunden skickas vidare, så fel order kan aldrig nå kassan.
+- **Efter en tidsgräns** (t.ex. 30 sekunder) – hämtas om vid nästa sidbyte.
 
-Obs: detta avviker medvetet från nuvarande regel "cacha aldrig varukorgen" i projektets skill-filer – reglen ändras till "färsk vid visning och efter ändring, inte vid varje sidbyte". Kräver ditt godkännande.
+Det som tas bort är bara omhämtningen vid varje sidbyte inom samma flik några sekunder efter förra hämtningen. Kassaflödet lämnas orört.
+
+Obs: detta justerar regeln "cacha aldrig varukorgen" i projektets skill-filer till "färsk vid visning, fokus, ändring och kassa – inte vid varje sidbyte".
 
 ## 3. Bilder i rätt storlek och modernt format
 Bilderna hämtas i originalstorlek via vår proxy – en liten miniatyr i varukorgen eller sökförslagen laddar samma stora fil som produktsidan. Åtgärd: be om rätt storlek per plats (miniatyr, produktkort, produktsida), ange `width/height` för att undvika hopp i layouten, och låt proxyn leverera WebP när Vendre/bildtjänsten stödjer det. Första steget blir att kontrollera vilka storleks-/formatparametrar Vendres bildadresser stödjer.
@@ -31,7 +38,7 @@ Bilderna hämtas i originalstorlek via vår proxy – en liten miniatyr i varuko
 
 ## Tekniska detaljer
 - `useSessionContext` (src/lib/vendre/api.ts): `staleTime: 0, gcTime: 0` → längre staleTime, `refetchOnWindowFocus: false`, explicit `invalidateQueries` i login/logout/re-bootstrap.
-- `useCart`: behåll `staleTime: 0` men ta bort `gcTime: 0` och `refetchOnWindowFocus`; `refetch` vid öppning av CartSheet. `useCartMutations` och `goToCheckout` oförändrade.
+- `useCart`: `staleTime: 30s`, ta bort `gcTime: 0`, behåll `refetchOnWindowFocus: "always"`; `refetch` vid öppning av CartSheet. `useCartMutations` och `goToCheckout` oförändrade.
 - `QueryClient` i src/router.tsx saknar standardinställningar – lägg till rimliga defaults (`refetchOnWindowFocus: false`, `retry: 1`).
 - Bilder: utöka `resolveImageUrl`/`StoreImage` med storleksvariant; proxyn skickar vidare `Accept` för WebP.
 - Uppdatera `.vendre/skills/caching.md` och `cart-sync.md` så reglerna matchar.
