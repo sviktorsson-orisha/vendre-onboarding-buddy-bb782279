@@ -21,6 +21,7 @@ export function ProductCard({ product }: { product: Product }) {
         className="block aspect-4/5 overflow-hidden"
       >
         <StoreImage
+          size="card"
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
