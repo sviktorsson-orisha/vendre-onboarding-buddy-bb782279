@@ -62,7 +62,9 @@ async function call<T>(path: string, init: RequestInit & { method?: string } = {
   if (!res.ok) {
     const fields: FieldErrors = {};
     for (const error of body?.errors ?? []) {
-      const parameter = error.source?.parameter;
+      const rawParameter = error.source?.parameter;
+      // Vendre renamed first_name/last_name (2026-09-30); the form keeps its own keys.
+      const parameter = rawParameter === "first_name" ? "firstname" : rawParameter === "last_name" ? "lastname" : rawParameter;
       if (parameter && error.title) fields[parameter] = error.title;
     }
     const first = body?.errors?.[0];
@@ -610,6 +612,16 @@ export const DEFAULT_REGISTER_CONSTRAINTS: RegisterConstraints = {
   limits: {},
 };
 
+/**
+ * Whether the store uses first_name/last_name (newer installs) or
+ * firstname/lastname (older installs still reject the snake_case keys with a
+ * generic 422). Detected from accounts/form; defaults to the older keys.
+ */
+let snakeNames = false;
+function nameFields(first: string, last: string): Record<string, string> {
+  return snakeNames ? { first_name: first, last_name: last } : { firstname: first, lastname: last };
+}
+
 type FormFieldRule = {
   display?: boolean;
   required?: boolean;
@@ -624,6 +636,8 @@ type FormFieldRule = {
  */
 export function normalizeRegisterConstraints(payload: unknown): RegisterConstraints {
   if (!isBag(payload)) return DEFAULT_REGISTER_CONSTRAINTS;
+  // Send name fields in whatever form the store itself lists in accounts/form.
+  snakeNames = "first_name" in payload || "last_name" in payload;
 
   const visible: string[] = [];
   const required: string[] = [];
@@ -632,7 +646,8 @@ export function normalizeRegisterConstraints(payload: unknown): RegisterConstrai
   const captchaRequired = isBag(captchaRule) && (captchaRule as FormFieldRule).required === true;
 
   for (const [rawKey, rawRule] of Object.entries(payload)) {
-    const key = rawKey;
+    // Vendre renamed these to first_name/last_name (2026-09-30); map to form keys.
+    const key = rawKey === "first_name" ? "firstname" : rawKey === "last_name" ? "lastname" : rawKey;
     if (!(REGISTER_FIELDS as readonly string[]).includes(key)) continue;
     if (!isBag(rawRule)) continue;
     const rule = rawRule as FormFieldRule;
@@ -669,8 +684,7 @@ export function buildRegisterBody(
     email_address: input.email_address.trim(),
     password: input.password,
     confirmation: input.confirmation,
-    firstname: input.firstname.trim(),
-    lastname: input.lastname.trim(),
+    ...nameFields(input.firstname.trim(), input.lastname.trim()),
     street_address: input.street_address.trim(),
     postcode: input.postcode.trim(),
     city: input.city.trim(),
@@ -717,8 +731,7 @@ export function buildAccountBody(
 ): Record<string, unknown> {
   const isBusiness = isBusinessAccount(account);
   const body: Record<string, unknown> = {
-    firstname: account.firstname.trim(),
-    lastname: account.lastname.trim(),
+    ...nameFields(account.firstname.trim(), account.lastname.trim()),
     email_address: account.email.trim(),
     street_address: account.street_address.trim(),
     postcode: account.postcode.trim(),
@@ -813,8 +826,7 @@ function loadRegisterConstraints(): Promise<RegisterConstraints> {
 function addressBody(address: Address): Record<string, unknown> {
   return {
     id: address.id,
-    firstname: address.firstname,
-    lastname: address.lastname,
+    ...nameFields(address.firstname, address.lastname),
     company: address.company,
     street_address: address.street_address,
     postcode: address.postcode,

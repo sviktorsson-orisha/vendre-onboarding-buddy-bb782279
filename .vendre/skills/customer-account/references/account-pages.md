@@ -64,7 +64,7 @@ function normalizeAccount(raw) {
 ```
 
 When writing back with `PUT accounts/me`, never echo the response spelling:
-the update body expects `firstname` / `lastname` / `email_address`, while the
+the update body expects `first_name` / `last_name` / `email_address`, while the
 profile response returns `first_name` / `last_name` / `email`. Sending the read
 aliases makes the store silently ignore those fields.
 
