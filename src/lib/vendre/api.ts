@@ -1162,7 +1162,8 @@ export function useProductSearch(
     queryKey: ["vendre", api.mode, "search", term, limit, page, scope],
     queryFn: () => api.searchProducts(term, { limit, page }),
     enabled,
-    staleTime: 60 * 1000,
+    // Same term within 5 minutes is served from cache (matches the catalogue cache).
+    staleTime: 5 * 60 * 1000,
     placeholderData: (previous) => previous,
   });
 }

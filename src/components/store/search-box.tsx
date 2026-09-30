@@ -33,7 +33,11 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
     return () => document.removeEventListener("mousedown", onPointerDown);
   }, []);
 
-  const { data, isFetching } = useProductSearch(term, { limit: SEARCH_SUGGESTION_LIMIT });
+  // Suggestions are only fetched while the search box is open/focused.
+  const { data, isFetching } = useProductSearch(term, {
+    limit: SEARCH_SUGGESTION_LIMIT,
+    enabled: open,
+  });
   const suggestions = data?.products ?? [];
   const showPanel = open && value.trim().length >= SEARCH_MIN_CHARS;
 
