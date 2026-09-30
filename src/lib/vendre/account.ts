@@ -612,6 +612,16 @@ export const DEFAULT_REGISTER_CONSTRAINTS: RegisterConstraints = {
   limits: {},
 };
 
+/**
+ * Whether the store uses first_name/last_name (newer installs) or
+ * firstname/lastname (older installs still reject the snake_case keys with a
+ * generic 422). Detected from accounts/form; defaults to the older keys.
+ */
+let snakeNames = false;
+function nameFields(first: string, last: string): Record<string, string> {
+  return snakeNames ? { first_name: first, last_name: last } : { firstname: first, lastname: last };
+}
+
 type FormFieldRule = {
   display?: boolean;
   required?: boolean;
@@ -626,6 +636,8 @@ type FormFieldRule = {
  */
 export function normalizeRegisterConstraints(payload: unknown): RegisterConstraints {
   if (!isBag(payload)) return DEFAULT_REGISTER_CONSTRAINTS;
+  // Send name fields in whatever form the store itself lists in accounts/form.
+  snakeNames = "first_name" in payload || "last_name" in payload;
 
   const visible: string[] = [];
   const required: string[] = [];
@@ -672,8 +684,7 @@ export function buildRegisterBody(
     email_address: input.email_address.trim(),
     password: input.password,
     confirmation: input.confirmation,
-    first_name: input.firstname.trim(),
-    last_name: input.lastname.trim(),
+    ...nameFields(input.firstname.trim(), input.lastname.trim()),
     street_address: input.street_address.trim(),
     postcode: input.postcode.trim(),
     city: input.city.trim(),
@@ -720,8 +731,7 @@ export function buildAccountBody(
 ): Record<string, unknown> {
   const isBusiness = isBusinessAccount(account);
   const body: Record<string, unknown> = {
-    first_name: account.firstname.trim(),
-    last_name: account.lastname.trim(),
+    ...nameFields(account.firstname.trim(), account.lastname.trim()),
     email_address: account.email.trim(),
     street_address: account.street_address.trim(),
     postcode: account.postcode.trim(),
@@ -816,8 +826,7 @@ function loadRegisterConstraints(): Promise<RegisterConstraints> {
 function addressBody(address: Address): Record<string, unknown> {
   return {
     id: address.id,
-    first_name: address.firstname,
-    last_name: address.lastname,
+    ...nameFields(address.firstname, address.lastname),
     company: address.company,
     street_address: address.street_address,
     postcode: address.postcode,
