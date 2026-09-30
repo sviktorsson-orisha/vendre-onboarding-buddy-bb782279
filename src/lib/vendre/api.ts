@@ -976,24 +976,32 @@ export function useProductVariants(id: string) {
 }
 
 
-/** Never cached — the cart is live state. */
+/**
+ * Live cart: kept between in-app navigations for a short while, but always
+ * refetched when the tab regains focus (changes from another device), when
+ * the cart sheet opens, after every mutation and before checkout.
+ */
 export function useCart() {
   const api = useVendreApi();
   return useQuery({
     queryKey: ["vendre", api.mode, "cart"],
     queryFn: () => api.getCart(),
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: "always",
   });
 }
 
+/**
+ * Shared session context (store name, logo, language, currency, countries).
+ * Rarely changes during a visit; login/logout invalidate every "vendre" query.
+ */
 export function useSessionContext() {
   const api = useVendreApi();
   return useQuery({
     queryKey: ["vendre", api.mode, "session-context"],
     queryFn: () => api.getSessionContext(),
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 
