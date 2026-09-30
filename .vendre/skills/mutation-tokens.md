@@ -51,3 +51,5 @@ Skipping this makes the *next* form post fail with an opaque error.
 4. **On 422**: map each error's `source.parameter` to the matching form field so
    the user sees field-level validation, not a generic failure.
 5. **On 429**: respect `Retry-After` and tell the user the store is busy.
+
+Cart product mutations use `POST shopping-cart/products` only (PUT removed); the clear flag is `clear`.

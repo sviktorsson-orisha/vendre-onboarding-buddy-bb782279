@@ -29,6 +29,8 @@ export type MenuItem = {
   target: string | null;
   route: string | null;
   has_children: boolean;
+  /** Always an object since 2026-09-30; older installs may send `[]` when empty. */
+  attributes?: Record<string, unknown> | unknown[];
 };
 
 export type MenusResponse = { menus: MenuItem[] };
@@ -224,9 +226,9 @@ export type CategoryResponse = {
 };
 
 export type CartLine = {
-  /** Cart line id (string), not always equal to productId. */
+  /** Cart line id (string), not always equal to product_id. */
   id: string;
-  productId: number;
+  product_id: number;
   quantity: number;
   attributes: unknown[];
   data: unknown;
@@ -241,7 +243,7 @@ export type Cart = {
   /** Some installs return the total already formatted in the session currency. */
   cart_total_formatted?: string | null;
   /** Refreshed mutation protection token, when the store returns one. */
-  mutationProtectionToken?: string;
+  mutation_protection_token?: string;
 };
 
 

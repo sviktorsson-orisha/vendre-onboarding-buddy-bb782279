@@ -24,8 +24,8 @@ checkout.
 ## Debounced background sync
 
 - Every change schedules an async sync to
-  `PUT /surface/2/shopping-cart/products` (add / set quantity) or
-  `PUT /surface/2/shopping-cart/products` with `quantity: 0` (remove a single
+  `POST /surface/2/shopping-cart/products` (add / set quantity) or
+  `POST /surface/2/shopping-cart/products` with `quantity: 0` (remove a single
   line — `DELETE /surface/2/shopping-cart` empties the entire cart), always with
   `Surface-Mutation-Protection-Token`.
 - **Debounce ~400–600 ms** and coalesce: rapid consecutive changes to the same
@@ -78,3 +78,7 @@ where waiting is correct. The proxy must forward the browser's `Origin` and
 `Referer` headers, otherwise the store answers
 `400 SURFACE_SESSION_HANDOVER_UNKNOWN_ORIGIN`.
 
+
+## Line field name
+
+Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.

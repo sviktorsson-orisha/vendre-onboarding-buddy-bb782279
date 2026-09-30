@@ -259,6 +259,13 @@ sign in to. Read `status` from the response and tell the customer instead of
 redirecting to the account area. `password` may be optional; the store then
 sets it later.
 
+**Inactive accounts are not signed in (Vendre fix, 2026-09-30).** Previously an
+account created inactive (manual approval) was briefly authenticated and then
+signed out on the next page load. Now it is never authenticated after
+`POST accounts`: `session/context.authenticated` is `false`. Session-bound
+writes right after registration (e.g. saving `company` on the main address)
+are therefore only possible for accounts that are active straight away.
+
 **reCAPTCHA on registration (verified 2026-09-24).** When reCAPTCHA is enabled
 for forms in admin, `accounts/form` returns
 `"g-recaptcha-response": { "display": false, "required": true }` and
@@ -291,9 +298,9 @@ documented required set if the call fails.
 | PUT | `accounts/me/addresses` | `default` | yes | update main address, body `{ addresses: [ { id, firstname, lastname, company, street_address, postcode, city, country_id, telephone } ] }` — a flat body answers `422 SURFACE_ACCOUNT_MALFORMED_BODY` (verified live) |
 | PUT | `accounts/me/address-book` | `default` | yes | upsert alternative addresses, body `{ addresses: [...] }` |
 | GET | `accounts/me/order-history` | `default` | – | order list |
-| GET | `accounts/me/order-history/{orderId}` | `default` | – | single order (see shape below) |
+| GET | `accounts/me/order-history/{order_id}` | `default` | – | single order (see shape below) |
 | GET | `accounts/me/quotations` | `default` | – | quotation list (B2B) |
-| GET | `accounts/me/quotations/{quotationId}` | `default` | – | single quotation |
+| GET | `accounts/me/quotations/{quotation_id}` | `default` | – | single quotation |
 
 **`PUT accounts/me` body keys** — the update body uses `firstname` / `lastname`
 (plus `email_address`, `street_address`, `postcode`, `city`, numeric
@@ -352,7 +359,7 @@ that are empty — blank strings are rejected. A partial field set returns
 `SURFACE_ACCOUNT_MALFORMED_BODY` (400/422).
 
 
-**`accounts/me/order-history/{orderId}` response** (verified against a live store):
+**`accounts/me/order-history/{order_id}` response** (verified against a live store):
 the payload is wrapped in `order` and contains `id`, `status`, `date`,
 `billing_address`, `delivery_address`, `status_history`, `totals`
 (`{ class, title, text, value }`, `text` already formatted) and `products`:
@@ -361,6 +368,15 @@ the payload is wrapped in `order` and contains `id`, `status`, `date`,
 { "id": 172, "product_id": 230, "name": "Blazer Slim fit", "model": "47-0956",
   "quantity": 1, "price_each": 399.2, "price_total": 399.2, "tax": 21 }
 ```
+
+**Price pairs (Vendre change 2026-09-30, verified live on order 30):** lines
+now send `price_each` / `price_total` as formatted strings (`"699 kr"`) plus
+`price_each_raw` / `price_total_raw` numbers. In this new shape line prices are
+**including VAT** (they sum to the `ot_total` row) and use the order's stored
+currency/VAT, not the session currency. The order also carries `currency` and
+`currency_value`. Show the formatted text as-is; derive excl. VAT as
+`raw / (1 + tax / 100)`. Quotations follow the same pattern. The notes below
+describe the **old** shape (raw numbers, excl. VAT) still handled as fallback.
 
 Order lines carry **no image** and their prices are **excluding VAT** while the
 order totals are including VAT. Fetch line images separately with one VQL call
@@ -402,7 +418,7 @@ alone. Skills: `account-auth.md`, `customer-account/SKILL.md`,
 | GET | `shopping-cart` | `shopping_cart` | – | lines, totals, coupons (never cache) |
 | DELETE | `shopping-cart` | `shopping_cart` | yes | **clears the whole cart** — remove a single line with a products mutation and `quantity: 0` |
 | GET | `shopping-cart/products` | `shopping_cart` | – | cart lines only |
-| PUT | `shopping-cart/products` | `shopping_cart` | yes | add / set quantity, body `{ products: [...], empty }` |
+| POST | `shopping-cart/products` | `shopping_cart` | yes | add / set / remove (quantity 0), body `{ products: [...], clear }` — PUT removed |
 | GET | `shopping-cart/coupons` | `shopping_cart` | – | active coupons |
 | POST | `shopping-cart/coupons/activate` | `shopping_cart` | yes | apply coupon |
 | POST | `shopping-cart/coupons/deactivate` | `shopping_cart` | yes | remove coupon |
@@ -412,7 +428,7 @@ alone. Skills: `account-auth.md`, `customer-account/SKILL.md`,
 | POST | `checkout/upsell/add-products` | `checkout` | yes | add upsell products |
 | POST | `checkout/upsell/finalize` | `checkout` | yes | finalise the upsell, body `{ order_id }` |
 
-`empty: true` in a products mutation clears the cart before applying the new
+`clear: true` (formerly `empty`) in a products mutation clears the cart before applying the new
 lines. Checkout itself is a **browser navigation** to the store's checkout page,
 never `fetch`. Skills: `cart-checkout.md`, `cart-sync.md`.
 
@@ -434,6 +450,9 @@ never `fetch`. Skills: `cart-checkout.md`, `cart-sync.md`.
   `filter`, `f`, `pfrom`, `pto`, `tags` (array, bracket syntax).
 - `POST vql` returns `500` for every body shape on installs where it is not
   enabled — fall back to `products` / `categories/{id}`.
+- `purchase_price` is **not** in the default VQL field whitelist (Vendre change
+  2026-09-30). It is omitted unless the store adds it to its own whitelist.
+  The storefront must never request or show it publicly.
 
 Skills: `category-plp.md`, `pdp-products.md`, `vql-queries.md`.
 
@@ -451,6 +470,9 @@ Skills: `category-plp.md`, `pdp-products.md`, `vql-queries.md`.
 | GET | `sitemap` | `sitemap` | – | sitemap data, query `type`, `language`, `page` |
 
 Menu items of type `information_page` point to galleries, not products.
+`navigation/menus` always returns each item's `attributes` as an object (`{}`
+when empty), never an array (Vendre fix 2026-09-30). Older installs may still
+send `[]` — treat both as empty.
 Content-block image paths are relative and must be resolved against the store
 base URL. Skills: `navigation-menus.md`, `cms-pages.md`, `cms-galleries.md`,
 `ecommerce-seo.md`.
@@ -504,3 +526,41 @@ Known traps:
 | `404` on a route that should exist | Missing `crights` feature flag (§1.5) | Enable the feature in Admin, or hide it in the UI. |
 | `429` | Rate or concurrency limit | Honour `Retry-After`, back off, keep the existing token. |
 | `500` on `POST vql` | VQL not enabled on the install | Fall back to `categories/{id}`. |
+
+## Field name changes (snake_case, project-phoenix)
+
+Vendre renamed camelCase fields to snake_case. Clients read the new names and
+may fall back to the old ones for older installs. `visitorid` was **not** changed.
+
+| Endpoint | Old | New |
+| --- | --- | --- |
+| GET `shopping-cart`, GET/PUT/POST `shopping-cart/products` | `productId` | `product_id` |
+| GET `shopping-cart` (also `/surface/1/`) | `mutationProtectionToken` | `mutation_protection_token` |
+| GET/PUT `favorites/lists(/products)` | `customers_id` / `types_id` / `products_id` (and `productId`) | `customer_id` / `type_id` / `product_id` |
+| GET `checkout/upsell/get-prices` | `priceExcl` / `priceIncl` | `price_excl_raw` / `price_raw` |
+| GET `bankid/status` | `hintCode` | `hint_code` |
+| OpenAPI `accounts/me/order-history/{id}` | `orderId` | `order_id` |
+| OpenAPI `accounts/me/quotations/{id}` | `quotationId` | `quotation_id` |
+| OpenAPI securitySchemes | `bearerAuth` / `mutationProtectionToken` | `bearer_auth` / `mutation_protection_token` |
+
+Cart line shape: `{ "id": "…", "product_id": 123, "quantity": 2, "attributes": [], "data": null, "product_data": { … } }`.
+Request body for `POST shopping-cart/products` (PUT removed; bare top-level arrays rejected): `{ "products": [{ "id": 123, "quantity": 2, "attributes": [] }] }`.
+
+## Cart product mutations are POST-only (Phoenix)
+
+`POST /surface/2/shopping-cart/products` is the only route for adding, updating
+and removing cart lines. `PUT` is removed, the bare top-level array body is no
+longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
+`clear` (not `empty`), and malformed bodies return the standard
+`{ "errors": [...] }` format.
+
+### Surface audit log and session CORS headers (Vendre change 2026-09-30)
+
+- Session-related Surface responses, including session-gate 401s, now carry
+  CORS headers. Invalid-bearer 401s may still lack them. The storefront is
+  unaffected: all traffic goes through the same-origin proxy.
+- Surface API activity and selected headless admin changes are recorded in an
+  audit log. Browse it in Admin at `/Admin/headless/audit/logs/browse`
+  (exact-match filters, date range, sorting, `per_page` max 200, live table
+  only — archived rows are not shown). Archiving is off by default
+  (`SURFACE_AUDIT_ARCHIVE_ENABLED`). Use it to trace failed storefront requests.

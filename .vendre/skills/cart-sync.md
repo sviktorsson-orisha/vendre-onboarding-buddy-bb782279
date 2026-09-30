@@ -17,8 +17,8 @@ checkout.
 ## Debounced background sync
 
 - Every change schedules an async sync to
-  `PUT /surface/2/shopping-cart/products` (add / set quantity) or
-  `PUT /surface/2/shopping-cart/products` with `quantity: 0` (remove a single
+  `POST /surface/2/shopping-cart/products` (add / set quantity) or
+  `POST /surface/2/shopping-cart/products` with `quantity: 0` (remove a single
   line — `DELETE /surface/2/shopping-cart` empties the entire cart), always with
   `Surface-Mutation-Protection-Token`.
 - **Debounce ~400–600 ms** and coalesce: rapid consecutive changes to the same
@@ -63,3 +63,7 @@ cart the same way a line change does.
 
 Cart reads are always fresh (`staleTime: 0`, `gcTime: 0`). The optimistic layer
 is the only client-side "cache" and it is always reconciled against the store.
+
+## Line field name
+
+Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.

@@ -10,6 +10,9 @@ description: Vendre Surface v2 navigation - navigation/menus for header, mega me
 - `GET /surface/2/navigation/menus` — header, mega menu, drawer, footer.
 - `GET /surface/2/categories/{id}` — category details for breadcrumb chains.
 
+Menu item `attributes` is always an object (`{}` when empty) since 2026-09-30;
+older installs may send `[]` — treat both as empty.
+
 ## Routing by menu item type
 
 `GET navigation/menus` returns **both** product categories and CMS pages in one

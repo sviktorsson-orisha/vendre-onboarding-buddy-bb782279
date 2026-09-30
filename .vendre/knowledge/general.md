@@ -18,7 +18,7 @@
 - **CORS Gotchas:**
   - All `/surface/2/accounts*` endpoints resolve to the `default` CORS policy (NOT `customer`).
   - `POST /surface/2/contact` requires policy `email/contact` (note the slash).
-  - Gateway-level 401s (invalid Bearer or Session gate) do not carry CORS headers and appear as generic browser CORS errors.
+  - Invalid-Bearer 401s may lack CORS headers and appear as generic browser CORS errors; session-gate 401s carry CORS headers since 2026-09-30.
 
 
 ### Vendre Surface v2 Core Integration Rules
@@ -28,7 +28,7 @@
 - App Startup: Always initiate session via `POST /surface/2/session/bootstrap` via the backend proxy.
 - State Management: Store `surface_mutation_protection_token` in app state (avoid `localStorage`).
 - Mutating Calls (POST, PUT, DELETE): MUST include header `Surface-Mutation-Protection-Token: <token>`.
-- Token Refresh on Login/Logout: Always update the stored mutation token with `mutationProtectionToken` returned after login or logout.
+- Token Refresh on Login/Logout: Always update the stored mutation token with `mutation_protection_token` returned after login, logout or `GET shopping-cart` (legacy: `mutationProtectionToken`).
 
 ### Caching & Dynamic State Strategy
 
