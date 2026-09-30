@@ -67,3 +67,10 @@ is the only client-side "cache" and it is always reconciled against the store.
 ## Line field name
 
 Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.
+
+## Freshness (no refetch on every page change)
+
+The cart query uses `staleTime: 30s` and `refetchOnWindowFocus: "always"`.
+It is refetched when the cart panel opens, when the tab/window regains focus
+(changes from another device), after every own mutation and always before
+checkout. Page changes within 30 s reuse the last read.
