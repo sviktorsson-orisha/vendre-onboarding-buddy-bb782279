@@ -347,7 +347,24 @@ const liveApi: VendreApi = {
       tree: data?.tree ?? [],
       pages: data?.pages ?? [],
     })),
-  getCart: () => guarded(() => surfaceJson<Cart>("shopping-cart")),
+  // Vendre renamed productId -> product_id and mutationProtectionToken ->
+  // mutation_protection_token; accept both so older installs keep working.
+  getCart: () =>
+    guarded(() => surfaceJson<Cart>("shopping-cart")).then(async (cart) => {
+      const raw = cart as Cart & { mutationProtectionToken?: string };
+      const token = raw?.mutation_protection_token ?? raw?.mutationProtectionToken;
+      if (token) {
+        const { setMutationProtectionToken } = await import("@/lib/vendre/client");
+        setMutationProtectionToken(token);
+      }
+      return {
+        ...cart,
+        products: (cart?.products ?? []).map((line) => {
+          const l = line as CartLine & { productId?: number };
+          return { ...l, product_id: Number(l.product_id ?? l.productId) };
+        }),
+      };
+    }),
   addToCart: async (productId, quantity = 1, knownQuantity) => {
     // The store sets an absolute quantity, so adding a product that is already
     // in the cart must carry existing + new, otherwise nothing changes. The
@@ -359,7 +376,7 @@ const liveApi: VendreApi = {
       try {
         const cart = await liveApi.getCart();
         const line = (cart?.products ?? []).find(
-          (item) => Number(item.productId) === id && (item.attributes?.length ?? 0) === 0,
+          (item) => Number(item.product_id) === id && (item.attributes?.length ?? 0) === 0,
         );
         existing = line?.quantity ?? 0;
       } catch {
@@ -386,7 +403,7 @@ const liveApi: VendreApi = {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          products: [{ id: line.productId, quantity, attributes: line.attributes }],
+          products: [{ id: line.product_id, quantity, attributes: line.attributes }],
         }),
       }),
     );
@@ -400,7 +417,7 @@ const liveApi: VendreApi = {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          products: [{ id: line.productId, quantity: 0, attributes: line.attributes }],
+          products: [{ id: line.product_id, quantity: 0, attributes: line.attributes }],
         }),
       }),
     );
@@ -748,7 +765,7 @@ const demoApi: VendreApi = {
         ...demoCart.products,
         {
           id,
-          productId: Number(id),
+          product_id: Number(id),
           quantity,
           attributes: [],
           data: null,
@@ -1033,7 +1050,7 @@ export function useCartMutations() {
           ? (cached.products ?? [])
               .filter(
                 (line) =>
-                  Number(line.productId) === Number(productId) &&
+                  Number(line.product_id) === Number(productId) &&
                   (line.attributes?.length ?? 0) === 0,
               )
               .reduce((sum, line) => sum + (line.quantity ?? 0), 0)

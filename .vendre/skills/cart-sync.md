@@ -63,3 +63,7 @@ cart the same way a line change does.
 
 Cart reads are always fresh (`staleTime: 0`, `gcTime: 0`). The optimistic layer
 is the only client-side "cache" and it is always reconciled against the store.
+
+## Line field name
+
+Cart lines identify the product with `product_id` (formerly `productId`). Requests still send `{ "products": [{ "id", "quantity", "attributes" }] }`.

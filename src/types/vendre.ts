@@ -224,9 +224,9 @@ export type CategoryResponse = {
 };
 
 export type CartLine = {
-  /** Cart line id (string), not always equal to productId. */
+  /** Cart line id (string), not always equal to product_id. */
   id: string;
-  productId: number;
+  product_id: number;
   quantity: number;
   attributes: unknown[];
   data: unknown;
@@ -241,7 +241,7 @@ export type Cart = {
   /** Some installs return the total already formatted in the session currency. */
   cart_total_formatted?: string | null;
   /** Refreshed mutation protection token, when the store returns one. */
-  mutationProtectionToken?: string;
+  mutation_protection_token?: string;
 };
 
 

@@ -291,9 +291,9 @@ documented required set if the call fails.
 | PUT | `accounts/me/addresses` | `default` | yes | update main address, body `{ addresses: [ { id, firstname, lastname, company, street_address, postcode, city, country_id, telephone } ] }` — a flat body answers `422 SURFACE_ACCOUNT_MALFORMED_BODY` (verified live) |
 | PUT | `accounts/me/address-book` | `default` | yes | upsert alternative addresses, body `{ addresses: [...] }` |
 | GET | `accounts/me/order-history` | `default` | – | order list |
-| GET | `accounts/me/order-history/{orderId}` | `default` | – | single order (see shape below) |
+| GET | `accounts/me/order-history/{order_id}` | `default` | – | single order (see shape below) |
 | GET | `accounts/me/quotations` | `default` | – | quotation list (B2B) |
-| GET | `accounts/me/quotations/{quotationId}` | `default` | – | single quotation |
+| GET | `accounts/me/quotations/{quotation_id}` | `default` | – | single quotation |
 
 **`PUT accounts/me` body keys** — the update body uses `firstname` / `lastname`
 (plus `email_address`, `street_address`, `postcode`, `city`, numeric
@@ -352,7 +352,7 @@ that are empty — blank strings are rejected. A partial field set returns
 `SURFACE_ACCOUNT_MALFORMED_BODY` (400/422).
 
 
-**`accounts/me/order-history/{orderId}` response** (verified against a live store):
+**`accounts/me/order-history/{order_id}` response** (verified against a live store):
 the payload is wrapped in `order` and contains `id`, `status`, `date`,
 `billing_address`, `delivery_address`, `status_history`, `totals`
 (`{ class, title, text, value }`, `text` already formatted) and `products`:
@@ -504,3 +504,22 @@ Known traps:
 | `404` on a route that should exist | Missing `crights` feature flag (§1.5) | Enable the feature in Admin, or hide it in the UI. |
 | `429` | Rate or concurrency limit | Honour `Retry-After`, back off, keep the existing token. |
 | `500` on `POST vql` | VQL not enabled on the install | Fall back to `categories/{id}`. |
+
+## Field name changes (snake_case, project-phoenix)
+
+Vendre renamed camelCase fields to snake_case. Clients read the new names and
+may fall back to the old ones for older installs. `visitorid` was **not** changed.
+
+| Endpoint | Old | New |
+| --- | --- | --- |
+| GET `shopping-cart`, GET/PUT/POST `shopping-cart/products` | `productId` | `product_id` |
+| GET `shopping-cart` (also `/surface/1/`) | `mutationProtectionToken` | `mutation_protection_token` |
+| GET/PUT `favorites/lists(/products)` | `customers_id` / `types_id` / `products_id` (and `productId`) | `customer_id` / `type_id` / `product_id` |
+| GET `checkout/upsell/get-prices` | `priceExcl` / `priceIncl` | `price_excl_raw` / `price_raw` |
+| GET `bankid/status` | `hintCode` | `hint_code` |
+| OpenAPI `accounts/me/order-history/{id}` | `orderId` | `order_id` |
+| OpenAPI `accounts/me/quotations/{id}` | `quotationId` | `quotation_id` |
+| OpenAPI securitySchemes | `bearerAuth` / `mutationProtectionToken` | `bearer_auth` / `mutation_protection_token` |
+
+Cart line shape: `{ "id": "…", "product_id": 123, "quantity": 2, "attributes": [], "data": null, "product_data": { … } }`.
+Request body for `PUT shopping-cart/products` is unchanged: `{ "products": [{ "id": 123, "quantity": 2, "attributes": [] }] }`.
