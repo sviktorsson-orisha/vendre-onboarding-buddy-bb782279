@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Loader2, Minus, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 import { ProductPrice } from "@/components/store/product-price";
@@ -31,11 +31,6 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const { update, remove } = useCartMutations();
   const [checkoutPending, setCheckoutPending] = useState(false);
   const lines = cart?.products ?? [];
-
-  // Always show the store's current cart when the sheet opens.
-  useEffect(() => {
-    if (open) void refetch();
-  }, [open, refetch]);
 
   // The total always comes from the store — never summed in the frontend.
   // When we have to format it ourselves, match the decimals the store already

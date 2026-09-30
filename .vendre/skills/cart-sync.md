@@ -59,9 +59,7 @@ where waiting is correct.
 `coupons/reset` (all three need the token). Any coupon change invalidates the
 cart the same way a line change does.
 
-## Freshness
+## Never cache
 
-Cart reads use a short staleTime (~30 s) to skip refetches on every in-app
-navigation, but are always refetched on window focus (another device may have
-changed the cart), when the cart sheet opens, after every mutation and before
-checkout.
+Cart reads are always fresh (`staleTime: 0`, `gcTime: 0`). The optimistic layer
+is the only client-side "cache" and it is always reconciled against the store.

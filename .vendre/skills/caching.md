@@ -16,14 +16,13 @@ description: What to cache and what never to cache in a Vendre Surface v2 storef
 Key these caches by everything that changes their content: category id, page,
 sort, filters, **and** market/currency/language/VAT from session context.
 
-## Live per visitor
+## Never cache (live per visitor)
 
-- `GET shopping-cart*` — short staleTime (~30 s), always refetched on window
-  focus (changes from another device), when the cart sheet opens, after every
-  mutation and before checkout.
-- `GET session/context` — one shared query (staleTime ~10 min, no focus
-  refetch); invalidated on login, logout and context changes.
-- `GET accounts/me*`, order history — fresh on view load.
+- `GET shopping-cart*` — cart, totals, coupons
+- `GET session`, `GET session/context`
+- `GET accounts/me*`, order history
+
+Use `staleTime: 0` and `gcTime: 0` for these, and refetch on view load.
 
 ## Cart is a special case
 
