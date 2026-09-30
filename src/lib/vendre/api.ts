@@ -347,7 +347,24 @@ const liveApi: VendreApi = {
       tree: data?.tree ?? [],
       pages: data?.pages ?? [],
     })),
-  getCart: () => guarded(() => surfaceJson<Cart>("shopping-cart")),
+  // Vendre renamed productId -> product_id and mutationProtectionToken ->
+  // mutation_protection_token; accept both so older installs keep working.
+  getCart: () =>
+    guarded(() => surfaceJson<Cart>("shopping-cart")).then(async (cart) => {
+      const raw = cart as Cart & { mutationProtectionToken?: string };
+      const token = raw?.mutation_protection_token ?? raw?.mutationProtectionToken;
+      if (token) {
+        const { setMutationProtectionToken } = await import("@/lib/vendre/client");
+        setMutationProtectionToken(token);
+      }
+      return {
+        ...cart,
+        products: (cart?.products ?? []).map((line) => {
+          const l = line as CartLine & { productId?: number };
+          return { ...l, product_id: Number(l.product_id ?? l.productId) };
+        }),
+      };
+    }),
   addToCart: async (productId, quantity = 1, knownQuantity) => {
     // The store sets an absolute quantity, so adding a product that is already
     // in the cart must carry existing + new, otherwise nothing changes. The
