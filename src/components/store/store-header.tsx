@@ -12,7 +12,14 @@ import { AccountMenu } from "@/components/store/account-menu";
 import { SearchBox } from "@/components/store/search-box";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useI18n } from "@/lib/i18n";
-import { resolveImageUrl, useCart, useCategoryMenu, useSessionContext } from "@/lib/vendre/api";
+import {
+  resolveImageUrl,
+  useCart,
+  useCategoryMenu,
+  usePrefetchCategory,
+  useSessionContext,
+} from "@/lib/vendre/api";
+import { useIntent } from "@/lib/vendre/use-intent";
 import { cn } from "@/lib/utils";
 import type { MenuNode } from "@/types/vendre";
 
@@ -20,6 +27,7 @@ import type { MenuNode } from "@/types/vendre";
 function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => void }) {
   const { t } = useI18n();
   const columns = node.children;
+  const intent = useIntent(usePrefetchCategory());
 
   return (
     <div
@@ -33,6 +41,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
               <Link
                 to="/kategori/$id"
                 params={{ id: String(child.id) }}
+                {...intent(child.id)}
                 className="block truncate text-sm font-bold text-foreground hover:text-primary"
               >
                 {child.name}
@@ -44,6 +53,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
                       <Link
                         to="/kategori/$id"
                         params={{ id: String(leaf.id) }}
+                        {...intent(leaf.id)}
                         className="block truncate rounded-md py-1 text-sm text-muted-foreground hover:text-primary"
                       >
                         {leaf.name}
@@ -60,6 +70,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
           <Link
             to="/kategori/$id"
             params={{ id: String(node.id) }}
+            {...intent(node.id)}
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
           >
             {t("store.viewAllIn", { name: node.name })}
@@ -81,6 +92,7 @@ function MobileNavList({
   onNavigate: () => void;
   depth?: number;
 }) {
+  const intent = useIntent(usePrefetchCategory());
   return (
     <div className={depth === 0 ? "" : "ml-3 border-l border-border pl-3"}>
       <Accordion type="multiple" className="w-full">
@@ -92,6 +104,7 @@ function MobileNavList({
                 key={key}
                 to="/kategori/$id"
                 params={{ id: String(node.id) }}
+                {...intent(node.id)}
                 onClick={onNavigate}
                 className={cn(
                   "block rounded-md px-2 py-2 hover:bg-accent",
@@ -111,6 +124,7 @@ function MobileNavList({
                 <Link
                   to="/kategori/$id"
                   params={{ id: String(node.id) }}
+                  {...intent(node.id)}
                   onClick={onNavigate}
                   className={cn(
                     "min-w-0 flex-1 truncate rounded-md px-2 py-2 hover:bg-accent",
@@ -147,6 +161,7 @@ export function StoreHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [openId, setOpenId] = useState<number | null>(null);
   const count = cart?.cart_count ?? 0;
+  const categoryIntent = useIntent(usePrefetchCategory());
   const activeNode = tree.find((node) => node.id === openId && node.children.length > 0) ?? null;
 
   useEffect(() => {
@@ -233,6 +248,7 @@ export function StoreHeader() {
                   className="flex min-w-0 items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors [overflow-wrap:anywhere] hover:text-primary"
                   aria-haspopup={hasChildren ? "true" : undefined}
                   aria-expanded={hasChildren ? isOpen : undefined}
+                  {...categoryIntent(node.id)}
                   onFocus={() => setOpenId(hasChildren ? node.id : null)}
                   onClick={() => setOpenId(null)}
                 >

@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 
 import { useI18n } from "@/lib/i18n";
-import { usePageMenu } from "@/lib/vendre/api";
+import { usePageMenu, usePrefetchPage } from "@/lib/vendre/api";
+import { useIntent } from "@/lib/vendre/use-intent";
 import type { PageTreeNode } from "@/types/vendre";
 
 /** CMS pages (galleries) route to /sida/$id — never to href/target. */
 function PageColumn({ title, items }: { title: string; items: PageTreeNode[] }) {
+  const intent = useIntent(usePrefetchPage());
   return (
     <div>
       <h2 className="brand-eyebrow text-muted-foreground">{title}</h2>
@@ -15,6 +17,7 @@ function PageColumn({ title, items }: { title: string; items: PageTreeNode[] }) 
             <Link
               to="/sida/$id"
               params={{ id: String(item.id) }}
+              {...intent(item.id)}
               className="text-sm text-muted-foreground hover:text-primary"
             >
               {item.title}
