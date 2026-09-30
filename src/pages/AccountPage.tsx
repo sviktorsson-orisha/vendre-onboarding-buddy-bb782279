@@ -132,6 +132,7 @@ function OrdersView() {
                   <td className="py-2">
                     <div className="flex items-center gap-3">
                       <StoreImage
+                        size="thumb"
                         image={
                           line.image
                             ? {
@@ -285,7 +286,6 @@ function AddressesView() {
   );
 }
 
-
 /* ------------------------------------------------------------- profile -- */
 
 function ProfileView() {
@@ -334,8 +334,6 @@ function ProfileView() {
       ...(rule?.max !== undefined && { maxLength: rule.max }),
     };
   };
-
-
 
   if (!form) return <Section title={t("account.profile")}>…</Section>;
 
@@ -436,7 +434,9 @@ function ProfileView() {
                 </option>
               ))}
             </select>
-            {fields["country_id"] && <p className="text-xs text-destructive">{fields["country_id"]}</p>}
+            {fields["country_id"] && (
+              <p className="text-xs text-destructive">{fields["country_id"]}</p>
+            )}
           </div>
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
@@ -492,7 +492,8 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
               value={view}
               onValueChange={(next) => {
                 if (next === "oversikt") void navigate({ to: "/mitt-konto" });
-                else void navigate({ to: "/mitt-konto/$view", params: { view: next as AccountView } });
+                else
+                  void navigate({ to: "/mitt-konto/$view", params: { view: next as AccountView } });
               }}
             >
               <SelectTrigger className="mt-1 w-full">
@@ -519,7 +520,6 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
           </div>
 
           <nav className="hidden lg:block">
-
             <ul className="space-y-1">
               {NAV.map((item) => {
                 const Icon = item.icon;
@@ -531,7 +531,9 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
                         to="/mitt-konto"
                         className={cn(
                           "flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent",
-                          active ? "bg-accent font-semibold text-foreground" : "text-muted-foreground",
+                          active
+                            ? "bg-accent font-semibold text-foreground"
+                            : "text-muted-foreground",
                         )}
                       >
                         <Icon className="size-4" />
@@ -543,7 +545,9 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
                         params={{ view: item.view }}
                         className={cn(
                           "flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent",
-                          active ? "bg-accent font-semibold text-foreground" : "text-muted-foreground",
+                          active
+                            ? "bg-accent font-semibold text-foreground"
+                            : "text-muted-foreground",
                         )}
                       >
                         <Icon className="size-4" />

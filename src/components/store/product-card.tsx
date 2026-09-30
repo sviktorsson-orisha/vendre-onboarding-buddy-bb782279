@@ -1,8 +1,9 @@
+import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { ProductPrice } from "@/components/store/product-price";
 import { StoreImage } from "@/components/store/store-image";
-import { useCartMutations } from "@/lib/vendre/api";
+import { useCartMutations, usePrefetchProduct } from "@/lib/vendre/api";
 import { useI18n } from "@/lib/i18n";
 import type { Product } from "@/types/vendre";
 
@@ -13,14 +14,36 @@ export function ProductCard({ product }: { product: Product }) {
   const hasVariants = (product.child_count ?? 0) > 0;
   const readMoreOnly = hasVariants || soldOut;
 
+  // Hover/focus intent: fetch the product in the background after a short delay
+  // so quick passes over the grid don't trigger store calls.
+  const prefetch = usePrefetchProduct();
+  const timer = useRef<number | null>(null);
+  const cancel = () => {
+    if (timer.current != null) window.clearTimeout(timer.current);
+    timer.current = null;
+  };
+  const schedule = () => {
+    cancel();
+    timer.current = window.setTimeout(() => prefetch(product.id), 120);
+  };
+  useEffect(() => cancel, []);
+  const intent = {
+    onMouseEnter: schedule,
+    onMouseLeave: cancel,
+    onFocus: schedule,
+    onTouchStart: () => prefetch(product.id),
+  };
+
   return (
     <article className="brand-card group flex flex-col overflow-hidden p-0">
       <Link
         to="/produkt/$id"
         params={{ id: String(product.id) }}
+          {...intent}
         className="block aspect-4/5 overflow-hidden"
       >
         <StoreImage
+          size="card"
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
@@ -31,6 +54,7 @@ export function ProductCard({ product }: { product: Product }) {
         <Link
           to="/produkt/$id"
           params={{ id: String(product.id) }}
+          {...intent}
           className="text-sm font-semibold text-foreground hover:text-primary"
         >
           {product.name}
@@ -40,6 +64,7 @@ export function ProductCard({ product }: { product: Product }) {
           <Link
             to="/produkt/$id"
             params={{ id: String(product.id) }}
+            {...intent}
             className="brand-button-ghost mt-auto w-full justify-center"
           >
             {t("store.readMore")}
