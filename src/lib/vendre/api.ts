@@ -9,7 +9,7 @@
  * Caching follows .vendre/skills/caching.md: menus/categories are cached, cart and
  * session are never cached.
  */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useOnboarding } from "@/context/onboarding-context";
@@ -158,6 +158,16 @@ export function resetSessionGate() {
   sessionReady = null;
 }
 
+/** Listeners told when the session was re-established after a 401. */
+const rebootstrapListeners = new Set<() => void>();
+
+export function onSessionRebootstrap(listener: () => void) {
+  rebootstrapListeners.add(listener);
+  return () => {
+    rebootstrapListeners.delete(listener);
+  };
+}
+
 export async function guarded<T>(run: () => Promise<T>): Promise<T> {
   await ensureSession();
   try {
@@ -169,6 +179,7 @@ export async function guarded<T>(run: () => Promise<T>): Promise<T> {
     if (!sessionGone) throw error;
     sessionReady = null;
     await ensureSession();
+    rebootstrapListeners.forEach((listener) => listener());
     return run();
   }
 }
@@ -1001,13 +1012,33 @@ export function useCart() {
   });
 }
 
+/**
+ * One shared session/context response for the whole app. Store name, logo,
+ * language, currency and countries rarely change during a visit, so the
+ * answer is reused and only refetched when something actually changes:
+ * login/logout/register (useAccountMutations invalidates ["vendre", mode])
+ * or a session re-bootstrap after a 401 (listener below).
+ */
 export function useSessionContext() {
   const api = useVendreApi();
+  const queryClient = useQueryClient();
+  const queryKey = ["vendre", api.mode, "session-context"];
+
+  useEffect(
+    () =>
+      onSessionRebootstrap(() => {
+        void queryClient.invalidateQueries({ queryKey: ["vendre", "live", "session-context"] });
+      }),
+    [queryClient],
+  );
+
   return useQuery({
-    queryKey: ["vendre", api.mode, "session-context"],
+    queryKey,
     queryFn: () => api.getSessionContext(),
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }
 

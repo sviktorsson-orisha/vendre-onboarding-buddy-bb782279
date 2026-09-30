@@ -19,7 +19,8 @@ sort, filters, **and** market/currency/language/VAT from session context.
 ## Never cache (live per visitor)
 
 - `GET shopping-cart*` — cart, totals, coupons
-- `GET session`, `GET session/context`
+- `GET session` (compact status)
+- `GET session/context` is the exception: one shared response, refetched only after login/logout/register, a 401 re-bootstrap, or a future `POST session`
 - `GET accounts/me*`, order history
 
 Use `staleTime: 0` and `gcTime: 0` for these, and refetch on view load.
