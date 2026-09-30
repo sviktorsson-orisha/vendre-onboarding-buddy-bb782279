@@ -954,6 +954,25 @@ export function useProduct(id: string, categoryId?: number) {
   });
 }
 
+/**
+ * Background-fetches a product under the exact `useProduct` key, so the product
+ * page opens from cache after a hover/focus. No-op until the scope is known.
+ */
+export function usePrefetchProduct() {
+  const api = useVendreApi();
+  const scope = useCacheScope();
+  const queryClient = useQueryClient();
+  return (id: string | number) => {
+    if (scope == null) return;
+    void queryClient.prefetchQuery({
+      queryKey: ["vendre", api.mode, "product", String(id), scope],
+      queryFn: () => api.getProduct(String(id)),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
+}
+
+
 /** Variant children are separate products, cached under the same product key. */
 export function useVariantProduct(productId: number | null) {
   const api = useVendreApi();
