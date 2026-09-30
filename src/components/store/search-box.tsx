@@ -120,8 +120,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
                     )}
                   >
                     <span className="size-10 shrink-0 overflow-hidden rounded-md">
-                      <StoreImage
-                        image={product.image ?? product.images[0] ?? null}
+                      <StoreImage                        size="thumb"                        image={product.image ?? product.images[0] ?? null}
                         alt={product.name}
                         label={product.name}
                         className="size-full"

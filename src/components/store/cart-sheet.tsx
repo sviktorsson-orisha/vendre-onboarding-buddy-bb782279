@@ -91,8 +91,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                     onClick={() => onOpenChange(false)}
                     className="shrink-0"
                   >
-                    <StoreImage
-                      image={line.product_data?.image ?? null}
+                    <StoreImage                      size="thumb"                      image={line.product_data?.image ?? null}
                       alt={line.product_data?.name ?? `#${line.product_id}`}
                       label={line.product_data?.name ?? "P"}
                       className="size-16 shrink-0 rounded-md"

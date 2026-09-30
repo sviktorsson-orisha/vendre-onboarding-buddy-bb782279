@@ -131,8 +131,7 @@ function OrdersView() {
                 <tr key={line.id} className="border-b border-border/60">
                   <td className="py-2">
                     <div className="flex items-center gap-3">
-                      <StoreImage
-                        image={
+                      <StoreImage                        size="thumb"                        image={
                           line.image
                             ? {
                                 id: null,

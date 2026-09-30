@@ -20,8 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
         params={{ id: String(product.id) }}
         className="block aspect-4/5 overflow-hidden"
       >
-        <StoreImage
-          image={product.image ?? product.images[0] ?? null}
+        <StoreImage          size="card"          image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
           className="size-full transition-transform duration-300 group-hover:scale-105"
