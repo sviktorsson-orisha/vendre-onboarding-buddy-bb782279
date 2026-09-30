@@ -6,7 +6,7 @@ description: Request topology for a headless Vendre Surface API v2 storefront - 
 # Vendre Surface v2 storefront architecture
 
 We work **exclusively against Surface API version 2** — every path is
-`/surface/2/<endpoint>`. Never v1, never other Vendre APIs.
+`/surface/2/<endpoint>`. Never v1 (it rejects cross-origin requests with 403 `cors_not_supported`), never other Vendre APIs.
 
 This is the single most expensive thing to get wrong. Build it this way from
 day one.

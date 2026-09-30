@@ -86,5 +86,5 @@ Never call `liveApi` or the mock directly from a component.
 - **Price slider:** commit happens on `onValueCommit`, and values equal to `min`/`max` are sent as `undefined` so the URL is not filled with the default range. The filter is hidden when `max <= min`.
 - **The cache key must include market/currency/language/VAT** — prices change when the context changes.
 - **Show the product count in one place** (the toolbar), not also under the heading.
-- **CORS:** `categories` is its own policy in the Surface configuration; an invalid-bearer 401 may lack CORS headers and look like a generic CORS error (session-gate 401s include them since 2026-09-30).
+- **CORS:** `categories` is its own policy in the Surface configuration; gateway 401s carry CORS headers for configured origins (since 2026-09-30), so a bare CORS error means the origin isn't allowlisted.
 - **Server errors** show the error box only when no previous data exists — otherwise the last successful listing is kept.

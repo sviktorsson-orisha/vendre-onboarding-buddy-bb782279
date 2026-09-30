@@ -469,7 +469,7 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
   if (!allowed) {
     return (
       <StoreShell>
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6">
+        <div className="w-full py-8">
           <p className="text-sm text-muted-foreground">{t("account.signedOutBody")}</p>
         </div>
       </StoreShell>
@@ -478,7 +478,7 @@ export default function AccountPage({ view = "oversikt" }: { view?: AccountView 
 
   return (
     <StoreShell>
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
+      <div className="w-full">
         <h1 className="brand-heading text-3xl text-foreground">{t("account.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {name}

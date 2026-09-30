@@ -12,7 +12,7 @@ retried. Page-level endpoints live in the feature skills (`vendre-session-contex
 `vendre-vql-queries`, `vendre-contact-forms`).
 
 We work **exclusively against Surface API version 2** — every path is
-`/surface/2/<endpoint>`. Never v1, never other Vendre APIs.
+`/surface/2/<endpoint>`. Never v1 (it rejects cross-origin requests with 403 `cors_not_supported`), never other Vendre APIs.
 
 ## Request topology (server proxy only)
 

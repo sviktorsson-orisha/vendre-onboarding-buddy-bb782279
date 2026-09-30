@@ -18,7 +18,7 @@
 - **CORS Gotchas:**
   - All `/surface/2/accounts*` endpoints resolve to the `default` CORS policy (NOT `customer`).
   - `POST /surface/2/contact` requires policy `email/contact` (note the slash).
-  - Invalid-Bearer 401s may lack CORS headers and appear as generic browser CORS errors; session-gate 401s carry CORS headers since 2026-09-30.
+  - Gateway 401s (bearer and session gate) carry CORS headers when the origin is configured (since 2026-09-30); a bare CORS error means the origin isn't allowlisted. `/surface/1/*` rejects cross-origin requests with 403 `cors_not_supported`.
 
 
 ### Vendre Surface v2 Core Integration Rules
