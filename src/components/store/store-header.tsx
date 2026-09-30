@@ -9,7 +9,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AccountMenu } from "@/components/store/account-menu";
-import { CartSheet } from "@/components/store/cart-sheet";
 import { SearchBox } from "@/components/store/search-box";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useI18n } from "@/lib/i18n";
@@ -269,7 +268,25 @@ export function StoreHeader() {
       </Sheet>
 
 
-      <CartSheet open={cartOpen} onOpenChange={setCartOpen} />
+      <LazyCartSheet open={cartOpen} onOpenChange={setCartOpen} />
     </header>
+  );
+}
+
+// Cart panel code loads the first time the cart is opened, then stays mounted.
+const CartSheet = lazy(() =>
+  import("@/components/store/cart-sheet").then((m) => ({ default: m.CartSheet })),
+);
+
+function LazyCartSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const [loaded, setLoaded] = useState(open);
+  useEffect(() => {
+    if (open) setLoaded(true);
+  }, [open]);
+  if (!loaded) return null;
+  return (
+    <Suspense fallback={null}>
+      <CartSheet open={open} onOpenChange={onOpenChange} />
+    </Suspense>
   );
 }
