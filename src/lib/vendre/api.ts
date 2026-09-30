@@ -1001,14 +1001,19 @@ export function useProductVariants(id: string) {
 }
 
 
-/** Never cached — the cart is live state. */
+/**
+ * Live cart, fresh when it matters: refetched when the tab/window regains
+ * focus (changes from another device), when the cart panel opens, after every
+ * own mutation (invalidation) and before checkout. Page changes within 30 s of
+ * the last read reuse it instead of calling the store again.
+ */
 export function useCart() {
   const api = useVendreApi();
   return useQuery({
     queryKey: ["vendre", api.mode, "cart"],
     queryFn: () => api.getCart(),
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 30_000,
+    refetchOnWindowFocus: "always",
   });
 }
 

@@ -32,6 +32,11 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
   const [checkoutPending, setCheckoutPending] = useState(false);
   const lines = cart?.products ?? [];
 
+  // Opening the cart always reads the store's current cart.
+  useEffect(() => {
+    if (open) void refetch();
+  }, [open, refetch]);
+
   // The total always comes from the store — never summed in the frontend.
   // When we have to format it ourselves, match the decimals the store already
   // uses on the line prices so the sum never looks off next to them.
