@@ -7,7 +7,7 @@ import { useCartMutations, usePrefetchProduct } from "@/lib/vendre/api";
 import { useI18n } from "@/lib/i18n";
 import type { Product } from "@/types/vendre";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
   const { t } = useI18n();
   const { add } = useCartMutations();
   const soldOut = product.stock_total === 0 && product.stock_allow_checkout === false;
@@ -44,6 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
       >
         <StoreImage
           size="card"
+          priority={priority}
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
