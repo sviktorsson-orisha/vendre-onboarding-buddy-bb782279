@@ -31,8 +31,8 @@ typically requires all of these — omitting any yields
 ```json
 {
   "gender": "m",
-  "firstname": "Test",
-  "lastname": "Testsson",
+  "first_name": "Test",
+  "last_name": "Testsson",
   "email_address": "test@example.com",
   "telephone": "0701234567",
   "street_address": "Testgatan 1",

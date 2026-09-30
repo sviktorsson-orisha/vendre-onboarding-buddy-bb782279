@@ -65,7 +65,7 @@ Writing back: `PUT /surface/2/accounts/me` and
 ## Registration
 
 `POST /surface/2/accounts` with the full documented field set —
-`firstname`, `lastname`, `email_address`, `password`, `confirmation`, `type`,
+`first_name`, `last_name`, `email_address`, `password`, `confirmation`, `type`,
 `gender`, `company`, `street_address`, `postcode`, `city`, `country`,
 `telephone`, `mobile`, `personnummer`, `vat_identification_number`,
 `newsletter`, `consent_personal_data_policy`. A partial body returns

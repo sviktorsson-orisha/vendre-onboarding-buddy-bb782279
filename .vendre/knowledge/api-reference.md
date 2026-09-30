@@ -295,14 +295,14 @@ documented required set if the call fails.
 | PUT | `accounts/me` | `default` | yes | update profile |
 | GET | `accounts/me/addresses` | `default` | – | the customer's **main address** only |
 | GET | `accounts/me/address-book` | `default` | – | the **alternative** addresses only (never the main one) |
-| PUT | `accounts/me/addresses` | `default` | yes | update main address, body `{ addresses: [ { id, firstname, lastname, company, street_address, postcode, city, country_id, telephone } ] }` — a flat body answers `422 SURFACE_ACCOUNT_MALFORMED_BODY` (verified live) |
+| PUT | `accounts/me/addresses` | `default` | yes | update main address, body `{ addresses: [ { id, first_name, last_name, company, street_address, postcode, city, country_id, telephone } ] }` — a flat body answers `422 SURFACE_ACCOUNT_MALFORMED_BODY` (verified live) |
 | PUT | `accounts/me/address-book` | `default` | yes | upsert alternative addresses, body `{ addresses: [...] }` |
 | GET | `accounts/me/order-history` | `default` | – | order list |
 | GET | `accounts/me/order-history/{order_id}` | `default` | – | single order (see shape below) |
 | GET | `accounts/me/quotations` | `default` | – | quotation list (B2B) |
 | GET | `accounts/me/quotations/{quotation_id}` | `default` | – | single quotation |
 
-**`PUT accounts/me` body keys** — the update body uses `firstname` / `lastname`
+**`PUT accounts/me` body keys** — the update body uses `first_name` / `last_name`
 (plus `email_address`, `street_address`, `postcode`, `city`, numeric
 `country_id` (never `country`) — `type` as `0`/`1`, and the optional
 fields `telephone`, `mobile`, `street_address2`, `personnummer`, `company`,
@@ -324,7 +324,7 @@ forms; only the store admin can change it.
 
 **Registration body (`POST accounts`, and `POST customers`)**
 
-Required: `email_address`, `password`, `confirmation`, `firstname`, `lastname`,
+Required: `email_address`, `password`, `confirmation`, `first_name`, `last_name`,
 `street_address`, `postcode`, `city`, `country_id`, plus every field
 `accounts/form` reports as `display: true, required: true`.
 
@@ -564,3 +564,10 @@ longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
   (exact-match filters, date range, sorting, `per_page` max 200, live table
   only — archived rows are not shown). Archiving is off by default
   (`SURFACE_AUDIT_ARCHIVE_ENABLED`). Use it to trace failed storefront requests.
+
+## Name fields renamed to first_name / last_name (Vendre change 2026-09-30)
+
+`POST accounts`, `GET accounts/form`, `PUT accounts/me`, `GET/PUT accounts/address-book` and
+`GET/PUT accounts/addresses` now use `first_name` / `last_name` instead of `firstname` / `lastname`.
+The storefront sends the new keys, maps `accounts/form` rules and 422 `source.parameter` values back to
+its internal `firstname`/`lastname` form fields, and still reads both spellings from responses.
