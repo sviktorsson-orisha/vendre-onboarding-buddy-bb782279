@@ -571,3 +571,5 @@ longer accepted (always wrap in `{ "products": [...] }`), the clear-cart flag is
 `GET/PUT accounts/addresses` now use `first_name` / `last_name` instead of `firstname` / `lastname`.
 The storefront sends the new keys, maps `accounts/form` rules and 422 `source.parameter` values back to
 its internal `firstname`/`lastname` form fields, and still reads both spellings from responses.
+
+> **Note (verified 2026-09-30):** not every install has the `first_name`/`last_name` rename live yet. Installs whose `GET accounts/form` still lists `firstname`/`lastname` reject `first_name`/`last_name` on `POST accounts` with a generic 422. The client sends whichever form `accounts/form` lists (default: `firstname`/`lastname`). Responses may already use `first_name`/`last_name`; read both.
