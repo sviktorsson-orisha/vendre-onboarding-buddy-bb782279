@@ -573,3 +573,11 @@ The storefront sends the new keys, maps `accounts/form` rules and 422 `source.pa
 its internal `firstname`/`lastname` form fields, and still reads both spellings from responses.
 
 > **Note (verified 2026-09-30):** not every install has the `first_name`/`last_name` rename live yet. Installs whose `GET accounts/form` still lists `firstname`/`lastname` reject `first_name`/`last_name` on `POST accounts` with a generic 422. The client sends whichever form `accounts/form` lists (default: `firstname`/`lastname`). Responses may already use `first_name`/`last_name`; read both.
+
+## Image sizes (verified 2026-09-30)
+
+Store images at `/image/{id}/{file}` accept `?w=N` (and `?h=N`) to scale
+server-side. There is no WebP/AVIF conversion: a `.webp` filename or an
+`Accept: image/webp` header still returns JPEG bytes. The storefront requests
+`w=160` for thumbnails (cart, search, orders), `w=480` for product cards and
+the original file on the product page (`StoreImage` `size` prop).
