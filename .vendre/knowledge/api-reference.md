@@ -2,7 +2,7 @@
 
 Complete technical reference for the Surface v2 API endpoints (`/surface/2/*`) this template uses.
 
-_Source: the machine-generated OpenAPI 3.2 document (51 v2 paths), available live at `GET /surface/1/openapi` (use query `?v=1` or `?v=2` to filter by version; readable same-origin or server-side only, since v1 rejects cross-origin requests), plus static code analysis of `cadre/application/Routes/Http/SurfaceApi/**` and `cadre/application/Http/Controllers/SurfaceApi/**` (branch `2026_project_phoenix`)._
+_Source: the machine-generated OpenAPI 3.2 document (49 v2 paths), available live at `GET /surface/2/openapi` (49 paths as of 2026-10-01), plus static code analysis of `cadre/application/Routes/Http/SurfaceApi/**` and `cadre/application/Http/Controllers/SurfaceApi/**` (branch `2026_project_phoenix`)._
 
 > **Source of truth.** This document is authoritative for endpoints, HTTP methods,
 > CORS policies, required headers, and the error format. The skill files under
@@ -193,7 +193,7 @@ Details live in `.vendre/skills/price-log.md`.
 ## 2. Endpoint Catalogue (v2)
 
 `Token` = `Surface-Mutation-Protection-Token` required per the client rule in §1.6.
-The catalogue below is synchronised with the current OpenAPI document (51 paths).
+The catalogue below is synchronised with the current OpenAPI document (`GET /surface/2/openapi`, 49 paths).
 Rows marked _unverified_ are used by this app but are not present in that
 document — keep them, but re-check before relying on them.
 
@@ -322,7 +322,9 @@ original type (verified live). Show the customer type read-only in edit-account
 forms; only the store admin can change it.
 
 
-**Registration body (`POST accounts`, and `POST customers`)**
+**Registration body (`POST accounts`)**
+
+The OpenAPI document marks only `country_id` and `email_address` as required; every other key is governed by `GET accounts/form`. Accepted keys: `city`, `company`, `confirmation`, `consent_personal_data_policy`, `country_id`, `customers_group_id`, `email_address`, `fax`, `first_name`, `g-recaptcha-response`, `last_name`, `mobile`, `newsletter`, `password`, `personnummer`, `postcode`, `street_address`, `street_address2`, `telephone`, `type`, `vat_identification_number`. There is no `POST customers` endpoint any more.
 
 Required: `email_address`, `password`, `confirmation`, `first_name`, `last_name`,
 `street_address`, `postcode`, `city`, `country_id`, plus every field
@@ -346,8 +348,7 @@ enabled and filled in, registration is signed in immediately, so the company
 name is also written onto the new main address with
 `PUT accounts/me/addresses` right after sign-up to keep it.
 
-`consent_personal_data_policy`. `POST customers` additionally accepts
-`email_addresses`.
+`consent_personal_data_policy`.
 
 `country_id` is the numeric country id (ISO 3166-1 numeric, Sweden = `752`);
 sending `country` instead fails with `missing required property "country_id"`.
@@ -428,6 +429,8 @@ alone. Skills: `account-auth.md`, `customer-account/SKILL.md`,
 | POST | `checkout/upsell/add-products` | `checkout` | yes | add upsell products |
 | POST | `checkout/upsell/finalize` | `checkout` | yes | finalise the upsell, body `{ order_id }` |
 
+**`POST shopping-cart/products` item fields** (OpenAPI): `id` = existing cart line id (preferred when updating/removing a specific line), `product_id` = product id (matched to an existing line), `quantity` = absolute quantity, `quantity_diff` = relative change (e.g. `-1`), optional `attributes` (object), `comments`, `text`, `json`. `products` may be a single object or a list.
+
 `clear: true` (formerly `empty`) in a products mutation clears the cart before applying the new
 lines. Checkout itself is a **browser navigation** to the store's checkout page,
 never `fetch`. Skills: `cart-checkout.md`, `cart-sync.md`.
@@ -484,6 +487,8 @@ base URL. Skills: `navigation-menus.md`, `cms-pages.md`, `cms-galleries.md`,
 | GET | `favorites/lists` | `default` | – | favorite lists for the current customer |
 | PUT | `favorites/lists/products` | `default` | yes | mutate list products, body `{ products: [...], empty }` |
 | POST | `favorites/lists/products` | `default` | yes | alias of the `PUT` above |
+
+Favorites still use `empty` (not `clear`); product entries take `id`, `product_id`, `remove`.
 
 ### 2.8 Contact
 

@@ -78,3 +78,6 @@ checkout. Page changes within 30 s reuse the last read.
 ## Cart total format
 
 Since 2026-09-30 `cart_total` is a formatted string (e.g. `"187,50 kr"`) and `cart_total_raw` is the number. Display the string; calculate with the raw value. Older installs send a number only.
+
+
+Cart items may also carry the line `id` (preferred for updating/removing a specific line) and `quantity_diff` (relative change) instead of absolute `quantity` — see api-reference.md §2.4. The app currently sends absolute `quantity`.
