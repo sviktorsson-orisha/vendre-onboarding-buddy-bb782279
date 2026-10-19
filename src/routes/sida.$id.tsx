@@ -9,12 +9,12 @@ export const Route = createFileRoute("/sida/$id")({
       {
         name: "description",
         content:
-          "Innehållssida från butikens CMS i Vendre – frakt, villkor, kundservice och annan information.",
+          "Content page from the store's Vendre CMS – shipping, terms, customer service and more.",
       },
       { property: "og:title", content: "Information – Vendre Storefront" },
       {
         property: "og:description",
-        content: "Innehållssida hämtad från Vendre Surface API v2.",
+        content: "Content page loaded from Vendre Surface API v2.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },

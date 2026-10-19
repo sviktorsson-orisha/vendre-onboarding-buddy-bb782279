@@ -70,7 +70,7 @@ async function proxy({ request, params }: { request: Request; params: { _splat?:
   const { missing, baseUrl } = readVendreEnv();
   if (missing.length) {
     return Response.json(
-      { errors: [{ code: "missing_credentials", title: "Butiken är inte konfigurerad." }], missing },
+      { errors: [{ code: "missing_credentials", title: "The store is not configured." }], missing },
       { status: 400, headers: { "cache-control": "no-store" } },
     );
   }
@@ -83,7 +83,7 @@ async function proxy({ request, params }: { request: Request; params: { _splat?:
     const headers: Record<string, string> = { "cache-control": "no-store" };
     if (error instanceof TokenError && error.retryAfter) headers["retry-after"] = error.retryAfter;
     return Response.json(
-      { errors: [{ code: "token_failed", title: "Kunde inte autentisera mot butiken." }] },
+      { errors: [{ code: "token_failed", title: "Could not authenticate with the store." }] },
       { status, headers },
     );
   }
@@ -112,7 +112,7 @@ async function proxy({ request, params }: { request: Request; params: { _splat?:
 
   } catch {
     return Response.json(
-      { errors: [{ code: "upstream_unreachable", title: "Butiken svarar inte just nu." }] },
+      { errors: [{ code: "upstream_unreachable", title: "The store is not responding right now." }] },
       { status: 502, headers: { "cache-control": "no-store" } },
     );
   }

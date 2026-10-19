@@ -18,16 +18,16 @@ export const Route = createFileRoute("/sok")({
   },
   head: () => ({
     meta: [
-      { title: "Sök produkter – Vendre Storefront" },
+      { title: "Search products – Vendre Storefront" },
       {
         name: "description",
         content:
-          "Sök i hela sortimentet: skriv tre tecken för direkta produktförslag och se alla träffar på sökresultatsidan.",
+          "Search the full range: type three characters for instant suggestions and see all matches on the results page.",
       },
-      { property: "og:title", content: "Sök produkter – Vendre Storefront" },
+      { property: "og:title", content: "Search products – Vendre Storefront" },
       {
         property: "og:description",
-        content: "Hitta produkter direkt i din Vendre-butik med autocomplete och full sökresultatsida.",
+        content: "Find products in your Vendre store with autocomplete and a full results page.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
