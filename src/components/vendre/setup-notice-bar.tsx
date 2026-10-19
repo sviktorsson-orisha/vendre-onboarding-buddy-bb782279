@@ -1,3 +1,4 @@
+import type React from "react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Rocket, Settings2 } from "lucide-react";
 
@@ -6,9 +7,30 @@ import { useI18n } from "@/lib/i18n";
 
 // The guide is heavy and rarely used once the store is live: load its code only
 // the first time it opens, then keep it mounted so closing animates normally.
-const SetupWizardDialog = lazy(() =>
-  import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog })),
-);
+// If the chunk fails to load (e.g. the dev server restarted and the old module URL
+// is gone), retry once, then reload the page once instead of crashing to a white screen.
+type WizardProps = { open: boolean; onOpenChange: (open: boolean) => void };
+const SetupWizardDialog = lazy(async (): Promise<{ default: React.ComponentType<WizardProps> }> => {
+  const load = () =>
+    import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog }));
+  try {
+    return await load();
+  } catch {
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      return await load();
+    } catch (error) {
+      const key = "vendre-guide-chunk-reload";
+      if (typeof window !== "undefined" && !sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        window.location.reload();
+        return { default: () => null };
+      }
+      console.error(error);
+      return { default: () => null };
+    }
+  }
+});
 
 function LazySetupWizard({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [loaded, setLoaded] = useState(open);
