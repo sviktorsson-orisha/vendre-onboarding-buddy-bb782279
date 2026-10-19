@@ -1,3 +1,4 @@
+import type React from "react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Rocket, Settings2 } from "lucide-react";
 
