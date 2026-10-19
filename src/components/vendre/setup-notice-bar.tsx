@@ -8,7 +8,8 @@ import { useI18n } from "@/lib/i18n";
 // the first time it opens, then keep it mounted so closing animates normally.
 // If the chunk fails to load (e.g. the dev server restarted and the old module URL
 // is gone), retry once, then reload the page once instead of crashing to a white screen.
-const SetupWizardDialog = lazy(async () => {
+type WizardProps = { open: boolean; onOpenChange: (open: boolean) => void };
+const SetupWizardDialog = lazy(async (): Promise<{ default: React.ComponentType<WizardProps> }> => {
   const load = () =>
     import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog }));
   try {
