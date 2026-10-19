@@ -44,13 +44,13 @@ function PageLinks({ items }: { items: PageTreeNode[] }) {
 
 function Socials() {
   return (
-    <div className="flex flex-wrap gap-3 lg:gap-2 xl:gap-3">
+    <div className="flex flex-wrap gap-3 lg:gap-2">
       {SOCIALS.map(({ label, Icon }) => (
         <a
           key={label}
           href="#"
           aria-label={label}
-          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 xl:size-11 bg-secondary text-primary hover:bg-accent"
+          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 bg-secondary text-primary hover:bg-accent"
         >
           <Icon className="size-6" />
         </a>
@@ -84,15 +84,21 @@ export function StoreFooter() {
 
   return (
     <footer className="bg-card">
-      <div className="mx-auto w-full max-w-6xl px-5 pt-8 md:px-8 lg:pt-2">
-        {/* Logo + socials (phone/tablet only) */}
-        <div className="flex flex-col gap-5 border-b border-border pb-6 lg:hidden">
+      <div className="mx-auto w-full max-w-6xl px-5 pt-8 md:px-8 lg:pt-10">
+        {/* Logo on all sizes; socials here on phone/tablet only */}
+        <div className="flex flex-col gap-5 border-b border-border pb-6 lg:border-b-0 lg:pb-0">
           {logoUrl ? (
-            <img src={logoUrl} alt={storeName} className="h-12 w-auto max-w-[200px] self-start object-contain md:h-16" />
+            <img
+              src={logoUrl}
+              alt={storeName}
+              className="h-auto max-h-14 w-[150px] self-start object-contain object-left md:max-h-[76px] md:w-[215px]"
+            />
           ) : (
-            <span className="brand-wordmark text-3xl text-primary md:text-4xl">vendre</span>
+            <span className="brand-wordmark text-4xl text-primary md:text-5xl">vendre</span>
           )}
-          <Socials />
+          <div className="lg:hidden">
+            <Socials />
+          </div>
         </div>
 
         {/* Link groups: accordions on mobile/tablet, columns on desktop */}
