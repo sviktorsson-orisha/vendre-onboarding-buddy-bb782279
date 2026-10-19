@@ -45,16 +45,16 @@ export const Route = createFileRoute("/kategori/$id")({
   },
   head: () => ({
     meta: [
-      { title: "Kategori – Vendre Storefront" },
+      { title: "Category – Vendre Storefront" },
       {
         name: "description",
         content:
-          "Bläddra i kategorin: filtrera, sortera och paginera produkter från din Vendre-butik via Surface API v2.",
+          "Browse the category: filter, sort and paginate products from your Vendre store via Surface API v2.",
       },
-      { property: "og:title", content: "Kategori – Vendre Storefront" },
+      { property: "og:title", content: "Category – Vendre Storefront" },
       {
         property: "og:description",
-        content: "Produkter, filter och underkategorier från din Vendre-butik.",
+        content: "Products, filters and subcategories from your Vendre store.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

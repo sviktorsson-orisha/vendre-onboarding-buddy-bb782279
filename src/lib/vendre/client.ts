@@ -55,7 +55,7 @@ export async function fetchStoreBaseUrl(force = false): Promise<string | null> {
       };
       if (!res.ok || !data.ok) {
         throw new VendreError(
-          "Butiken är inte ansluten.",
+          "The store is not connected.",
           res.status,
           "not_connected",
           data.missing ?? [],
@@ -109,7 +109,7 @@ export async function surfaceJson<T = unknown>(
 
   if (!res.ok) {
     const first = body?.errors?.[0];
-    throw new VendreError(first?.title ?? `Surface-anrop misslyckades (${res.status})`, res.status, first?.code);
+    throw new VendreError(first?.title ?? `Surface request failed (${res.status})`, res.status, first?.code);
   }
 
   return body as T;
