@@ -50,7 +50,7 @@ function Socials() {
           key={label}
           href="#"
           aria-label={label}
-          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-11 bg-secondary text-primary hover:bg-accent"
+          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 xl:size-11 bg-secondary text-primary hover:bg-accent"
         >
           <Icon className="size-6" />
         </a>
