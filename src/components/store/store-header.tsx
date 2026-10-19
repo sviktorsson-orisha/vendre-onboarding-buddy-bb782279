@@ -197,7 +197,7 @@ export function StoreHeader() {
 
         <SearchBox className="hidden w-full max-w-xl justify-self-center lg:block" />
 
-        <div className="flex shrink-0 items-center gap-1 md:gap-3 lg:gap-5">
+        <div className="flex shrink-0 items-center justify-end gap-1 justify-self-end md:gap-3 lg:gap-5">
           <button
             type="button"
             className="grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:hidden"
@@ -236,12 +236,6 @@ export function StoreHeader() {
           >
             <Menu className="size-6" strokeWidth={1.5} />
           </button>
-          <Link
-            to="/"
-            className="hidden shrink-0 rounded-full bg-primary px-7 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 lg:inline-flex"
-          >
-            {t("store.contactUs")}
-          </Link>
         </div>
       </div>
 

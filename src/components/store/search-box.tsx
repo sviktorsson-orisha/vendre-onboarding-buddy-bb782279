@@ -79,7 +79,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="pointer-events-none absolute left-2 top-1/2 size-5 -translate-y-1/2 text-primary" />
       <input
         type="search"
         role="combobox"
@@ -96,7 +96,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-hidden focus:border-primary"
+        className="w-full rounded-none border-0 border-b border-border bg-transparent py-3 pl-10 pr-3 text-base text-foreground outline-hidden placeholder:text-muted-foreground focus:border-primary"
       />
 
       {showPanel && (
