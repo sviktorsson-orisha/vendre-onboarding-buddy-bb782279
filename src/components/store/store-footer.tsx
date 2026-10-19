@@ -44,13 +44,13 @@ function PageLinks({ items }: { items: PageTreeNode[] }) {
 
 function Socials() {
   return (
-    <div className="flex flex-wrap gap-3 lg:gap-2 xl:gap-3">
+    <div className="flex flex-wrap gap-3 lg:gap-2">
       {SOCIALS.map(({ label, Icon }) => (
         <a
           key={label}
           href="#"
           aria-label={label}
-          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 xl:size-11 bg-secondary text-primary hover:bg-accent"
+          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 bg-secondary text-primary hover:bg-accent"
         >
           <Icon className="size-6" />
         </a>
