@@ -84,41 +84,15 @@ export function StoreFooter() {
 
   return (
     <footer className="bg-card">
-      <div className="mx-auto w-full max-w-6xl px-5 pt-8 md:px-8 lg:pt-10">
-        {/* Newsletter */}
-        <div className="flex flex-col gap-4 border-b border-border pb-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-          <div className="min-w-0">
-            <div className="mb-5 lg:hidden">
-              {logoUrl ? (
-                <img src={logoUrl} alt={storeName} className="h-12 w-auto max-w-[200px] object-contain md:h-16" />
-              ) : (
-                <span className="brand-wordmark text-3xl text-primary md:text-4xl">vendre</span>
-              )}
-            </div>
-            <h2 className="text-base font-semibold text-foreground lg:text-2xl">{t("store.newsletterTitle")}</h2>
-            <p className="mt-2 text-base text-muted-foreground lg:text-lg">{t("store.newsletterText")}</p>
-          </div>
-          <form
-            className="flex w-full shrink-0 overflow-hidden rounded-lg border border-input lg:max-w-md lg:shadow-sm"
-            onSubmit={(event) => event.preventDefault()}
-          >
-            <input
-              type="email"
-              placeholder={t("store.emailPlaceholder")}
-              aria-label={t("store.emailPlaceholder")}
-              className="min-w-0 flex-1 bg-card px-4 py-3.5 text-base text-foreground outline-hidden placeholder:text-muted-foreground"
-            />
-            <button
-              type="submit"
-              aria-label={t("store.subscribe")}
-              className="grid w-14 shrink-0 place-items-center bg-primary text-primary-foreground hover:opacity-90"
-            >
-              <Send className="size-5" strokeWidth={1.5} />
-            </button>
-          </form>
-          <div className="lg:hidden">
-            <Socials />
-          </div>
+      <div className="mx-auto w-full max-w-6xl px-5 pt-8 md:px-8 lg:pt-2">
+        {/* Logo + socials (phone/tablet only) */}
+        <div className="flex flex-col gap-5 border-b border-border pb-6 lg:hidden">
+          {logoUrl ? (
+            <img src={logoUrl} alt={storeName} className="h-12 w-auto max-w-[200px] self-start object-contain md:h-16" />
+          ) : (
+            <span className="brand-wordmark text-3xl text-primary md:text-4xl">vendre</span>
+          )}
+          <Socials />
         </div>
 
         {/* Link groups: accordions on mobile/tablet, columns on desktop */}
