@@ -20,8 +20,8 @@ export function AccountMenu() {
 
   if (!isAuthenticated) {
     return (
-      <Link to="/logga-in" className="brand-button-ghost" aria-label={t("account.signIn")}>
-        <User className="size-4" />
+      <Link to="/logga-in" className="grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:text-primary" aria-label={t("account.signIn")}>
+        <User className="size-6" strokeWidth={1.5} />
       </Link>
     );
   }
@@ -29,8 +29,8 @@ export function AccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button type="button" className="brand-button-ghost" aria-label={t("account.title")}>
-          <User className="size-4" />
+        <button type="button" className="grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:text-primary" aria-label={t("account.title")}>
+          <User className="size-6" strokeWidth={1.5} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
