@@ -99,7 +99,7 @@ export function StoreFooter() {
         <div className="lg:hidden">
           <Accordion type="multiple" defaultValue={groups[0] ? [String(groups[0].id)] : []}>
             {groups.map((group) => (
-              <AccordionItem key={group.id} value={String(group.id)} className="border-border">
+              <AccordionItem key={group.id} value={String(group.id)} className="border-border last:border-b-0">
                 <AccordionTrigger className="py-5 text-base font-semibold text-foreground hover:no-underline">
                   {group.title}
                 </AccordionTrigger>
