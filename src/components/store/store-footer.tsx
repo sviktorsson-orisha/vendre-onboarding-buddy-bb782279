@@ -88,9 +88,9 @@ export function StoreFooter() {
         {/* Logo + socials (phone/tablet only) */}
         <div className="flex flex-col gap-5 border-b border-border pb-6 lg:hidden">
           {logoUrl ? (
-            <img src={logoUrl} alt={storeName} className="h-12 w-auto max-w-[200px] self-start object-contain md:h-16" />
+            <img src={logoUrl} alt={storeName} className="h-7 w-auto max-w-[130px] self-start object-contain md:h-8 md:max-w-[150px]" />
           ) : (
-            <span className="brand-wordmark text-3xl text-primary md:text-4xl">vendre</span>
+            <span className="brand-wordmark text-xl text-primary md:text-2xl">vendre</span>
           )}
           <Socials />
         </div>
