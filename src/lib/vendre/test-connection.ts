@@ -28,7 +28,7 @@ const LABELS: Record<StepId, string> = {
   token: "Token",
   cors: "CORS",
   session: "Session",
-  read: "Läsrättigheter",
+  read: "Read permissions",
 };
 
 function step(id: StepId, status: StepStatus, detail: string): ConnectionStep {
@@ -48,22 +48,22 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
   // 1. Token (server-side minted; the browser only learns whether it worked).
   try {
     baseUrl = await fetchStoreBaseUrl(true);
-    steps.push(step("token", "ok", `Servern är ansluten till ${baseUrl ?? "butiken"}`));
+    steps.push(step("token", "ok", `Server is connected to ${baseUrl ?? "the store"}`));
 
   } catch (error) {
     const err = error as VendreError;
     missing = err.missing ?? [];
     const detail = missing.length
-      ? `Saknade secrets: ${missing.join(", ")}`
+      ? `Missing secrets: ${missing.join(", ")}`
       : err.status === 429
-        ? "Butiken rate-limitar (429). Vänta en minut och försök igen."
+        ? "The store is rate limiting (429). Wait a minute and try again."
         : err.status === 401 || err.status === 400
-          ? "Client id/secret avvisades — verifiera dem i Vendre Admin."
+          ? "Client id/secret was rejected — verify them in Vendre Admin."
           : err.message;
     steps.push(step("token", "failed", detail));
-    steps.push(step("cors", "skipped", "Kördes inte — anslutningen saknas."));
-    steps.push(step("session", "skipped", "Kördes inte — anslutningen saknas."));
-    steps.push(step("read", "skipped", "Kördes inte — anslutningen saknas."));
+    steps.push(step("cors", "skipped", "Not run — no connection."));
+    steps.push(step("session", "skipped", "Not run — no connection."));
+    steps.push(step("read", "skipped", "Not run — no connection."));
     return { ok: false, steps, missing, origin, baseUrl };
   }
 
@@ -84,7 +84,7 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
         step(
           "cors",
           "ok",
-          "Alla butiksanrop går via vår server — ingen CORS-allowlist krävs för butiksdatan.",
+          "All store requests go through our server — no CORS allowlist is needed for store data.",
         ),
       );
       steps.push(
@@ -92,10 +92,10 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
           "session",
           "failed",
           body?.errors?.[0]?.title ??
-            `session/bootstrap svarade ${res.status}. Kontrollera policyerna bootstrap och session.`,
+            `session/bootstrap responded ${res.status}. Check the bootstrap and session policies.`,
         ),
       );
-      steps.push(step("read", "skipped", "Kördes inte — sessionen saknas."));
+      steps.push(step("read", "skipped", "Not run — no session."));
       return { ok: false, steps, missing, origin, baseUrl };
     }
 
@@ -105,7 +105,7 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
       step(
         "cors",
         "ok",
-        `Butiksanropen går via vår server (${origin}). CORS-allowlistan behövs bara för kassans sessionsöverlämning.`,
+        `Store requests go through our server (${origin}). The CORS allowlist is only needed for the checkout session handover.`,
       ),
     );
     steps.push(
@@ -113,14 +113,14 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
         "session",
         token ? "ok" : "warning",
         token
-          ? "Session startad och mutation protection token mottagen."
-          : "Session startad men ingen mutation protection token returnerades.",
+          ? "Session started and mutation protection token received."
+          : "Session started but no mutation protection token was returned.",
       ),
     );
   } catch {
-    steps.push(step("cors", "ok", "Butiksanropen går via vår server."));
-    steps.push(step("session", "failed", "session/bootstrap kunde inte nås via servern."));
-    steps.push(step("read", "skipped", "Kördes inte — sessionen saknas."));
+    steps.push(step("cors", "ok", "Store requests go through our server."));
+    steps.push(step("session", "failed", "session/bootstrap could not be reached through the server."));
+    steps.push(step("read", "skipped", "Not run — no session."));
     return { ok: false, steps, missing, origin, baseUrl };
   }
 
@@ -133,14 +133,14 @@ export async function testVendreConnection(): Promise<ConnectionResult> {
         step(
           "read",
           "failed",
-          `navigation/menus svarade ${res.status}. Kontrollera policyn navigation_menus och att en meny är publicerad.`,
+          `navigation/menus responded ${res.status}. Check the navigation_menus policy and that a menu is published.`,
         ),
       );
       return { ok: false, steps, missing, origin, baseUrl };
     }
-    steps.push(step("read", "ok", "Läsning av navigation/menus fungerar."));
+    steps.push(step("read", "ok", "Reading navigation/menus works."));
   } catch {
-    steps.push(step("read", "failed", "navigation/menus kunde inte nås — kontrollera policyn navigation_menus."));
+    steps.push(step("read", "failed", "navigation/menus could not be reached — check the navigation_menus policy."));
     return { ok: false, steps, missing, origin, baseUrl };
   }
 

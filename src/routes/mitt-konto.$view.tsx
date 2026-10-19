@@ -7,13 +7,13 @@ const VIEWS: AccountView[] = ["oversikt", "ordrar", "adresser", "konto"];
 export const Route = createFileRoute("/mitt-konto/$view")({
   head: () => ({
     meta: [
-      { title: "Mitt konto – Vendre Storefront" },
+      { title: "My account – Vendre Storefront" },
       {
         name: "description",
-        content: "Ordrar, adresser, användare och kontouppgifter för ditt kundkonto.",
+        content: "Orders, addresses, users and account details for your customer account.",
       },
-      { property: "og:title", content: "Mitt konto – Vendre Storefront" },
-      { property: "og:description", content: "Hantera ditt kundkonto i butiken." },
+      { property: "og:title", content: "My account – Vendre Storefront" },
+      { property: "og:description", content: "Manage your customer account." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
