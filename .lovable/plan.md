@@ -1,21 +1,23 @@
-# Featured products: 4 random products, no fixed page size
+# Featured products: 4 random products via VQL
 
 ## What changes for you
-- The front page shows 4 random products from the store instead of the first 4 of one category.
-- It no longer sends a fixed amount (12) to Vendre, so it works whatever page sizes are set in Vendre admin.
-- The mix changes when the visitor reloads later (kept for 5 minutes so it doesn't jump while browsing).
+- The front page shows 4 random products from the whole store, fetched with VQL.
+- It no longer sends a page size to the category list, so changing page sizes in Vendre admin can't break it.
+- The selection is kept for 5 minutes so it doesn't jump around while browsing, then changes.
 
 ## How it works
-1. Ask Vendre for the first category's products **without a size**, so Vendre uses its own default page size (always accepted).
-2. If that category has fewer than 4 products, also read the next categories from the menu until there are enough.
-3. Pick 4 products at random from what came back, skipping duplicates.
-4. Demo mode picks 4 random demo products the same way.
+1. One VQL request for products (the same kind of request the product page already uses), asking only for the fields a product card shows: name, price, picture, stock, link.
+2. Only active, buyable products are included.
+3. 4 of them are picked at random and shown.
+4. If VQL is turned off in the store, it falls back to the first category without sending any page size, and still picks 4 at random.
+5. Demo mode picks 4 random demo products.
 
-## Same problem elsewhere
-The category page also had 12/15/20 hardcoded. It will instead use the page sizes Vendre itself lists in each category response (`page_limits`), and only send a size Vendre has said it accepts; otherwise it sends none.
+## First step: confirm against the live store
+Before building, test against the store which VQL options work for this: limiting how many products come back, and filtering out inactive ones. If Vendre has a random-order option, use it; otherwise fetch a capped batch (for example 50) and pick 4 at random here.
 
 ## Technical details
-- `src/lib/vendre/api.ts`: `useFeaturedProducts` calls `getCategory(id)` with no `limit`, walks leaf categories from the cached menu until >= count products, then Fisher–Yates shuffles and slices. Query key unchanged, staleTime 5 min.
-- Remove the hardcoded `ALLOWED_PAGE_SIZES`; `categoryQuery` only sends `limit` when it is in the last known `page_limits` from the store (cached per category), else omits it. `allCategoryProducts` walks pages using the store's default page size and stops at `page_count`.
-- `mockFeaturedProducts` returns a random sample.
-- Update `.vendre/skills/category-plp.md` and `api-reference.md` note: page sizes are store-configured, read them from `page_limits`.
+- `src/lib/vendre/api.ts`: new `vqlRandomProducts(count)` using `POST vql` with `query.products` (`fields: VQL_PRODUCT_FIELDS` card subset, `filters.where` on active status, VQL limit if supported), mapped via `mapVqlProduct`, Fisher–Yates shuffle, slice to `count`. On 500 → fallback to `getCategory(firstLeafId)` with no `limit`, then shuffle.
+- `useFeaturedProducts`: same query key and 5 min staleTime; only the queryFn changes.
+- `mockFeaturedProducts`: random sample.
+- Never request `purchase_price`.
+- Document the featured-products VQL body in `.vendre/skills/vql-queries.md`.
