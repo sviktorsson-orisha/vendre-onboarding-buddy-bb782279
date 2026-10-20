@@ -79,9 +79,9 @@ export function CartSheet({
           ) : lines.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("store.cartEmpty")}</p>
           ) : (
-            <ul className="space-y-4">
+            <ul className="divide-y divide-border">
               {lines.map((line) => (
-                <li key={line.id} className="flex gap-3">
+                <li key={line.id} className="flex gap-3 py-4 first:pt-0 last:pb-0">
                   <Link
                     to="/produkt/$id"
                     params={{ id: String(line.product_id) }}
@@ -113,7 +113,7 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="-"
-                        className="brand-button-ghost size-7 justify-center p-0"
+                        className="inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
                         onClick={() => update.mutate({ line, quantity: line.quantity - 1 })}
                       >
                         <Minus className="size-3.5" />
@@ -124,17 +124,19 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="+"
-                        className="brand-button-ghost size-7 justify-center p-0"
+                        className="inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
                         onClick={() => update.mutate({ line, quantity: line.quantity + 1 })}
                       >
                         <Plus className="size-3.5" />
                       </button>
                       <button
                         type="button"
-                        className="brand-button-ghost ml-auto"
+                        aria-label={t("store.remove")}
+                        title={t("store.remove")}
+                        className="ml-auto inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
                         onClick={() => remove.mutate({ line })}
                       >
-                        <Trash2 className="size-3.5" /> {t("store.remove")}
+                        <Trash2 className="size-4" />
                       </button>
                     </div>
                   </div>
