@@ -20,14 +20,6 @@ const SOCIALS = [
 ];
 const PAYMENTS = ["Mastercard", "Maestro", "iDEAL", "Apple Pay", "Klarna", "Sofort", "UnionPay"];
 const CARRIERS = ["DHL", "PostNord", "FedEx", "UPS"];
-/** Desktop columns = page menus (max 4) + 1 socials column, always evenly spread. */
-const DESKTOP_COLS: Record<number, string> = {
-  0: "lg:grid-cols-1",
-  1: "lg:grid-cols-2",
-  2: "lg:grid-cols-3",
-  3: "lg:grid-cols-4",
-  4: "lg:grid-cols-5",
-};
 
 /** CMS pages (galleries) route to /sida/$id — never to href/target. */
 function PageLinks({ items }: { items: PageTreeNode[] }) {
@@ -119,18 +111,14 @@ export function StoreFooter() {
           </Accordion>
         </div>
 
-        <div
-          className={`hidden gap-8 border-b border-border py-8 lg:grid ${
-            DESKTOP_COLS[Math.min(groups.length, 4)] ?? "lg:grid-cols-1"
-          }`}
-        >
+        <div className="hidden gap-8 border-b border-border py-8 lg:grid lg:grid-cols-5">
           {groups.slice(0, 4).map((group) => (
             <div key={group.id} className="min-w-0">
               <h2 className="text-base font-semibold text-foreground">{group.title}</h2>
               <PageLinks items={group.children} />
             </div>
           ))}
-          <div className="min-w-0">
+          <div className="col-start-5 min-w-0">
             <h2 className="text-base font-semibold text-foreground">{t("store.followSocials")}</h2>
             <div className="mt-5">
               <Socials />
