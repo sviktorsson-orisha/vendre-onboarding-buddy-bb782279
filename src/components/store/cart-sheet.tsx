@@ -110,7 +110,7 @@ export function CartSheet({
                         type="button"
                         aria-label={t("store.remove")}
                         title={t("store.remove")}
-                        className="inline-flex size-7 shrink-0 items-center justify-center text-border transition-colors hover:text-muted-foreground"
+                        className="inline-flex size-7 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
                         onClick={() => remove.mutate({ line })}
                       >
                         <Trash2 className="size-4" />
