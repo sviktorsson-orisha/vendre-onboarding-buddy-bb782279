@@ -72,7 +72,7 @@
   --radius: 0rem;
   --brand-pink: oklch(0.25 0.14 300);
   --brand-blue: oklch(0.82 0.15 80);
-  --background: oklch(1 0 0);
+  --background: oklch(0.9702 0 0);
   --foreground: oklch(0.32 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.32 0 0);
