@@ -223,7 +223,7 @@
   letter-spacing: 0;
   text-transform: uppercase;
   transition: transform 150ms ease, background-color 150ms ease;
-  &:hover:not(:disabled) { transform: translateY(-1px); background-color: color-mix(in oklab, var(--color-primary) 88%, black); }
+  &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-primary) 88%, black); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
 }
 
