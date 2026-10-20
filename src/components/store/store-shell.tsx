@@ -27,7 +27,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
       </GuideLanguageScope>
       <StoreHeader />
       <main className="grow">
-        <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6 sm:py-12">{children}</div>
+        <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 py-8 sm:px-6 sm:py-12">{children}</div>
       </main>
       <StoreFooter />
     </div>

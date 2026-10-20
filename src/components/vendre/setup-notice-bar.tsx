@@ -61,7 +61,7 @@ export function SetupNoticeBar() {
     return (
       <>
         <div className="border-b border-border bg-linear-to-r from-primary/10 via-brand-pink/10 to-brand-blue/10">
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-5 py-2.5 sm:px-6">
+          <div className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-3 gap-y-2 px-5 py-2.5 sm:px-6">
             <Rocket className="size-4 text-primary" aria-hidden />
             <span className="brand-eyebrow rounded-md bg-primary/10 px-2 py-0.5 text-primary">Vendre</span>
             <p className="text-sm text-muted-foreground">{t("panel.verified")}</p>
@@ -78,7 +78,7 @@ export function SetupNoticeBar() {
   return (
     <>
       <div role="alert" className="border-b-2 border-primary bg-primary text-primary-foreground">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-3 px-5 py-3.5 sm:px-6">
+        <div className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-4 gap-y-3 px-5 py-3.5 sm:px-6">
           <span className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground/20" />
             <Settings2 className="relative size-5" aria-hidden />

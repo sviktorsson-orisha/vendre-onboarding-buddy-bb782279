@@ -34,7 +34,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
       className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-b border-border bg-card"
       onClick={onNavigate}
     >
-      <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
+      <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 py-8 sm:px-6">
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {columns.map((child) => (
             <div key={`${child.source}:${child.id}`} className="min-w-0">
@@ -176,13 +176,13 @@ export function StoreHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-card">
       <div className="bg-brand-pink text-primary-foreground">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 px-5 py-2.5 text-center text-xs md:px-8 md:py-3.5 md:text-sm lg:grid-cols-3 lg:py-2.5">
+        <div className="mx-auto grid w-full max-w-6xl xl:max-w-[88rem] grid-cols-1 px-5 py-2.5 text-center text-xs md:px-8 md:py-3.5 md:text-sm lg:grid-cols-3 lg:py-2.5">
           <p className="truncate">{t("store.announcement")}</p>
           <p className="hidden truncate lg:block">{t("store.announcement")}</p>
           <p className="hidden truncate lg:block">{t("store.announcement")}</p>
         </div>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 md:px-8 md:py-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8 lg:py-6">
+      <div className="mx-auto grid w-full max-w-6xl xl:max-w-[88rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 md:px-8 md:py-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8 lg:py-6">
         <Link to="/" className="flex min-w-0 items-center" aria-label={storeName}>
           {logoUrl ? (
             <img
@@ -233,7 +233,7 @@ export function StoreHeader() {
       </div>
 
       {searchOpen && (
-        <div className="mx-auto w-full max-w-6xl px-5 pb-4 md:px-8 lg:hidden">
+        <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 pb-4 md:px-8 lg:hidden">
           <SearchBox autoFocus />
         </div>
       )}
@@ -242,7 +242,7 @@ export function StoreHeader() {
         className="relative hidden lg:block"
         onMouseLeave={() => setOpenId(null)}
       >
-        <ul className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 px-5 pb-4 md:px-8 xl:gap-x-10">
+        <ul className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-6 px-5 pb-4 md:px-8 xl:gap-x-10">
           {tree.map((node) => {
             const hasChildren = node.children.length > 0;
             const isOpen = openId === node.id;

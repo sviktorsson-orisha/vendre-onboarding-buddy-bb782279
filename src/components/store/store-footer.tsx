@@ -84,7 +84,7 @@ export function StoreFooter() {
 
   return (
     <footer className="bg-card">
-      <div className="mx-auto w-full max-w-6xl px-5 pt-8 md:px-8 lg:pt-2">
+      <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 pt-8 md:px-8 lg:pt-2">
         {/* Logo + socials (phone/tablet only) */}
         <div className="flex flex-col gap-5 border-b border-border pb-6 lg:hidden">
           {logoUrl ? (
@@ -140,7 +140,7 @@ export function StoreFooter() {
 
       {/* Desktop payment strip */}
       <div className="hidden bg-secondary lg:block">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-8 py-5">
+        <div className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] items-center justify-between gap-6 px-8 py-5">
           <div className="flex min-w-0 items-center gap-3">
             <span className="shrink-0 text-sm text-muted-foreground">{t("store.paySafe")}</span>
             <PaymentBadges />
