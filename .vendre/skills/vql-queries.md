@@ -58,3 +58,17 @@ Never run customer-scoped data through a cached VQL query.
   by search — treat it as "no variants" and keep rendering the page.
 
 See `vendre-pdp-products` for the exact variant query bodies.
+
+## Featured products (front page)
+
+VQL has no random order, so `useFeaturedProducts` makes two requests:
+
+1. Id pool: `{ products: { fields: ["id","status","parent_id","in_stock","stock_allow_checkout"], filters: { limit: 500, where: { status: 1 } } } }`.
+   `where.parent_id: null` returns `[]` on this install, so variant children are
+   dropped client-side (`parent_id != null`). Buyable products are preferred.
+2. Card data for the randomly picked ids: `filters: { where: { id: [..] } }`
+   (an id array works as IN), fields `["_all", { image: { fields: ["id","name","href"] } }]`.
+
+No category page size is involved — page sizes are store-configurable in Vendre
+admin, so the front page must never send a hardcoded `limit` to `categories/{id}`.
+If VQL fails, fall back to the first leaf category **without** `limit` and shuffle.
