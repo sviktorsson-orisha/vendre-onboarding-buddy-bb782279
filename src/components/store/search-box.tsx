@@ -100,7 +100,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
       />
 
       {showPanel && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-card">
           {suggestions.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">
               {isFetching ? t("search.searching") : t("search.noHits", { q: value.trim() })}

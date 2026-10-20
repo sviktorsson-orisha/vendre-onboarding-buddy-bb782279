@@ -31,7 +31,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
 
   return (
     <div
-      className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-b border-border bg-card shadow-xl"
+      className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-b border-border bg-card"
       onClick={onNavigate}
     >
       <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">

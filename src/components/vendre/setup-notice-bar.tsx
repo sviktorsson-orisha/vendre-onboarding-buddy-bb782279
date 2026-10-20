@@ -95,7 +95,7 @@ export function SetupNoticeBar() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-2 rounded-md bg-primary-foreground px-4 py-2 text-sm font-semibold text-primary shadow-sm transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary-foreground px-4 py-2 text-sm font-semibold text-primary transition hover:opacity-90"
           >
             {t("notice.ctaPending")}
             <ArrowRight className="size-4" aria-hidden />
