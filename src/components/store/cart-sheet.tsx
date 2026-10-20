@@ -124,7 +124,7 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="-"
-                        className="inline-flex size-7 items-center justify-center text-foreground transition-colors hover:bg-accent"
+                        className="inline-flex size-7 items-center justify-center text-foreground"
                         onClick={() => update.mutate({ line, quantity: line.quantity - 1 })}
                       >
                         <Minus className="size-3.5" />
@@ -135,7 +135,7 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="+"
-                        className="inline-flex size-7 items-center justify-center text-foreground transition-colors hover:bg-accent"
+                        className="inline-flex size-7 items-center justify-center text-foreground"
                         onClick={() => update.mutate({ line, quantity: line.quantity + 1 })}
                       >
                         <Plus className="size-3.5" />
