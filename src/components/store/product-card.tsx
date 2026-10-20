@@ -35,7 +35,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
   };
 
   return (
-    <article className="brand-card group flex flex-col overflow-hidden p-0">
+    <article className="brand-card group flex flex-col overflow-hidden rounded-none p-0">
       <Link
         to="/produkt/$id"
         params={{ id: String(product.id) }}
