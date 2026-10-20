@@ -1165,6 +1165,81 @@ export function useCartMutations() {
 }
 
 
+/** Fisher–Yates shuffle on a copy. */
+export function shuffled<T>(list: readonly T[]): T[] {
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/** How many product ids are scanned when picking random featured products. */
+const FEATURED_ID_POOL = 500;
+
+/**
+ * `count` random active products via VQL, in two small requests:
+ *  1. a light id list (active top-level products; variant children are skipped),
+ *  2. the full card fields for the randomly picked ids only.
+ * VQL has no random order, so the pick happens here. Returns null when VQL is
+ * unavailable so the caller can fall back to a category listing.
+ */
+async function vqlRandomProducts(count: number): Promise<Product[] | null> {
+  if (vqlDisabled) return null;
+  type IdRow = {
+    id: number;
+    status?: number | null;
+    parent_id?: number | null;
+    in_stock?: boolean | null;
+    stock_allow_checkout?: boolean | number | null;
+  };
+  const post = <T,>(query: unknown) =>
+    guarded(() =>
+      surfaceJson<T>("vql", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ query }),
+      }),
+    );
+  try {
+    const ids = await post<{ query?: { products?: IdRow[] } } | null>({
+      products: {
+        fields: ["id", "status", "parent_id", "in_stock", "stock_allow_checkout"],
+        filters: { limit: FEATURED_ID_POOL, where: { status: 1 } },
+      },
+    });
+    const rows = (ids?.query?.products ?? []).filter(
+      (row) => row.parent_id == null && (row.status == null || Number(row.status) !== 0),
+    );
+    const buyable = rows.filter(
+      (row) => row.in_stock || Boolean(Number(row.stock_allow_checkout ?? 0)),
+    );
+    // Prefer buyable products; top up with the rest if there are too few.
+    const picked = [
+      ...shuffled(buyable),
+      ...shuffled(rows.filter((row) => !buyable.includes(row))),
+    ]
+      .slice(0, count)
+      .map((row) => row.id);
+    if (!picked.length) return [];
+
+    const full = await post<{ query?: { products?: VqlRawProduct[] } } | null>({
+      products: {
+        fields: ["_all", { image: { fields: ["id", "name", "href"] } }],
+        filters: { where: { id: picked } },
+      },
+    });
+    const byId = new Map((full?.query?.products ?? []).map((raw) => [raw.id, raw]));
+    return picked.flatMap((id) => {
+      const raw = byId.get(id);
+      return raw ? [mapVqlProduct(raw)] : [];
+    });
+  } catch {
+    return null;
+  }
+}
+
 export function useFeaturedProducts(count = 4, enabled = true) {
   const api = useVendreApi();
   const queryClient = useQueryClient();
@@ -1173,7 +1248,10 @@ export function useFeaturedProducts(count = 4, enabled = true) {
     queryKey: ["vendre", api.mode, "featured", count],
     queryFn: async () => {
       if (api.mode === "demo") return mockFeaturedProducts(count);
-      // Reuse the header's cached menu instead of fetching it a second time.
+      const random = await vqlRandomProducts(count);
+      if (random) return random;
+      // VQL is off: use the first leaf category. No `limit` is sent, so the
+      // store's own default page size applies whatever admin has configured.
       const menus = await queryClient.ensureQueryData({
         queryKey: ["vendre", api.mode, "menus"],
         queryFn: () => api.getMenus(),
@@ -1181,10 +1259,8 @@ export function useFeaturedProducts(count = 4, enabled = true) {
       });
       const first = menus.find((item) => item.menu_type === "category" && !item.has_children);
       if (!first) return [];
-      // The request is rounded up to a page size the store accepts; the view
-      // still shows exactly `count` products.
-      const category = await api.getCategory(first.id, { limit: count });
-      return category.product_list.slice(0, count);
+      const category = await api.getCategory(first.id);
+      return shuffled(category.product_list).slice(0, count);
     },
     staleTime: 5 * 60 * 1000,
   });
