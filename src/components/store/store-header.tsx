@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronDown, Heart, Menu, Search, ShoppingCart } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, Search, ShoppingCart } from "lucide-react";
 
 import {
   Accordion,
@@ -206,13 +206,6 @@ export function StoreHeader() {
             onClick={() => setSearchOpen((value) => !value)}
           >
             <Search className="size-6" strokeWidth={1.5} />
-          </button>
-          <button
-            type="button"
-            className="hidden size-10 place-items-center rounded-full text-primary hover:bg-accent lg:grid"
-            aria-label={t("store.favorites")}
-          >
-            <Heart className="size-6" strokeWidth={1.5} />
           </button>
           <AccountMenu />
           <button
