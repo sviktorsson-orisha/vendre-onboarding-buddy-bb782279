@@ -97,14 +97,25 @@ export function CartSheet({
                     />
                   </Link>
                   <div className="grow">
-                    <Link
-                      to="/produkt/$id"
-                      params={{ id: String(line.product_id) }}
-                      onClick={() => onOpenChange(false)}
-                      className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
-                    >
-                      {line.product_data?.name ?? `#${line.product_id}`}
-                    </Link>
+                    <div className="flex items-start justify-between gap-2">
+                      <Link
+                        to="/produkt/$id"
+                        params={{ id: String(line.product_id) }}
+                        onClick={() => onOpenChange(false)}
+                        className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                      >
+                        {line.product_data?.name ?? `#${line.product_id}`}
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label={t("store.remove")}
+                        title={t("store.remove")}
+                        className="inline-flex size-7 shrink-0 items-center justify-center text-border transition-colors hover:text-muted-foreground"
+                        onClick={() => remove.mutate({ line })}
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                     {line.product_data && (
                       <ProductPrice product={line.product_data} size="sm" className="mt-1 flex" />
                     )}
@@ -113,7 +124,7 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="-"
-                        className="inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
+                        className="inline-flex size-7 items-center justify-center text-foreground transition-colors hover:bg-accent"
                         onClick={() => update.mutate({ line, quantity: line.quantity - 1 })}
                       >
                         <Minus className="size-3.5" />
@@ -124,19 +135,10 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="+"
-                        className="inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
+                        className="inline-flex size-7 items-center justify-center text-foreground transition-colors hover:bg-accent"
                         onClick={() => update.mutate({ line, quantity: line.quantity + 1 })}
                       >
                         <Plus className="size-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={t("store.remove")}
-                        title={t("store.remove")}
-                        className="ml-auto inline-flex size-7 items-center justify-center text-primary transition-colors hover:bg-accent"
-                        onClick={() => remove.mutate({ line })}
-                      >
-                        <Trash2 className="size-4" />
                       </button>
                     </div>
                   </div>
