@@ -377,8 +377,14 @@ export function mockProductVariants(id: string): ProductVariantType[] {
   ];
 }
 
+/** Random demo sample, mirroring the live random featured products. */
 export function mockFeaturedProducts(count = 4): Product[] {
-  return products.slice(0, count);
+  const pool = [...products];
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j]!, pool[i]!];
+  }
+  return pool.slice(0, count);
 }
 
 export const mockTopCategories = [90, 200, 210].map((id) => categoryHeaders[id]!);
