@@ -29,7 +29,7 @@ export default function Index() {
 
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-foreground">{t("store.featured")}</h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {isPending ? (
             <ProductGridSkeleton count={4} />
           ) : (
