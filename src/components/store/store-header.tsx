@@ -35,6 +35,17 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
       onClick={onNavigate}
     >
       <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 py-8 sm:px-6">
+        <div className="mb-6">
+          <Link
+            to="/kategori/$id"
+            params={{ id: String(node.id) }}
+            {...intent(node.id)}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:underline"
+          >
+            {t("store.viewAllIn", { name: node.name })}
+            <ArrowRight className="size-4 shrink-0" aria-hidden />
+          </Link>
+        </div>
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {columns.map((child) => (
             <div key={`${child.source}:${child.id}`} className="min-w-0">
@@ -66,17 +77,6 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
           ))}
         </div>
 
-        <div className="mt-8 border-t border-border pt-4">
-          <Link
-            to="/kategori/$id"
-            params={{ id: String(node.id) }}
-            {...intent(node.id)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:underline"
-          >
-            {t("store.viewAllIn", { name: node.name })}
-            <ArrowRight className="size-4 shrink-0" aria-hidden />
-          </Link>
-        </div>
       </div>
     </div>
   );
