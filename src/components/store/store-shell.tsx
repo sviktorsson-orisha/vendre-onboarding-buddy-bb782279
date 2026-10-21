@@ -18,7 +18,7 @@ function useSessionLanguageSync() {
 }
 
 /** Chrome for every storefront page: notice bar, header, content, footer. */
-export function StoreShell({ children }: { children: ReactNode }) {
+export function StoreShell({ children, hero }: { children: ReactNode; hero?: ReactNode }) {
   useSessionLanguageSync();
   return (
     <div className="brand-canvas flex min-h-screen flex-col">
@@ -27,6 +27,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
       </GuideLanguageScope>
       <StoreHeader />
       <main className="grow">
+        {hero}
         <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 py-8 sm:px-6 sm:py-12">{children}</div>
       </main>
       <StoreFooter />

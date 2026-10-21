@@ -1,4 +1,5 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import {
@@ -37,6 +38,7 @@ function stringifySpecs(specs: Record<string, string[]>) {
 
 export default function CategoryPage({ id }: { id: number }) {
   const { t } = useI18n();
+  const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const search = useSearch({ from: "/kategori/$id" });
   const { data: menus } = useMenus();
@@ -95,8 +97,18 @@ export default function CategoryPage({ id }: { id: number }) {
       setSearch({ tags: undefined, specs: undefined, pfrom: undefined, pto: undefined }),
   });
 
+  const hero = data?.header.image ? (
+    <StoreImage
+      image={data.header.image}
+      alt={data.header.name}
+      label={data.header.name}
+      priority
+      className="block h-40 w-full object-cover object-center md:h-56 lg:h-72"
+    />
+  ) : null;
+
   return (
-    <StoreShell>
+    <StoreShell hero={hero}>
       {error && !data ? (
         <div className="py-16 text-center">
           <p className="text-sm text-muted-foreground">{t("store.loadError")}</p>
@@ -118,44 +130,42 @@ export default function CategoryPage({ id }: { id: number }) {
         <>
           <Breadcrumbs trail={trail} />
 
-          <header className="mt-4 grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <h1 className="text-3xl font-extrabold text-foreground">{data.header.name}</h1>
-              {data.header.text && (
+          <header className="mt-4">
+            <h1 className="text-3xl font-extrabold text-foreground">{data.header.name}</h1>
+            {data.header.text && (
+              <div className="mt-3 max-w-2xl">
                 <div
-                  className="mt-3 max-w-2xl text-sm text-muted-foreground"
+                  className={`text-sm text-muted-foreground ${
+                    expanded ? "" : "line-clamp-3 md:line-clamp-none"
+                  }`}
                   dangerouslySetInnerHTML={{ __html: data.header.text }}
                 />
-              )}
-
-              {(data.subcategory_list?.length ?? 0) > 0 && (
-                <nav className="mt-5" aria-label={t("store.subcategories")}>
-                  <div className="flex flex-wrap gap-2">
-                    {(data.subcategory_list ?? []).map((sub) => (
-                      <Link
-                        key={sub.id}
-                        to="/kategori/$id"
-                        params={{ id: String(sub.id) }}
-                        className="brand-button-ghost"
-                        activeProps={{ "aria-current": "page" }}
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                </nav>
-              )}
-            </div>
-
-            {data.header.image && (
-              <div className="overflow-hidden rounded-xl lg:col-span-1">
-                <StoreImage
-                  image={data.header.image}
-                  alt={data.header.name}
-                  label={data.header.name}
-                  className="size-full"
-                />
+                <button
+                  type="button"
+                  className="mt-1 text-sm font-semibold text-foreground underline md:hidden"
+                  onClick={() => setExpanded((value) => !value)}
+                >
+                  {expanded ? t("store.showLess") : t("store.readMore")}
+                </button>
               </div>
+            )}
+
+            {(data.subcategory_list?.length ?? 0) > 0 && (
+              <nav className="mt-5" aria-label={t("store.subcategories")}>
+                <div className="flex flex-wrap gap-2">
+                  {(data.subcategory_list ?? []).map((sub) => (
+                    <Link
+                      key={sub.id}
+                      to="/kategori/$id"
+                      params={{ id: String(sub.id) }}
+                      className="brand-button-ghost"
+                      activeProps={{ "aria-current": "page" }}
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
             )}
           </header>
 
