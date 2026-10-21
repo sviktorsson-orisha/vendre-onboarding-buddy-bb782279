@@ -133,7 +133,7 @@ export default function CategoryPage({ id }: { id: number }) {
           <header className="mt-4">
             <h1 className="text-3xl font-extrabold text-foreground">{data.header.name}</h1>
             {data.header.text && (
-              <div className="mt-3 max-w-2xl">
+              <div className="mt-3 max-w-4xl">
                 <div
                   className={`text-sm text-muted-foreground ${
                     expanded ? "" : "line-clamp-3 md:line-clamp-none"
