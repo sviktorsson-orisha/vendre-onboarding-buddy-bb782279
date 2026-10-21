@@ -23,7 +23,7 @@ export function Pagination({
     <nav className="mt-10 flex items-center justify-center gap-1" aria-label="Pagination">
       <button
         type="button"
-        className="brand-button-ghost"
+        className="brand-button-ghost h-9 py-0"
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
@@ -39,8 +39,8 @@ export function Pagination({
             aria-current={value === page ? "page" : undefined}
             className={
               value === page
-                ? "brand-button size-9 justify-center px-0"
-                : "brand-button-ghost size-9 justify-center px-0"
+                ? "brand-button size-9 justify-center px-0 py-0"
+                : "brand-button-ghost size-9 justify-center px-0 py-0"
             }
             onClick={() => onPageChange(value)}
           >
@@ -50,7 +50,7 @@ export function Pagination({
       ))}
       <button
         type="button"
-        className="brand-button-ghost"
+        className="brand-button-ghost h-9 py-0"
         disabled={page >= pageCount}
         onClick={() => onPageChange(page + 1)}
       >
