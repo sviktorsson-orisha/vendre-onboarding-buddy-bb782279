@@ -32,7 +32,7 @@ function PageLinks({ items }: { items: PageTreeNode[] }) {
             to="/sida/$id"
             params={{ id: String(item.id) }}
             {...intent(item.id)}
-            className="text-base text-muted-foreground hover:text-primary"
+            className="text-base text-muted-foreground hover:text-foreground"
           >
             {item.title}
           </Link>
@@ -50,7 +50,7 @@ function Socials() {
           key={label}
           href="#"
           aria-label={label}
-          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 xl:size-11 bg-secondary text-primary hover:bg-accent"
+          className="grid size-12 shrink-0 place-items-center rounded-full lg:size-10 xl:size-11 bg-secondary text-foreground hover:bg-accent"
         >
           <Icon className="size-6" />
         </a>
@@ -90,7 +90,7 @@ export function StoreFooter() {
           {logoUrl ? (
             <img src={logoUrl} alt={storeName} className="h-7 w-auto max-w-[130px] self-start object-contain md:h-8 md:max-w-[150px]" />
           ) : (
-            <span className="brand-wordmark text-xl text-primary md:text-2xl">vendre</span>
+            <span className="brand-wordmark text-xl text-foreground md:text-2xl">vendre</span>
           )}
           <Socials />
         </div>
@@ -145,7 +145,7 @@ export function StoreFooter() {
             <span className="shrink-0 text-sm text-muted-foreground">{t("store.paySafe")}</span>
             <PaymentBadges />
           </div>
-          <ul className="flex shrink-0 gap-4 text-xs font-bold italic text-primary">
+          <ul className="flex shrink-0 gap-4 text-xs font-bold italic text-foreground">
             {CARRIERS.map((c) => (
               <li key={c}>{c}</li>
             ))}

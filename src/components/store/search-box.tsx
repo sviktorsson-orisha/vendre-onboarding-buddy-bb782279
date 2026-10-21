@@ -79,7 +79,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      <Search className="pointer-events-none absolute left-2 top-1/2 size-5 -translate-y-1/2 text-primary" />
+      <Search className="pointer-events-none absolute left-2 top-1/2 size-5 -translate-y-1/2 text-foreground" />
       <input
         type="search"
         role="combobox"
@@ -141,7 +141,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
           <button
             type="button"
             onClick={goToResults}
-            className="block w-full border-t border-border px-4 py-2.5 text-left text-sm font-semibold text-primary hover:bg-accent"
+            className="block w-full border-t border-border px-4 py-2.5 text-left text-sm font-semibold text-foreground hover:bg-accent"
           >
             {t("search.viewAll", { q: value.trim() })}
           </button>

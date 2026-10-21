@@ -35,6 +35,8 @@
   --color-brand-pink: var(--brand-pink);
   --color-brand-blue: var(--brand-blue);
   --color-foreground: var(--foreground);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -72,18 +74,21 @@
   --radius: 0rem;
   --brand-pink: oklch(0.25 0.14 300);
   --brand-blue: oklch(0.82 0.15 80);
+  /* Global text colours: every text in the store uses one of these two. */
+  --text: oklch(0 0 0);
+  --text-muted: oklch(0.5 0.01 285);
   --background: oklch(0.9702 0 0);
-  --foreground: oklch(0.32 0 0);
+  --foreground: var(--text);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.32 0 0);
+  --card-foreground: var(--text);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.32 0 0);
+  --popover-foreground: var(--text);
   --primary: oklch(0.33 0.19 284);
   --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.95 0.02 295);
   --secondary-foreground: oklch(0.33 0.19 284);
   --muted: oklch(0.96 0.005 295);
-  --muted-foreground: oklch(0.5 0.01 285);
+  --muted-foreground: var(--text-muted);
   --accent: oklch(0.94 0.025 295);
   --accent-foreground: oklch(0.33 0.19 284);
   --destructive: oklch(0.577 0.245 27.325);
@@ -120,7 +125,9 @@
   --brand-pink: oklch(0.2 0.1 300);
   --brand-blue: oklch(0.82 0.15 80);
   --background: oklch(0.16 0.04 295);
-  --foreground: oklch(0.96 0.005 295);
+  --text: oklch(0.96 0.005 295);
+  --text-muted: oklch(0.72 0.02 295);
+  --foreground: var(--text);
   --card: oklch(0.21 0.05 295);
   --card-foreground: oklch(0.96 0.005 295);
   --popover: oklch(0.21 0.05 295);
@@ -130,7 +137,7 @@
   --secondary: oklch(0.28 0.06 295);
   --secondary-foreground: oklch(0.96 0.005 295);
   --muted: oklch(0.26 0.04 295);
-  --muted-foreground: oklch(0.72 0.02 295);
+  --muted-foreground: var(--text-muted);
   --accent: oklch(0.3 0.07 295);
   --accent-foreground: oklch(0.96 0.005 295);
   --destructive: oklch(0.704 0.191 22.216);

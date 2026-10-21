@@ -62,7 +62,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
             to="/produkt/$id"
             params={{ id: String(product.id) }}
             {...intent}
-            className="text-base font-semibold text-foreground hover:text-primary"
+            className="text-base font-semibold text-foreground hover:underline"
           >
             {product.name}
           </Link>

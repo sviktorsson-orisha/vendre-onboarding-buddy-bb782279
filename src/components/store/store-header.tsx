@@ -42,7 +42,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
                 to="/kategori/$id"
                 params={{ id: String(child.id) }}
                 {...intent(child.id)}
-                className="block truncate text-sm font-bold text-foreground hover:text-primary"
+                className="block truncate text-sm font-bold text-foreground hover:underline"
               >
                 {child.name}
               </Link>
@@ -54,7 +54,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
                         to="/kategori/$id"
                         params={{ id: String(leaf.id) }}
                         {...intent(leaf.id)}
-                        className="block truncate rounded-md py-1 text-sm text-muted-foreground hover:text-primary"
+                        className="block truncate rounded-md py-1 text-sm text-muted-foreground hover:text-foreground"
                       >
                         {leaf.name}
                       </Link>
@@ -71,7 +71,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
             to="/kategori/$id"
             params={{ id: String(node.id) }}
             {...intent(node.id)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:underline"
           >
             {t("store.viewAllIn", { name: node.name })}
             <ArrowRight className="size-4 shrink-0" aria-hidden />
@@ -191,7 +191,7 @@ export function StoreHeader() {
               className="h-7 w-auto max-w-[130px] object-contain md:h-8 md:max-w-[150px] lg:h-10 lg:max-w-[190px]"
             />
           ) : (
-            <span className="brand-wordmark text-xl text-primary md:text-2xl lg:text-3xl">vendre</span>
+            <span className="brand-wordmark text-xl text-foreground md:text-2xl lg:text-3xl">vendre</span>
           )}
         </Link>
 
@@ -210,7 +210,7 @@ export function StoreHeader() {
           <AccountMenu />
           <button
             type="button"
-            className="relative grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:text-primary"
+            className="relative grid size-10 place-items-center rounded-full text-foreground hover:bg-accent"
             onClick={() => setCartOpen(true)}
             aria-label={t("store.cart")}
           >
@@ -251,7 +251,7 @@ export function StoreHeader() {
                 <Link
                   to="/kategori/$id"
                   params={{ id: String(node.id) }}
-                  className="flex min-w-0 items-center gap-1 px-2 py-2 text-base font-normal text-foreground transition-colors [overflow-wrap:anywhere] hover:text-primary"
+                  className="flex min-w-0 items-center gap-1 px-2 py-2 text-base font-normal text-foreground transition-colors [overflow-wrap:anywhere] hover:underline"
                   aria-haspopup={hasChildren ? "true" : undefined}
                   aria-expanded={hasChildren ? isOpen : undefined}
                   {...categoryIntent(node.id)}

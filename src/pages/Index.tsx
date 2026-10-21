@@ -15,7 +15,7 @@ export default function Index() {
   return (
     <StoreShell>
       <section className="brand-card overflow-hidden p-8 sm:p-12">
-        <p className="brand-eyebrow inline-flex rounded-md bg-primary/10 px-3 py-1 text-primary">vendre</p>
+        <p className="brand-eyebrow inline-flex rounded-md bg-primary/10 px-3 py-1 text-foreground">vendre</p>
         <h1 className="mt-5 max-w-2xl text-4xl font-extrabold leading-[1.05] text-foreground sm:text-5xl">
           {t("store.heroTitle")}
         </h1>
