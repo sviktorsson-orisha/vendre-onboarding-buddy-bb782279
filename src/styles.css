@@ -77,7 +77,7 @@
   /* Global text colours: every text in the store uses one of these two. */
   --text: oklch(0 0 0);
   --text-muted: oklch(0.5 0.01 285);
-  --background: oklch(0.9702 0 0);
+  --background: oklch(1 0 0);
   --foreground: var(--text);
   --card: oklch(1 0 0);
   --card-foreground: var(--text);
