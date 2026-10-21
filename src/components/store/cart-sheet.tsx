@@ -102,7 +102,7 @@ export function CartSheet({
                         to="/produkt/$id"
                         params={{ id: String(line.product_id) }}
                         onClick={() => onOpenChange(false)}
-                        className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                        className="block text-sm font-semibold text-foreground transition-colors hover:underline"
                       >
                         {line.product_data?.name ?? `#${line.product_id}`}
                       </Link>

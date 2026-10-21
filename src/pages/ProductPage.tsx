@@ -289,7 +289,7 @@ export default function ProductPage({ id }: { id: string }) {
                         blocked
                           ? "cursor-not-allowed border-border bg-muted text-muted-foreground line-through opacity-60"
                           : active
-                            ? "border-primary bg-primary/10 text-primary"
+                            ? "border-primary bg-primary/10 text-foreground"
                             : "border-border bg-card text-foreground hover:bg-accent",
                       )}
                     >
