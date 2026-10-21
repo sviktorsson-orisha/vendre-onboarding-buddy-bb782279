@@ -104,6 +104,15 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Global button styling: change these to restyle every button in the store. */
+  --button-bg: var(--primary);
+  --button-fg: var(--primary-foreground);
+  --button-bg-hover: color-mix(in oklab, var(--button-bg) 88%, black);
+  --button-outline: var(--primary);
+  --button-outline-border: color-mix(in oklab, var(--button-outline) 35%, transparent);
+  --button-outline-bg-hover: color-mix(in oklab, var(--button-outline) 10%, transparent);
+  --button-radius: var(--radius);
 }
 
 .dark {
@@ -213,17 +222,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border-radius: var(--radius-md);
-  background-color: var(--color-primary);
-  color: var(--color-primary-foreground);
+  border-radius: var(--button-radius);
+  background-color: var(--button-bg);
+  color: var(--button-fg);
   padding: 0.7rem 1.25rem;
   font-family: var(--font-display);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
-  transition: transform 150ms ease, background-color 150ms ease;
-  &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-primary) 88%, black); }
+  transition: background-color 150ms ease;
+  &:hover:not(:disabled) { background-color: var(--button-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
 }
 
@@ -232,9 +241,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border-radius: var(--radius-md);
-  border: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
-  color: var(--color-primary);
+  border-radius: var(--button-radius);
+  border: 1px solid var(--button-outline-border);
+  color: var(--button-outline);
   background-color: transparent;
   padding: 0.5rem 0.9rem;
   font-family: var(--font-display);
@@ -243,7 +252,7 @@
   letter-spacing: 0;
   text-transform: uppercase;
   transition: background-color 150ms ease;
-  &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-primary) 10%, transparent); }
+  &:hover:not(:disabled) { background-color: var(--button-outline-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
 }
 
