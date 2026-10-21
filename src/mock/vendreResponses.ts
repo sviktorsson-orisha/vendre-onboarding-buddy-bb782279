@@ -186,6 +186,7 @@ function product(
     stock_allow_checkout: stock > 0,
     seo_link: null,
     categories_id: String(categoryId),
+    brand: ["Orisha", "Nordform", "Atelier Nord"][Number(id) % 3] ?? null,
     has_attributes: Boolean(opts.attributes?.length),
     child_count: opts.attributes?.length ? opts.attributes.length : 0,
     ...(opts.attributes ? { attributes: opts.attributes } : {}),

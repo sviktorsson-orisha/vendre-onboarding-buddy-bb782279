@@ -503,6 +503,7 @@ type VqlRawProduct = {
   tax_rate?: number | null;
   category_id?: number | null;
   seo_link?: string | null;
+  manufacturer_id?: number | null;
   in_stock?: boolean | null;
   quantity?: number | null;
   stock_allow_checkout?: boolean | number | null;
@@ -554,7 +555,20 @@ const VQL_VARIANT_FIELDS = [
  */
 const variantTreeCache = new Map<string, ProductVariantType[]>();
 
-function mapVqlProduct(raw: VqlRawProduct): Product {
+/**
+ * VQL ignores a `manufacturer` relation on products (verified live), so the
+ * brand names are read as a separate resource in the same VQL request and
+ * joined on manufacturer_id.
+ */
+type VqlManufacturer = { id: number; name?: string | null };
+const VQL_MANUFACTURERS_QUERY = {
+  manufacturers: { filters: { limit: 500 }, fields: ["id", "name"] },
+};
+function manufacturerNames(list?: VqlManufacturer[] | null) {
+  return new Map((list ?? []).map((m) => [Number(m.id), m.name ?? null]));
+}
+
+function mapVqlProduct(raw: VqlRawProduct, brands?: Map<number, string | null>): Product {
   const pricing = raw.pricing ?? {};
   const image: VendreImage | null = raw.image?.href
     ? {
@@ -588,6 +602,7 @@ function mapVqlProduct(raw: VqlRawProduct): Product {
     stock_allow_checkout: allowCheckout,
     seo_link: raw.seo_link ?? null,
     categories_id: raw.category_id != null ? String(raw.category_id) : null,
+    brand: raw.manufacturer_id ? (brands?.get(Number(raw.manufacturer_id)) ?? null) : null,
     has_attributes: false,
     child_count: raw.child_count ?? 0,
     parent_id: raw.parent_id ?? null,
@@ -612,7 +627,11 @@ async function vqlProduct(
   try {
     const data = await guarded(() =>
       surfaceJson<{
-        query?: { products?: VqlRawProduct[]; product_variant_types?: ProductVariantType[] };
+        query?: {
+          products?: VqlRawProduct[];
+          product_variant_types?: ProductVariantType[];
+          manufacturers?: VqlManufacturer[];
+        };
       } | null>("vql", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -622,6 +641,7 @@ async function vqlProduct(
               filters: { where: { id: Number(id) } },
               fields: VQL_PRODUCT_FIELDS,
             },
+            ...VQL_MANUFACTURERS_QUERY,
             ...(withVariants
               ? {
                   product_variant_types: {
@@ -642,7 +662,7 @@ async function vqlProduct(
         normalizeVariantTypes(data?.query?.product_variant_types ?? []),
       );
     }
-    return mapVqlProduct(raw);
+    return mapVqlProduct(raw, manufacturerNames(data?.query?.manufacturers));
   } catch {
     // VQL is off on this install (documented 500): stop trying it for product reads.
     vqlDisabled = true;
@@ -1224,16 +1244,20 @@ async function vqlRandomProducts(count: number): Promise<Product[] | null> {
       .map((row) => row.id);
     if (!picked.length) return [];
 
-    const full = await post<{ query?: { products?: VqlRawProduct[] } } | null>({
+    const full = await post<{
+      query?: { products?: VqlRawProduct[]; manufacturers?: VqlManufacturer[] };
+    } | null>({
       products: {
         fields: ["_all", { image: { fields: ["id", "name", "href"] } }],
         filters: { where: { id: picked } },
       },
+      ...VQL_MANUFACTURERS_QUERY,
     });
     const byId = new Map((full?.query?.products ?? []).map((raw) => [raw.id, raw]));
+    const brands = manufacturerNames(full?.query?.manufacturers);
     return picked.flatMap((id) => {
       const raw = byId.get(id);
-      return raw ? [mapVqlProduct(raw)] : [];
+      return raw ? [mapVqlProduct(raw, brands)] : [];
     });
   } catch {
     return null;
