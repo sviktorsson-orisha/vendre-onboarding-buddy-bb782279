@@ -83,7 +83,7 @@ export function StoreFooter() {
   const copyright = t("store.copyright", { year: String(new Date().getFullYear()), name: storeName });
 
   return (
-    <footer className="bg-card">
+    <footer className="border-t border-border bg-card">
       <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 pt-8 md:px-8 lg:pt-2">
         {/* Logo + socials (phone/tablet only) */}
         <div className="flex flex-col gap-5 border-b border-border pb-6 lg:hidden">
