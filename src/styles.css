@@ -113,6 +113,7 @@
   --button-outline-border: color-mix(in oklab, var(--button-outline) 35%, transparent);
   --button-outline-bg-hover: color-mix(in oklab, var(--button-outline) 10%, transparent);
   --button-radius: var(--radius);
+  --button-text-transform: none;
 }
 
 .dark {
@@ -230,7 +231,7 @@
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0;
-  text-transform: uppercase;
+  text-transform: var(--button-text-transform);
   transition: background-color 150ms ease;
   &:hover:not(:disabled) { background-color: var(--button-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
@@ -250,7 +251,7 @@
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0;
-  text-transform: uppercase;
+  text-transform: var(--button-text-transform);
   transition: background-color 150ms ease;
   &:hover:not(:disabled) { background-color: var(--button-outline-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
