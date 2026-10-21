@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronDown, Menu, Search, ShoppingCart } from "lucide-react";
+import { ChevronDown, Menu, Search, ShoppingCart } from "lucide-react";
 
 import {
   Accordion,
@@ -40,10 +40,9 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
             to="/kategori/$id"
             params={{ id: String(node.id) }}
             {...intent(node.id)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:underline"
+            className="inline-flex items-center text-sm font-normal text-foreground underline"
           >
             {t("store.viewAllIn", { name: node.name })}
-            <ArrowRight className="size-4 shrink-0" aria-hidden />
           </Link>
         </div>
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
