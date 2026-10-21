@@ -602,6 +602,7 @@ function mapVqlProduct(raw: VqlRawProduct, brands?: Map<number, string | null>):
     stock_allow_checkout: allowCheckout,
     seo_link: raw.seo_link ?? null,
     categories_id: raw.category_id != null ? String(raw.category_id) : null,
+    brand: raw.manufacturer_id ? (brands?.get(Number(raw.manufacturer_id)) ?? null) : null,
     has_attributes: false,
     child_count: raw.child_count ?? 0,
     parent_id: raw.parent_id ?? null,

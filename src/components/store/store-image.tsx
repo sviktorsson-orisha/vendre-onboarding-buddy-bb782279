@@ -64,7 +64,7 @@ export function StoreImage({
       fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       onError={() => setFailed(true)}
-      className={cn("object-cover", className)}
+      className={cn(className?.includes("object-contain") ? null : "object-cover", className)}
     />
   );
 }

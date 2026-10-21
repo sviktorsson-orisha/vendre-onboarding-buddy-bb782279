@@ -34,13 +34,17 @@ export function ProductCard({ product, priority = false }: { product: Product; p
     onTouchStart: () => prefetch(product.id),
   };
 
+  const brand = (product.brand ?? product.manufacturer_name ?? "").trim();
+  // Same box for both actions so cards line up regardless of which one shows.
+  const action = "mt-auto box-border h-10 w-full justify-center px-4 py-0";
+
   return (
-    <article className="brand-card group flex flex-col overflow-hidden rounded-none p-0">
+    <article className="brand-card group flex flex-col overflow-hidden rounded-none border-0 p-0">
       <Link
         to="/produkt/$id"
         params={{ id: String(product.id) }}
-          {...intent}
-        className="block aspect-4/5 overflow-hidden"
+        {...intent}
+        className="block aspect-square overflow-hidden"
       >
         <StoreImage
           size="card"
@@ -48,32 +52,35 @@ export function ProductCard({ product, priority = false }: { product: Product; p
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
-          className="size-full transition-transform duration-300 group-hover:scale-105"
+          className="size-full object-contain transition-transform duration-300 group-hover:scale-105"
         />
       </Link>
       <div className="flex grow flex-col gap-2 p-4">
-        <Link
-          to="/produkt/$id"
-          params={{ id: String(product.id) }}
-          {...intent}
-          className="text-sm font-semibold text-foreground hover:text-primary"
-        >
-          {product.name}
-        </Link>
+        <div className="flex flex-col gap-0.5">
+          {brand && <p className="text-xs text-muted-foreground">{brand}</p>}
+          <Link
+            to="/produkt/$id"
+            params={{ id: String(product.id) }}
+            {...intent}
+            className="text-sm font-semibold text-foreground hover:text-primary"
+          >
+            {product.name}
+          </Link>
+        </div>
         <ProductPrice product={product} size="md" />
         {readMoreOnly ? (
           <Link
             to="/produkt/$id"
             params={{ id: String(product.id) }}
             {...intent}
-            className="brand-button-ghost mt-auto w-full justify-center"
+            className={`brand-button-ghost ${action}`}
           >
             {t("store.readMore")}
           </Link>
         ) : (
           <button
             type="button"
-            className="brand-button mt-auto w-full justify-center"
+            className={`brand-button ${action}`}
             disabled={add.isPending}
             onClick={() => add.mutate({ productId: product.id })}
           >
