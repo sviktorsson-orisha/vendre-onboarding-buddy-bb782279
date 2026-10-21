@@ -103,7 +103,7 @@ export default function ProductPage({ id }: { id: string }) {
         <div aria-busy="true">
           <div className="h-3 w-48 animate-pulse rounded bg-muted" />
           <div className="mt-6 grid gap-8 lg:grid-cols-2">
-            <div className="aspect-square w-full animate-pulse rounded-xl bg-muted" />
+            <div className="aspect-square w-full animate-pulse rounded-lg bg-muted" />
             <div className="space-y-4">
               <div className="h-9 w-3/4 animate-pulse rounded bg-muted" />
               <div className="h-7 w-32 animate-pulse rounded bg-muted" />
@@ -237,7 +237,7 @@ export default function ProductPage({ id }: { id: string }) {
           image={view?.image ?? view?.images?.[0] ?? product.image ?? product.images[0] ?? null}
           alt={view?.name ?? product.name}
           label={view?.name ?? product.name}
-          className="aspect-4/5 w-full rounded-2xl border border-border"
+          className="aspect-4/5 w-full rounded-lg border border-border"
         />
 
         <div>
