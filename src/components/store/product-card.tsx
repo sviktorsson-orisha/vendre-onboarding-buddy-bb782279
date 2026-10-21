@@ -52,7 +52,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
-          className="size-full object-contain"
+          className="size-full object-cover object-center"
         />
       </Link>
       <div className="flex grow flex-col gap-2 p-4">
