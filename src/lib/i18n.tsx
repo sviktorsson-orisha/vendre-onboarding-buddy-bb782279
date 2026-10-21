@@ -166,8 +166,6 @@ const dictionary = {
     "store.priceTo": "Till",
     "store.noResults": "Inga produkter matchar ditt urval.",
     "store.loadError": "Kategorin kunde inte laddas. Kontrollera butiksanslutningen.",
-    "store.readMore": "Läs mer",
-    "store.showLess": "Visa mindre",
     "store.prev": "Föregående",
     "store.next": "Nästa",
 
@@ -416,8 +414,6 @@ const dictionary = {
     "store.priceTo": "To",
     "store.noResults": "No products match your selection.",
     "store.loadError": "The category could not be loaded. Check the store connection.",
-    "store.readMore": "Read more",
-    "store.showLess": "Show less",
     "store.prev": "Previous",
     "store.next": "Next",
 
