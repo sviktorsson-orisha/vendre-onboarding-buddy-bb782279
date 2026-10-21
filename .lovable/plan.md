@@ -1,11 +1,11 @@
-# Product box pictures: uniform squares
+# Product box pictures: fill the square, crop the sides
 
-Every product picture sits in a square of the same size, and the whole photo fits inside it without being stretched or cropped. Any space around a tall or wide photo is white, the same as the product box.
+Every product picture fills a square that is as tall as it is wide. Wide photos, like the one for Coral Strap Back Dress, fill the full height and lose a bit on the left and right. The photo stays centred and is never stretched. This means no more empty white bands above and below wide photos.
 
-Note: the boxes in your screenshot are already squares, and the photos are already uncropped. What looks uneven is the photos themselves. The watch photo has its own grey background and the dress photo has a light grey one, so they show up as grey bands inside the white square. The store can't remove a background that is part of the photo. This change makes the square explicit and keeps the space around photos white. To make the grid look fully even, the photos need white or transparent backgrounds in Vendre.
+This replaces the earlier rule that the whole photo must fit without cropping.
 
 ## Technical details
 - `src/components/store/product-card.tsx` only.
-- Picture link wrapper: `block aspect-square w-full overflow-hidden bg-card`.
-- `StoreImage` in the card: `aspect-square size-full object-contain bg-transparent`, so the wrapper's card colour shows through.
-- No logic, font or colour token changes.
+- Picture link wrapper stays `block aspect-square w-full overflow-hidden`.
+- `StoreImage` in the card: change `size-full object-contain` to `size-full object-cover object-center`.
+- No logic, font or colour changes. The product page and cart pictures are unchanged.
