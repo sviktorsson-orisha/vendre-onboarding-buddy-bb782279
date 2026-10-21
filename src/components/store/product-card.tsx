@@ -62,32 +62,32 @@ export function ProductCard({ product, priority = false }: { product: Product; p
             to="/produkt/$id"
             params={{ id: String(product.id) }}
             {...intent}
-            className="text-base font-semibold text-foreground hover:underline"
+            className="text-base font-semibold text-foreground"
           >
             {product.name}
           </Link>
         </div>
         <ProductPrice product={product} size="md" />
-        {readMoreOnly ? (
-          <Link
-            to="/produkt/$id"
-            params={{ id: String(product.id) }}
-            {...intent}
-            className={`brand-button-ghost ${action}`}
-          >
-            {t("store.readMore")}
-          </Link>
-        ) : (
-          <button
-            type="button"
-            className={`brand-button ${action}`}
-            disabled={add.isPending}
-            onClick={() => add.mutate({ productId: product.id })}
-          >
-            {t("store.addToCart")}
-          </button>
-        )}
       </div>
+      {readMoreOnly ? (
+        <Link
+          to="/produkt/$id"
+          params={{ id: String(product.id) }}
+          {...intent}
+          className={`brand-button-ghost ${action}`}
+        >
+          {t("store.readMore")}
+        </Link>
+      ) : (
+        <button
+          type="button"
+          className={`brand-button ${action}`}
+          disabled={add.isPending}
+          onClick={() => add.mutate({ productId: product.id })}
+        >
+          {t("store.addToCart")}
+        </button>
+      )}
     </article>
   );
 }
