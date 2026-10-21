@@ -21,7 +21,7 @@ const currentSize: Record<Size, string> = {
 
 const originalSize: Record<Size, string> = {
   sm: "text-xs",
-  md: "text-xs",
+  md: "text-base",
   lg: "text-base",
 };
 

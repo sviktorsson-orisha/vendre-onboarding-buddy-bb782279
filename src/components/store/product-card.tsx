@@ -52,17 +52,17 @@ export function ProductCard({ product, priority = false }: { product: Product; p
           image={product.image ?? product.images[0] ?? null}
           alt={product.name}
           label={product.name}
-          className="size-full object-contain transition-transform duration-300 group-hover:scale-105"
+          className="size-full object-contain"
         />
       </Link>
       <div className="flex grow flex-col gap-2 p-4">
         <div className="flex flex-col gap-0.5">
-          {brand && <p className="text-xs text-muted-foreground">{brand}</p>}
+          {brand && <p className="text-sm text-muted-foreground">{brand}</p>}
           <Link
             to="/produkt/$id"
             params={{ id: String(product.id) }}
             {...intent}
-            className="text-sm font-semibold text-foreground hover:text-primary"
+            className="text-base font-semibold text-foreground hover:text-primary"
           >
             {product.name}
           </Link>
