@@ -96,7 +96,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="w-full rounded-none border-0 border-b border-border bg-transparent py-3 pl-10 pr-3 text-base text-foreground outline-hidden placeholder:text-muted-foreground focus:border-primary"
+        className="w-full rounded-none border-0 border-b border-border bg-transparent py-3 pl-10 pr-3 text-base text-foreground outline-hidden placeholder:text-muted-foreground focus:border-foreground"
       />
 
       {showPanel && (
