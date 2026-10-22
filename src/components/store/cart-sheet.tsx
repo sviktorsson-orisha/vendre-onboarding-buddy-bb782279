@@ -79,9 +79,9 @@ export function CartSheet({
           ) : lines.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("store.cartEmpty")}</p>
           ) : (
-            <ul className="space-y-4">
+            <ul className="divide-y divide-border">
               {lines.map((line) => (
-                <li key={line.id} className="flex gap-3">
+                <li key={line.id} className="flex gap-3 py-4 first:pt-0 last:pb-0">
                   <Link
                     to="/produkt/$id"
                     params={{ id: String(line.product_id) }}
@@ -97,23 +97,39 @@ export function CartSheet({
                     />
                   </Link>
                   <div className="grow">
-                    <Link
-                      to="/produkt/$id"
-                      params={{ id: String(line.product_id) }}
-                      onClick={() => onOpenChange(false)}
-                      className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
-                    >
-                      {line.product_data?.name ?? `#${line.product_id}`}
-                    </Link>
+                    <div className="flex items-start justify-between gap-2">
+                      <Link
+                        to="/produkt/$id"
+                        params={{ id: String(line.product_id) }}
+                        onClick={() => onOpenChange(false)}
+                        className="block text-sm font-semibold text-foreground transition-colors hover:underline"
+                      >
+                        {line.product_data?.name ?? `#${line.product_id}`}
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label={t("store.remove")}
+                        title={t("store.remove")}
+                        className="inline-flex size-7 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                        onClick={() => remove.mutate({ line })}
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                     {line.product_data && (
-                      <ProductPrice product={line.product_data} size="sm" className="mt-1 flex" />
+                      <ProductPrice
+                        product={line.product_data}
+                        size="sm"
+                        className="mt-1 flex"
+                        originalClassName="text-sm"
+                      />
                     )}
 
                     <div className="mt-2 flex items-center gap-2">
                       <button
                         type="button"
                         aria-label="-"
-                        className="brand-button-ghost size-7 justify-center p-0"
+                        className="inline-flex size-7 items-center justify-center text-foreground"
                         onClick={() => update.mutate({ line, quantity: line.quantity - 1 })}
                       >
                         <Minus className="size-3.5" />
@@ -124,17 +140,10 @@ export function CartSheet({
                       <button
                         type="button"
                         aria-label="+"
-                        className="brand-button-ghost size-7 justify-center p-0"
+                        className="inline-flex size-7 items-center justify-center text-foreground"
                         onClick={() => update.mutate({ line, quantity: line.quantity + 1 })}
                       >
                         <Plus className="size-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        className="brand-button-ghost ml-auto"
-                        onClick={() => remove.mutate({ line })}
-                      >
-                        <Trash2 className="size-3.5" /> {t("store.remove")}
                       </button>
                     </div>
                   </div>

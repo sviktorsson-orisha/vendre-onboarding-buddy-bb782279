@@ -141,7 +141,7 @@ export function FiltersContent({
             <span />
           )}
           {active && (
-            <button type="button" className="text-xs text-primary underline" onClick={onClear}>
+            <button type="button" className="text-xs text-foreground underline" onClick={onClear}>
               {t("store.clearFilters")}
             </button>
           )}

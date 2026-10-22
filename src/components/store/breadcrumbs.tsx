@@ -35,7 +35,7 @@ export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
     <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground">
       <ol className="flex flex-wrap items-center gap-1">
         <li>
-          <Link to="/" className="hover:text-primary">
+          <Link to="/" className="hover:text-foreground">
             {t("store.home")}
           </Link>
         </li>
@@ -51,7 +51,7 @@ export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
                 to="/kategori/$id"
                 params={{ id: String(crumb.id) }}
                 {...intent(crumb.id)}
-                className="hover:text-primary"
+                className="hover:text-foreground"
               >
                 {crumb.name}
               </Link>

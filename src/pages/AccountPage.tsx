@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FormMessage } from "@/components/store/form-message";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { LogOut, MapPin, Package, User, UserCog } from "lucide-react";
 
@@ -439,12 +440,12 @@ function ProfileView() {
             )}
           </div>
         </div>
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && <FormMessage variant="error">{error}</FormMessage>}
+        {saved && <FormMessage variant="success">{t("account.saved")}</FormMessage>}
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={updateAccount.isPending}>
             {updateAccount.isPending ? t("account.saving") : t("account.save")}
           </Button>
-          {saved && <span className="text-xs text-muted-foreground">{t("account.saved")}</span>}
         </div>
       </form>
     </Section>

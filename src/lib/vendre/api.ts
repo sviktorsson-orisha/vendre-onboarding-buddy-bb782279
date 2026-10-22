@@ -503,6 +503,7 @@ type VqlRawProduct = {
   tax_rate?: number | null;
   category_id?: number | null;
   seo_link?: string | null;
+  manufacturer_id?: number | null;
   in_stock?: boolean | null;
   quantity?: number | null;
   stock_allow_checkout?: boolean | number | null;
@@ -554,7 +555,20 @@ const VQL_VARIANT_FIELDS = [
  */
 const variantTreeCache = new Map<string, ProductVariantType[]>();
 
-function mapVqlProduct(raw: VqlRawProduct): Product {
+/**
+ * VQL ignores a `manufacturer` relation on products (verified live), so the
+ * brand names are read as a separate resource in the same VQL request and
+ * joined on manufacturer_id.
+ */
+type VqlManufacturer = { id: number; name?: string | null };
+const VQL_MANUFACTURERS_QUERY = {
+  manufacturers: { filters: { limit: 500 }, fields: ["id", "name"] },
+};
+function manufacturerNames(list?: VqlManufacturer[] | null) {
+  return new Map((list ?? []).map((m) => [Number(m.id), m.name ?? null]));
+}
+
+function mapVqlProduct(raw: VqlRawProduct, brands?: Map<number, string | null>): Product {
   const pricing = raw.pricing ?? {};
   const image: VendreImage | null = raw.image?.href
     ? {
@@ -588,6 +602,7 @@ function mapVqlProduct(raw: VqlRawProduct): Product {
     stock_allow_checkout: allowCheckout,
     seo_link: raw.seo_link ?? null,
     categories_id: raw.category_id != null ? String(raw.category_id) : null,
+    brand: raw.manufacturer_id ? (brands?.get(Number(raw.manufacturer_id)) ?? null) : null,
     has_attributes: false,
     child_count: raw.child_count ?? 0,
     parent_id: raw.parent_id ?? null,
@@ -612,7 +627,11 @@ async function vqlProduct(
   try {
     const data = await guarded(() =>
       surfaceJson<{
-        query?: { products?: VqlRawProduct[]; product_variant_types?: ProductVariantType[] };
+        query?: {
+          products?: VqlRawProduct[];
+          product_variant_types?: ProductVariantType[];
+          manufacturers?: VqlManufacturer[];
+        };
       } | null>("vql", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -622,6 +641,7 @@ async function vqlProduct(
               filters: { where: { id: Number(id) } },
               fields: VQL_PRODUCT_FIELDS,
             },
+            ...VQL_MANUFACTURERS_QUERY,
             ...(withVariants
               ? {
                   product_variant_types: {
@@ -642,7 +662,7 @@ async function vqlProduct(
         normalizeVariantTypes(data?.query?.product_variant_types ?? []),
       );
     }
-    return mapVqlProduct(raw);
+    return mapVqlProduct(raw, manufacturerNames(data?.query?.manufacturers));
   } catch {
     // VQL is off on this install (documented 500): stop trying it for product reads.
     vqlDisabled = true;
@@ -1165,6 +1185,85 @@ export function useCartMutations() {
 }
 
 
+/** Fisher–Yates shuffle on a copy. */
+export function shuffled<T>(list: readonly T[]): T[] {
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/** How many product ids are scanned when picking random featured products. */
+const FEATURED_ID_POOL = 500;
+
+/**
+ * `count` random active products via VQL, in two small requests:
+ *  1. a light id list (active top-level products; variant children are skipped),
+ *  2. the full card fields for the randomly picked ids only.
+ * VQL has no random order, so the pick happens here. Returns null when VQL is
+ * unavailable so the caller can fall back to a category listing.
+ */
+async function vqlRandomProducts(count: number): Promise<Product[] | null> {
+  if (vqlDisabled) return null;
+  type IdRow = {
+    id: number;
+    status?: number | null;
+    parent_id?: number | null;
+    in_stock?: boolean | null;
+    stock_allow_checkout?: boolean | number | null;
+  };
+  const post = <T,>(query: unknown) =>
+    guarded(() =>
+      surfaceJson<T>("vql", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ query }),
+      }),
+    );
+  try {
+    const ids = await post<{ query?: { products?: IdRow[] } } | null>({
+      products: {
+        fields: ["id", "status", "parent_id", "in_stock", "stock_allow_checkout"],
+        filters: { limit: FEATURED_ID_POOL, where: { status: 1 } },
+      },
+    });
+    const rows = (ids?.query?.products ?? []).filter(
+      (row) => row.parent_id == null && (row.status == null || Number(row.status) !== 0),
+    );
+    const buyable = rows.filter(
+      (row) => row.in_stock || Boolean(Number(row.stock_allow_checkout ?? 0)),
+    );
+    // Prefer buyable products; top up with the rest if there are too few.
+    const picked = [
+      ...shuffled(buyable),
+      ...shuffled(rows.filter((row) => !buyable.includes(row))),
+    ]
+      .slice(0, count)
+      .map((row) => row.id);
+    if (!picked.length) return [];
+
+    const full = await post<{
+      query?: { products?: VqlRawProduct[]; manufacturers?: VqlManufacturer[] };
+    } | null>({
+      products: {
+        fields: ["_all", { image: { fields: ["id", "name", "href"] } }],
+        filters: { where: { id: picked } },
+      },
+      ...VQL_MANUFACTURERS_QUERY,
+    });
+    const byId = new Map((full?.query?.products ?? []).map((raw) => [raw.id, raw]));
+    const brands = manufacturerNames(full?.query?.manufacturers);
+    return picked.flatMap((id) => {
+      const raw = byId.get(id);
+      return raw ? [mapVqlProduct(raw, brands)] : [];
+    });
+  } catch {
+    return null;
+  }
+}
+
 export function useFeaturedProducts(count = 4, enabled = true) {
   const api = useVendreApi();
   const queryClient = useQueryClient();
@@ -1173,7 +1272,10 @@ export function useFeaturedProducts(count = 4, enabled = true) {
     queryKey: ["vendre", api.mode, "featured", count],
     queryFn: async () => {
       if (api.mode === "demo") return mockFeaturedProducts(count);
-      // Reuse the header's cached menu instead of fetching it a second time.
+      const random = await vqlRandomProducts(count);
+      if (random) return random;
+      // VQL is off: use the first leaf category. No `limit` is sent, so the
+      // store's own default page size applies whatever admin has configured.
       const menus = await queryClient.ensureQueryData({
         queryKey: ["vendre", api.mode, "menus"],
         queryFn: () => api.getMenus(),
@@ -1181,10 +1283,8 @@ export function useFeaturedProducts(count = 4, enabled = true) {
       });
       const first = menus.find((item) => item.menu_type === "category" && !item.has_children);
       if (!first) return [];
-      // The request is rounded up to a page size the store accepts; the view
-      // still shows exactly `count` products.
-      const category = await api.getCategory(first.id, { limit: count });
-      return category.product_list.slice(0, count);
+      const category = await api.getCategory(first.id);
+      return shuffled(category.product_list).slice(0, count);
     },
     staleTime: 5 * 60 * 1000,
   });

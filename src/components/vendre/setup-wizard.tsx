@@ -118,7 +118,7 @@ function GuideStep({
           done
             ? "border-emerald-500 bg-emerald-500 text-primary-foreground"
             : current
-              ? "border-transparent bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+              ? "border-transparent bg-primary text-primary-foreground"
               : "border-border bg-card text-muted-foreground",
         )}
       >

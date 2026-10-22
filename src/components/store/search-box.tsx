@@ -79,7 +79,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="pointer-events-none absolute left-2 top-1/2 size-5 -translate-y-1/2 text-foreground" />
       <input
         type="search"
         role="combobox"
@@ -96,11 +96,11 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-hidden focus:border-primary"
+        className="w-full rounded-none border-0 border-b border-border bg-transparent py-3 pl-10 pr-3 text-base text-foreground outline-hidden placeholder:text-muted-foreground focus:border-foreground"
       />
 
       {showPanel && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-card">
           {suggestions.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">
               {isFetching ? t("search.searching") : t("search.noHits", { q: value.trim() })}
@@ -141,7 +141,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
           <button
             type="button"
             onClick={goToResults}
-            className="block w-full border-t border-border px-4 py-2.5 text-left text-sm font-semibold text-primary hover:bg-accent"
+            className="block w-full border-t border-border px-4 py-2.5 text-left text-sm font-semibold text-foreground hover:bg-accent"
           >
             {t("search.viewAll", { q: value.trim() })}
           </button>

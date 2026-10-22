@@ -1,3 +1,4 @@
+import type React from "react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Rocket, Settings2 } from "lucide-react";
 
@@ -6,9 +7,30 @@ import { useI18n } from "@/lib/i18n";
 
 // The guide is heavy and rarely used once the store is live: load its code only
 // the first time it opens, then keep it mounted so closing animates normally.
-const SetupWizardDialog = lazy(() =>
-  import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog })),
-);
+// If the chunk fails to load (e.g. the dev server restarted and the old module URL
+// is gone), retry once, then reload the page once instead of crashing to a white screen.
+type WizardProps = { open: boolean; onOpenChange: (open: boolean) => void };
+const SetupWizardDialog = lazy(async (): Promise<{ default: React.ComponentType<WizardProps> }> => {
+  const load = () =>
+    import("@/components/vendre/setup-wizard").then((m) => ({ default: m.SetupWizardDialog }));
+  try {
+    return await load();
+  } catch {
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      return await load();
+    } catch (error) {
+      const key = "vendre-guide-chunk-reload";
+      if (typeof window !== "undefined" && !sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        window.location.reload();
+        return { default: () => null };
+      }
+      console.error(error);
+      return { default: () => null };
+    }
+  }
+});
 
 function LazySetupWizard({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [loaded, setLoaded] = useState(open);
@@ -39,7 +61,7 @@ export function SetupNoticeBar() {
     return (
       <>
         <div className="border-b border-border bg-linear-to-r from-primary/10 via-brand-pink/10 to-brand-blue/10">
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-5 py-2.5 sm:px-6">
+          <div className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-3 gap-y-2 px-5 py-2.5 sm:px-6">
             <Rocket className="size-4 text-primary" aria-hidden />
             <span className="brand-eyebrow rounded-md bg-primary/10 px-2 py-0.5 text-primary">Vendre</span>
             <p className="text-sm text-muted-foreground">{t("panel.verified")}</p>
@@ -56,7 +78,7 @@ export function SetupNoticeBar() {
   return (
     <>
       <div role="alert" className="border-b-2 border-primary bg-primary text-primary-foreground">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-3 px-5 py-3.5 sm:px-6">
+        <div className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-4 gap-y-3 px-5 py-3.5 sm:px-6">
           <span className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary-foreground/20" />
             <Settings2 className="relative size-5" aria-hidden />
@@ -73,7 +95,7 @@ export function SetupNoticeBar() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-2 rounded-md bg-primary-foreground px-4 py-2 text-sm font-semibold text-primary shadow-sm transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary-foreground px-4 py-2 text-sm font-semibold text-primary transition hover:opacity-90"
           >
             {t("notice.ctaPending")}
             <ArrowRight className="size-4" aria-hidden />

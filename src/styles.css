@@ -19,8 +19,11 @@
  */
 
 @theme inline {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Archivo", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -32,6 +35,8 @@
   --color-brand-pink: var(--brand-pink);
   --color-brand-blue: var(--brand-blue);
   --color-foreground: var(--foreground);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -44,6 +49,12 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-alert: var(--alert);
+  --color-alert-foreground: var(--alert-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -66,28 +77,38 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --brand-pink: oklch(0.68 0.22 340);
-  --brand-blue: oklch(0.66 0.16 250);
-  --background: oklch(0.972 0.016 291);
-  --foreground: oklch(0.17 0.03 285);
+  --radius: 0rem;
+  --brand-pink: oklch(0.25 0.14 300);
+  --brand-blue: oklch(0.82 0.15 80);
+  /* Global text colours: every text in the store uses one of these two. */
+  --text: oklch(0 0 0);
+  --text-muted: oklch(0.5 0.01 285);
+  --background: oklch(1 0 0);
+  --foreground: var(--text);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.17 0.03 285);
+  --card-foreground: var(--text);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.17 0.03 285);
-  --primary: oklch(0.46 0.24 275);
-  --primary-foreground: oklch(0.99 0.005 290);
-  --secondary: oklch(0.945 0.025 291);
-  --secondary-foreground: oklch(0.28 0.11 278);
-  --muted: oklch(0.955 0.018 291);
-  --muted-foreground: oklch(0.5 0.045 285);
-  --accent: oklch(0.93 0.045 320);
-  --accent-foreground: oklch(0.28 0.11 300);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.9 0.03 291);
-  --input: oklch(0.9 0.03 291);
-  --ring: oklch(0.46 0.24 275);
+  --popover-foreground: var(--text);
+  --primary: oklch(0.33 0.19 284);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.02 295);
+  --secondary-foreground: oklch(0.33 0.19 284);
+  --muted: oklch(0.96 0.005 295);
+  --muted-foreground: var(--text-muted);
+  --accent: oklch(0.94 0.025 295);
+  --accent-foreground: oklch(0.33 0.19 284);
+  /* Global status colours: notifications, stock status, errors. */
+  --success: oklch(0.682 0.155 159.5);
+  --success-foreground: oklch(1 0 0);
+  --alert: oklch(0.622 0.235 31.8);
+  --alert-foreground: oklch(1 0 0);
+  --warning: oklch(0.891 0.169 100.3);
+  --warning-foreground: oklch(0 0 0);
+  --destructive: var(--alert);
+  --destructive-foreground: var(--alert-foreground);
+  --border: oklch(0.92 0.005 285);
+  --input: oklch(0.86 0.005 285);
+  --ring: oklch(0.33 0.19 284);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -101,28 +122,49 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Global button styling: change these to restyle every button in the store. */
+  --button-bg: var(--primary);
+  --button-fg: var(--primary-foreground);
+  --button-bg-hover: color-mix(in oklab, var(--button-bg) 88%, black);
+  --button-outline: var(--primary);
+  --button-outline-border: color-mix(in oklab, var(--button-outline) 35%, transparent);
+  --button-outline-bg-hover: color-mix(in oklab, var(--button-outline) 10%, transparent);
+  --button-radius: var(--radius);
+  --button-text-transform: none;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --brand-pink: oklch(0.2 0.1 300);
+  --brand-blue: oklch(0.82 0.15 80);
+  --background: oklch(0.16 0.04 295);
+  --text: oklch(0.96 0.005 295);
+  --text-muted: oklch(0.72 0.02 295);
+  --foreground: var(--text);
+  --card: oklch(0.21 0.05 295);
+  --card-foreground: oklch(0.96 0.005 295);
+  --popover: oklch(0.21 0.05 295);
+  --popover-foreground: oklch(0.96 0.005 295);
+  --primary: oklch(0.72 0.14 290);
+  --primary-foreground: oklch(0.18 0.06 290);
+  --secondary: oklch(0.28 0.06 295);
+  --secondary-foreground: oklch(0.96 0.005 295);
+  --muted: oklch(0.26 0.04 295);
+  --muted-foreground: var(--text-muted);
+  --accent: oklch(0.3 0.07 295);
+  --accent-foreground: oklch(0.96 0.005 295);
+  /* Global status colours: notifications, stock status, errors. */
+  --success: oklch(0.682 0.155 159.5);
+  --success-foreground: oklch(1 0 0);
+  --alert: oklch(0.622 0.235 31.8);
+  --alert-foreground: oklch(1 0 0);
+  --warning: oklch(0.891 0.169 100.3);
+  --warning-foreground: oklch(0 0 0);
+  --destructive: var(--alert);
+  --destructive-foreground: var(--alert-foreground);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
+  --ring: oklch(0.72 0.14 290);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -208,17 +250,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border-radius: var(--radius-md);
-  background-color: var(--color-primary);
-  color: var(--color-primary-foreground);
+  border-radius: var(--button-radius);
+  background-color: var(--button-bg);
+  color: var(--button-fg);
   padding: 0.7rem 1.25rem;
   font-family: var(--font-display);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0;
-  text-transform: uppercase;
-  transition: transform 150ms ease, background-color 150ms ease;
-  &:hover:not(:disabled) { transform: translateY(-1px); background-color: color-mix(in oklab, var(--color-primary) 88%, black); }
+  text-transform: var(--button-text-transform);
+  transition: background-color 150ms ease;
+  &:hover:not(:disabled) { background-color: var(--button-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
 }
 
@@ -227,18 +269,18 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border-radius: var(--radius-md);
-  border: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
-  color: var(--color-primary);
+  border-radius: var(--button-radius);
+  border: 1px solid var(--button-outline-border);
+  color: var(--button-outline);
   background-color: transparent;
   padding: 0.5rem 0.9rem;
   font-family: var(--font-display);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0;
-  text-transform: uppercase;
+  text-transform: var(--button-text-transform);
   transition: background-color 150ms ease;
-  &:hover:not(:disabled) { background-color: color-mix(in oklab, var(--color-primary) 10%, transparent); }
+  &:hover:not(:disabled) { background-color: var(--button-outline-bg-hover); }
   &:disabled { cursor: not-allowed; opacity: 0.5; }
 }
 
@@ -248,5 +290,5 @@
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
   background-color: var(--color-card);
-  box-shadow: 0 1px 2px oklch(0.46 0.24 275 / 0.06);
+  box-shadow: none;
 }

@@ -109,6 +109,9 @@ export type Product = {
   stock_allow_checkout: boolean | null;
   seo_link: string | null;
   categories_id: string | null;
+  /** Brand name. VQL reads join it from `manufacturers`; categories send `manufacturer_name`. */
+  brand?: string | null;
+  manufacturer_name?: string | null;
   has_attributes: boolean;
   /** Number of variant children. > 0 means the product must be configured on the PDP. */
   child_count?: number | null;

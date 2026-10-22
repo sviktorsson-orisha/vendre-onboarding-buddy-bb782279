@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronDown, Menu, Search, ShoppingBag } from "lucide-react";
+import { ChevronDown, Menu, Search, ShoppingCart } from "lucide-react";
 
 import {
   Accordion,
@@ -31,10 +31,20 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
 
   return (
     <div
-      className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-b border-border bg-card shadow-xl"
+      className="absolute inset-x-0 top-full z-40 max-h-[70vh] overflow-y-auto border-b border-border bg-card"
       onClick={onNavigate}
     >
-      <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6">
+      <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 py-8 sm:px-6">
+        <div className="mb-6">
+          <Link
+            to="/kategori/$id"
+            params={{ id: String(node.id) }}
+            {...intent(node.id)}
+            className="inline-flex items-center text-sm font-normal text-foreground underline"
+          >
+            {t("store.viewAllIn", { name: node.name })}
+          </Link>
+        </div>
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {columns.map((child) => (
             <div key={`${child.source}:${child.id}`} className="min-w-0">
@@ -42,7 +52,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
                 to="/kategori/$id"
                 params={{ id: String(child.id) }}
                 {...intent(child.id)}
-                className="block truncate text-sm font-bold text-foreground hover:text-primary"
+                className="block truncate text-sm font-bold text-foreground hover:underline"
               >
                 {child.name}
               </Link>
@@ -54,7 +64,7 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
                         to="/kategori/$id"
                         params={{ id: String(leaf.id) }}
                         {...intent(leaf.id)}
-                        className="block truncate rounded-md py-1 text-sm text-muted-foreground hover:text-primary"
+                        className="block truncate rounded-md py-1 text-sm text-muted-foreground hover:text-foreground"
                       >
                         {leaf.name}
                       </Link>
@@ -66,17 +76,6 @@ function MegaPanel({ node, onNavigate }: { node: MenuNode; onNavigate: () => voi
           ))}
         </div>
 
-        <div className="mt-8 border-t border-border pt-4">
-          <Link
-            to="/kategori/$id"
-            params={{ id: String(node.id) }}
-            {...intent(node.id)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-          >
-            {t("store.viewAllIn", { name: node.name })}
-            <ArrowRight className="size-4 shrink-0" aria-hidden />
-          </Link>
-        </div>
       </div>
     </div>
   );
@@ -174,69 +173,75 @@ export function StoreHeader() {
   }, [openId]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-5 py-3 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-border bg-card">
+      <div className="bg-brand-pink text-primary-foreground">
+        <div className="mx-auto grid w-full max-w-6xl xl:max-w-[88rem] grid-cols-1 px-5 py-2.5 text-center text-xs md:px-8 md:py-3.5 md:text-sm lg:grid-cols-3 lg:py-2.5">
+          <p className="truncate">{t("store.announcement")}</p>
+          <p className="hidden truncate lg:block">{t("store.announcement")}</p>
+          <p className="hidden truncate lg:block">{t("store.announcement")}</p>
+        </div>
+      </div>
+      <div className="mx-auto grid w-full max-w-6xl xl:max-w-[88rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 md:px-8 md:py-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-8 lg:py-6">
         <Link to="/" className="flex min-w-0 items-center" aria-label={storeName}>
           {logoUrl ? (
             <img
               src={logoUrl}
               alt={storeName}
-              className="h-6 w-auto max-w-[130px] object-contain lg:h-8 lg:max-w-[180px]"
+              className="h-7 w-auto max-w-[130px] object-contain md:h-8 md:max-w-[150px] lg:h-10 lg:max-w-[190px]"
             />
           ) : (
-            <span className="brand-wordmark text-xl text-foreground lg:text-2xl">vendre</span>
+            <span className="brand-wordmark text-xl text-foreground md:text-2xl lg:text-3xl">vendre</span>
           )}
         </Link>
 
-        <SearchBox className="ml-2 hidden grow md:block" />
+        <SearchBox className="hidden w-full max-w-xl justify-self-center lg:block" />
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex shrink-0 items-center justify-end gap-1 justify-self-end md:gap-3 lg:gap-5">
           <button
             type="button"
-            className="brand-button-ghost md:hidden"
+            className="grid size-10 place-items-center rounded-full text-foreground lg:hidden"
             aria-label={t("store.search")}
             aria-expanded={searchOpen}
             onClick={() => setSearchOpen((value) => !value)}
           >
-            <Search className="size-4" />
+            <Search className="size-6" strokeWidth={1.5} />
           </button>
           <AccountMenu />
           <button
             type="button"
-            className="brand-button-ghost relative"
+            className="relative grid size-10 place-items-center rounded-full text-foreground"
             onClick={() => setCartOpen(true)}
             aria-label={t("store.cart")}
           >
-            <ShoppingBag className="size-4" />
+            <ShoppingCart className="size-6" strokeWidth={1.5} />
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 flex size-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+              <span className="absolute -right-0.5 -top-0.5 flex size-5 min-w-5 items-center justify-center rounded-full bg-brand-blue px-1 text-[10px] font-semibold text-foreground">
                 {count}
               </span>
             )}
           </button>
           <button
             type="button"
-            className="brand-button-ghost lg:hidden"
+            className="grid size-10 place-items-center rounded-full text-foreground lg:hidden"
             aria-label={t("store.menu")}
             onClick={() => setMobileOpen((value) => !value)}
           >
-            <Menu className="size-4" />
+            <Menu className="size-6" strokeWidth={1.5} />
           </button>
         </div>
       </div>
 
-
       {searchOpen && (
-        <div className="mx-auto w-full max-w-6xl px-5 pb-3 sm:px-6 md:hidden">
+        <div className="mx-auto w-full max-w-6xl xl:max-w-[88rem] px-5 pb-4 md:px-8 lg:hidden">
           <SearchBox autoFocus />
         </div>
       )}
 
       <nav
-        className="relative hidden border-t border-border lg:block"
+        className="relative hidden lg:block"
         onMouseLeave={() => setOpenId(null)}
       >
-        <ul className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-1 px-2 sm:px-3">
+        <ul className="mx-auto flex w-full max-w-6xl xl:max-w-[88rem] flex-wrap items-center gap-x-6 px-5 pb-4 md:px-8 xl:gap-x-10">
           {tree.map((node) => {
             const hasChildren = node.children.length > 0;
             const isOpen = openId === node.id;
@@ -245,7 +250,7 @@ export function StoreHeader() {
                 <Link
                   to="/kategori/$id"
                   params={{ id: String(node.id) }}
-                  className="flex min-w-0 items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors [overflow-wrap:anywhere] hover:text-primary"
+                  className="flex min-w-0 items-center gap-1 px-2 py-2 text-base font-normal text-foreground transition-colors [overflow-wrap:anywhere] hover:underline"
                   aria-haspopup={hasChildren ? "true" : undefined}
                   aria-expanded={hasChildren ? isOpen : undefined}
                   {...categoryIntent(node.id)}

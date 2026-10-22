@@ -186,6 +186,7 @@ function product(
     stock_allow_checkout: stock > 0,
     seo_link: null,
     categories_id: String(categoryId),
+    brand: ["Orisha", "Nordform", "Atelier Nord"][Number(id) % 3] ?? null,
     has_attributes: Boolean(opts.attributes?.length),
     child_count: opts.attributes?.length ? opts.attributes.length : 0,
     ...(opts.attributes ? { attributes: opts.attributes } : {}),
@@ -377,8 +378,14 @@ export function mockProductVariants(id: string): ProductVariantType[] {
   ];
 }
 
+/** Random demo sample, mirroring the live random featured products. */
 export function mockFeaturedProducts(count = 4): Product[] {
-  return products.slice(0, count);
+  const pool = [...products];
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j]!, pool[i]!];
+  }
+  return pool.slice(0, count);
 }
 
 export const mockTopCategories = [90, 200, 210].map((id) => categoryHeaders[id]!);
