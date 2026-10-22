@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/vendre/account";
 export function AccountMenu() {
   const { t } = useI18n();
   const { isAuthenticated } = useAuth();
-  const className = "grid size-10 place-items-center rounded-full text-foreground hover:bg-accent";
+  const className = "grid size-10 place-items-center rounded-full text-foreground";
 
   if (!isAuthenticated) {
     return (

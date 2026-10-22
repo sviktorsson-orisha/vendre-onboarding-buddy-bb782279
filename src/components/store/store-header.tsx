@@ -199,7 +199,7 @@ export function StoreHeader() {
         <div className="flex shrink-0 items-center justify-end gap-1 justify-self-end md:gap-3 lg:gap-5">
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:hidden"
+            className="grid size-10 place-items-center rounded-full text-foreground lg:hidden"
             aria-label={t("store.search")}
             aria-expanded={searchOpen}
             onClick={() => setSearchOpen((value) => !value)}
@@ -209,7 +209,7 @@ export function StoreHeader() {
           <AccountMenu />
           <button
             type="button"
-            className="relative grid size-10 place-items-center rounded-full text-foreground hover:bg-accent"
+            className="relative grid size-10 place-items-center rounded-full text-foreground"
             onClick={() => setCartOpen(true)}
             aria-label={t("store.cart")}
           >
@@ -222,7 +222,7 @@ export function StoreHeader() {
           </button>
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-full text-foreground hover:bg-accent lg:hidden"
+            className="grid size-10 place-items-center rounded-full text-foreground lg:hidden"
             aria-label={t("store.menu")}
             onClick={() => setMobileOpen((value) => !value)}
           >
