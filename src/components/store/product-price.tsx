@@ -51,10 +51,12 @@ export function ProductPrice({
   product,
   size = "md",
   className,
+  originalClassName,
 }: {
   product: PriceFields;
   size?: Size;
   className?: string;
+  originalClassName?: string;
 }) {
   const { onSale, current, original } = resolvePrice(product);
 
@@ -64,7 +66,9 @@ export function ProductPrice({
         {current}
       </span>
       {onSale && original && (
-        <span className={cn(originalSize[size], "text-muted-foreground line-through")}>
+        <span
+          className={cn(originalSize[size], "text-muted-foreground line-through", originalClassName)}
+        >
           {original}
         </span>
       )}

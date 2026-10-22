@@ -117,7 +117,12 @@ export function CartSheet({
                       </button>
                     </div>
                     {line.product_data && (
-                      <ProductPrice product={line.product_data} size="sm" className="mt-1 flex" />
+                      <ProductPrice
+                        product={line.product_data}
+                        size="sm"
+                        className="mt-1 flex"
+                        originalClassName="text-sm"
+                      />
                     )}
 
                     <div className="mt-2 flex items-center gap-2">
