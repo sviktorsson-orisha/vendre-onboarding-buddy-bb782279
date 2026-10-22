@@ -258,11 +258,11 @@ export default function ProductPage({ id }: { id: string }) {
                 "mt-1 text-sm",
                 variantTypes.length > 0
                   ? selectedInStock
-                    ? "text-emerald-700"
+                    ? "text-success"
                     : "text-destructive"
                   : soldOut
                     ? "text-destructive"
-                    : "text-emerald-700",
+                    : "text-success",
               )}
             >
               {(variantTypes.length > 0 ? !selectedInStock : soldOut)
